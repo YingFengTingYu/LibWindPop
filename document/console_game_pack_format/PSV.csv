@@ -1,0 +1,2 @@
+Name,PackFormat,PackMagic,Description
+Plants vs. Zombies,pak,0xDEADFED4(LE),PSV Encrypted; the ptx file is gxt image

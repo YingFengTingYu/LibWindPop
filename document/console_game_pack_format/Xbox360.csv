@@ -1,0 +1,15 @@
+Name,PackFormat,PackMagic,Description
+AstroPop,xpr,XPR2,
+Bejeweled 2,xpr,XPR2,
+Bejeweled 3,rsb,rsb1,PtxHandlerXbox360V1
+Bejeweled Blitz Live,xpr/pak,XPR2/0xDEADFED4,XMemCompress All package files. XPR2 has TX2D part which I can not analyse.
+Feeding Frenzy,xpr,XPR2,
+Feeding Frenzy 2: Shipwreck Showdown,xpr,XPR2,
+Gyromancer,dat,Unknown,Square Enix
+Heavy Weapon,xpr,XPR2,
+Peggle,pak,0xDEADFED4,
+Peggle 2,rsb,rsb1,PtxHandlerXbox360V2
+Plants vs. Zombies,pak,0xDEADFED4,XMemCompress Many package files. 
+Plants vs. Zombies: Garden Warfare,Unknown,Unknown,Frostbite3
+Zuma,xpr,XPR2,
+Zuma's Revenge!,rsb,rsb1,PtxHandlerXbox360V1

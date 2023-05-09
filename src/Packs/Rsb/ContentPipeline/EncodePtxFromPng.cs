@@ -1,0 +1,259 @@
+﻿using LibWindPop.Images.PtxRsb;
+using LibWindPop.Utils;
+using LibWindPop.Utils.Extension;
+using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Graphics;
+using LibWindPop.Utils.Graphics.Bitmap;
+using LibWindPop.Utils.Graphics.FormatProvider;
+using LibWindPop.Utils.Logger;
+using System;
+using System.IO;
+
+namespace LibWindPop.Packs.Rsb.ContentPipeline
+{
+    public class EncodePtxFromPng : IRsbContentPipeline
+    {
+        public void Build(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            BuildInternal(unpackPath, fileSystem, logger, throwException);
+        }
+
+        public void Add(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            AddInternal(unpackPath, fileSystem, logger, throwException);
+        }
+
+        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
+            ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
+            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
+
+            logger.Log("Get pack info...", 0);
+
+            // define base path
+            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+
+            logger.Log("Read rsb pack info...", 0);
+
+            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+
+            if (packInfo == null || packInfo.Groups == null)
+            {
+                logger.LogError("Pack info is null", 0, throwException);
+            }
+            else
+            {
+                if (packInfo.UseGroupFolder)
+                {
+                    paths = new RsbUnpackPathProvider(unpackPath, fileSystem, true);
+                }
+                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger, throwException);
+                RsbPackGroupInfo?[] groups = packInfo.Groups;
+                // Get max mem size
+                const uint maxMemSize = 0x09000000u;
+                // Alloc mem
+                logger.Log($"Alloc memory buffer with size {maxMemSize}...", 0);
+                using (NativeMemoryOwner owner = new NativeMemoryOwner(maxMemSize))
+                {
+                    for (int i = groups.Length - 1; i >= 0; i--)
+                    {
+                        RsbPackGroupGPUFileInfo[]? images = groups[i]?.GPUFileList;
+                        if (images != null)
+                        {
+                            string? groupId = groups[i]?.Id;
+                            for (int j = images.Length - 1; j >= 0; j--)
+                            {
+                                RsbPackGroupGPUFileInfo image = images[j];
+                                bool needToUpdate = true;
+                                string nativePtxPath = image.InFileIndexDataMap ? paths.GetResourcePathByGroupIdAndPath(groupId, image.Path) : paths.GetUnusedResourcePathByGroupIdAndPath(groupId, image.Path);
+                                string nativePngPath = fileSystem.ChangeExtension(nativePtxPath, ".png");
+                                string nativeMetaPath = paths.AppendMetaExtension(nativePtxPath);
+                                using (Stream pngStream = fileSystem.OpenRead(nativePngPath))
+                                {
+                                    ImageCoder.PeekImageInfo(pngStream, out int imageWidth, out int imageHeight, out ImageFormat imageFormat);
+                                    if (fileSystem.FileExists(nativeMetaPath) && fileSystem.FileExists(nativePtxPath))
+                                    {
+                                        try
+                                        {
+                                            PtxMetadata? meta = WindJsonSerializer.TryDeserializeFromFile<PtxMetadata>(nativeMetaPath, 0u, fileSystem, logger, true);
+
+                                            if (meta != null
+                                                && meta.ImageHandler == packInfo.ImageHandler
+                                                && (uint)imageWidth == image.Width
+                                                && (uint)imageHeight == image.Height
+                                                && meta.Width == image.Width
+                                                && meta.Height == image.Height
+                                                && meta.Pitch == image.Pitch
+                                                && meta.Format == image.Format
+                                                && ((!ptxHandler.UseExtend1AsAlphaSize) || meta.AlphaSize == image.Extend1)
+                                                && meta.PngModifyTimeUtc == fileSystem.GetModifyTimeUtc(nativePngPath)
+                                                )
+                                            {
+                                                needToUpdate = false;
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            // Do not need to handle this exception
+                                        }
+                                    }
+                                    if (needToUpdate)
+                                    {
+                                        uint bitmapSize = image.Width * image.Height * 4u;
+                                        if (bitmapSize > owner.Size)
+                                        {
+                                            logger.LogWarning($"Memory overflow! Realloc memory with size {bitmapSize}...", 0);
+                                            owner.Realloc(bitmapSize);
+                                        }
+                                        void* bitmapPtr = owner.Pointer;
+                                        RefBitmap refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
+                                        ImageCoder.DecodeImage(pngStream, refBitmap, imageFormat);
+                                        if (!ptxHandler.PeekEncodedPtxInfo(refBitmap, image.Format, out uint newWidth, out uint newHeight, out uint newPitch, out uint newAlphaSize))
+                                        {
+                                            logger.LogError($"PtxCoder.Encode can not encode this image with format {image.Format}: {nativePngPath}", 0, true);
+                                            continue;
+                                        }
+                                        void* ptxPtr = (void*)((nuint)owner.Pointer + bitmapSize);
+                                        uint ptxSize = ptxHandler.GetPtxSize(newWidth, newHeight, newPitch, image.Format, newAlphaSize);
+                                        if ((ptxSize + bitmapSize) > owner.Size)
+                                        {
+                                            logger.LogWarning($"Memory overflow! Realloc memory with size {ptxSize + bitmapSize}...", 0);
+                                            owner.Realloc(ptxSize + bitmapSize);
+                                            ptxPtr = (void*)((nuint)owner.Pointer + bitmapSize);
+                                            bitmapPtr = owner.Pointer;
+                                            refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
+                                        }
+                                        logger.Log($"Encode ptx {nativePtxPath}...", 0);
+                                        new Span<byte>(ptxPtr, (int)ptxSize).Fill(0);
+                                        ptxHandler.EncodePtx(refBitmap, new Span<byte>(ptxPtr, (int)ptxSize), newWidth, newHeight, newPitch, image.Format, newAlphaSize, logger);
+                                        image.Width = newWidth;
+                                        image.Height = newHeight;
+                                        image.Pitch = newPitch;
+                                        if (ptxHandler.UseExtend1AsAlphaSize)
+                                        {
+                                            image.Extend1 = newAlphaSize;
+                                        }
+                                        // Write ptx
+                                        using (Stream ptxStream = fileSystem.Create(nativePtxPath))
+                                        {
+                                            ptxStream.Write(ptxPtr, ptxSize);
+                                        }
+                                        // Write meta
+                                        PtxMetadata meta = new PtxMetadata
+                                        {
+                                            ImageHandler = packInfo.ImageHandler,
+                                            Width = image.Width,
+                                            Height = image.Height,
+                                            Pitch = image.Pitch,
+                                            Format = image.Format,
+                                            AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
+                                            PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
+                                        };
+                                        WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, 0u, fileSystem, logger, throwException);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+            }
+        }
+
+        private static unsafe void AddInternal<TFileSystem, TLogger>(string unpackPath, TFileSystem fileSystem, TLogger logger, bool throwException)
+            where TFileSystem : IFileSystem
+            where TLogger : ILogger
+        {
+            ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
+            ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
+            ArgumentNullException.ThrowIfNull(logger, nameof(logger));
+
+            logger.Log("Get pack info...", 0);
+
+            // define base path
+            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+
+            logger.Log("Read rsb pack info...", 0);
+
+            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+
+            if (packInfo == null || packInfo.Groups == null)
+            {
+                logger.LogError("Pack info is null", 0, throwException);
+            }
+            else
+            {
+                if (packInfo.UseGroupFolder)
+                {
+                    paths = new RsbUnpackPathProvider(unpackPath, fileSystem, true);
+                }
+                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger, throwException);
+                RsbPackGroupInfo?[] groups = packInfo.Groups;
+                // Get max mem size
+                uint maxMemSize = 0u;
+                for (int i = groups.Length - 1; i >= 0; i--)
+                {
+                    RsbPackGroupGPUFileInfo[]? images = groups[i]?.GPUFileList;
+                    if (images != null)
+                    {
+                        for (int j = images.Length - 1; j >= 0; j--)
+                        {
+                            RsbPackGroupGPUFileInfo image = images[j];
+                            uint ptxSize = ptxHandler.GetPtxSize(image.Width, image.Height, image.Pitch, image.Format, image.Extend1);
+                            uint bitmapSize = image.Width * image.Height * 4u;
+                            maxMemSize = Math.Max(maxMemSize, ptxSize + bitmapSize);
+                        }
+                    }
+                }
+                // Alloc mem
+                logger.Log($"Alloc memory buffer with size {maxMemSize}...", 0);
+                using (NativeMemoryOwner owner = new NativeMemoryOwner(maxMemSize))
+                {
+                    for (int i = groups.Length - 1; i >= 0; i--)
+                    {
+                        RsbPackGroupGPUFileInfo[]? images = groups[i]?.GPUFileList;
+                        if (images != null)
+                        {
+                            string? groupId = groups[i]?.Id;
+                            for (int j = images.Length - 1; j >= 0; j--)
+                            {
+                                RsbPackGroupGPUFileInfo image = images[j];
+                                string nativePtxPath = image.InFileIndexDataMap ? paths.GetResourcePathByGroupIdAndPath(groupId, image.Path) : paths.GetUnusedResourcePathByGroupIdAndPath(groupId, image.Path);
+                                string nativePngPath = fileSystem.ChangeExtension(nativePtxPath, ".png");
+                                string nativeMetaPath = paths.AppendMetaExtension(nativePtxPath);
+                                uint ptxSize = ptxHandler.GetPtxSize(image.Width, image.Height, image.Pitch, image.Format, image.Extend1);
+                                uint bitmapSize = image.Width * image.Height * 4u;
+                                void* ptxPtr = owner.Pointer;
+                                void* bitmapPtr = (void*)((nuint)owner.Pointer + ptxSize);
+                                logger.Log($"Decode ptx {nativePtxPath}...", 0);
+                                // Read ptx
+                                using (Stream ptxStream = fileSystem.OpenRead(nativePtxPath))
+                                {
+                                    ptxStream.Read(ptxPtr, ptxSize);
+                                }
+                                RefBitmap refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
+                                ptxHandler.DecodePtx(new ReadOnlySpan<byte>(ptxPtr, (int)ptxSize), refBitmap, image.Width, image.Height, image.Pitch, image.Format, image.Extend1, logger);
+                                using (Stream pngStream = fileSystem.Create(nativePngPath))
+                                {
+                                    ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png);
+                                }
+                                PtxMetadata meta = new PtxMetadata
+                                {
+                                    ImageHandler = packInfo.ImageHandler,
+                                    Width = image.Width,
+                                    Height = image.Height,
+                                    Pitch = image.Pitch,
+                                    Format = image.Format,
+                                    AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
+                                    PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
+                                };
+                                WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, 0u, fileSystem, logger, throwException);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

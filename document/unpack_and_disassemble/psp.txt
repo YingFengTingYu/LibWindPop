@@ -1,0 +1,19 @@
+Firstly, you need to download PKG file by yourself.
+
+Secondly, extract PKG file.
+Use PSP_PS3_PKG_Decrypter_Extractor to extract PKG file.
+1.Download PSP_PS3_PKG_Decrypter_Extractor.
+2.Open "PS3 PSP PKG Decrypter & Extractor.exe".
+3.Select "...".
+4.Choose your PKG file.
+5.Select "Extract package".
+
+Thirdly, create iso file.
+Use npdpc to create iso file.
+1.Download npdpc and push it to the folder which has EBOOT.PBP.
+2.Open "npdpc.exe".
+
+PSP_PS3_PKG_Decrypter_Extractor download link:
+http://www.mediafire.com/file/e1cf747awdc7pgu/PSP_PS3_PKG_Decrypter_Extractor_v.1.0.0.0.rar/file
+npdpc download link:
+http://www.mediafire.com/file/otmm4xjs754suht/npdpc.rar/file

@@ -1,0 +1,10 @@
+Name,PackFormat,PackMagic,Description
+Bejeweled 2,xpr,XPR2,SOECompress
+Bejeweled 3,rsb,rsb1,PtxHandlerPS3V1
+Feeding Frenzy 2: Shipwreck Showdown,xpr,XPR2,
+Heavy Weapon,xpr,XPR2,SOECompress
+Peggle,pak,0xDEADFED4(LE),
+Plants vs. Zombies,pak,0xDEADFED4(LE),"zlib, ptx is dds"
+Plants vs. Zombies: Garden Warfare,Unknown,Unknown,Frostbite3
+Zuma,xpr,XPR2,SOECompress
+Zuma's Revenge!,pak,0xDEADFED4(LE),"zlib, PopStudio can not extract common.pak, ptx is dds"

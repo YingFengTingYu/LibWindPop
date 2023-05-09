@@ -1,0 +1,23 @@
+Firstly, you need to download PKG file by yourself.
+
+Secondly, extract PKG file.
+Use PS4PKGViewer to extract PKG file.
+1.Download PS4PKGViewer.
+2.Open "PS4PKGViewer.exe".
+3.Select "File-Open".
+4.Choose your PKG file.
+5.Select "Extra-Extract Package".
+6.Choose a folder to save extracted files.
+
+Thirdly, decrypt eboot.bin file.
+Use ps4_unfself to decrypt eboot.bin file.
+1.Download python2.7 and ps4_unfself. Do not use python3.
+2.Open CMD and enter "python2.7 ps4_unfself.py eboot.bin"(Change file path by yourself).
+
+
+PS4PKGViewer download link:
+https://androidfilehost.com/?fid=2188818919693774752
+ps4_unfself download link:
+https://github.com/SocraticBliss/ps4_unfself
+python2.7 download link:
+https://www.python.org/download/releases/2.7

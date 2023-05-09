@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop", "src\LibWindPop.csproj", "{A380E679-7945-451B-B9D1-856954849C57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop.Test", "test\LibWindPop.Test.csproj", "{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop.Build", "build\LibWindPop.Build.csproj", "{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x86.Build.0 = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|x86.ActiveCfg = Release|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|x86.Build.0 = Release|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x86.ActiveCfg = Debug|x86
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x86.Build.0 = Debug|x86
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x86.ActiveCfg = Release|x86
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x86.Build.0 = Release|x86
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|x86.Build.0 = Debug|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|x86.ActiveCfg = Release|Any CPU
+		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {787A8C4E-BB0D-407A-8E5E-A8AA81989310}
+	EndGlobalSection
+EndGlobal
