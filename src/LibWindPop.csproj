@@ -12,8 +12,4 @@
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Packs\Pak\" />
-  </ItemGroup>
-
 </Project>

@@ -39,7 +39,7 @@ namespace LibWindPop.Packs.Rsb
             // create content
             RsbPackInfo packInfo = new RsbPackInfo();
 
-            logger.Log("Create rsb file...", 0);
+            logger.Log("Open rsb file...", 0);
             using (Stream rsbRawStream = fileSystem.OpenRead(rsbPath))
             {
                 //logger.Log("Check whole zlib...", 0);
@@ -85,7 +85,14 @@ namespace LibWindPop.Packs.Rsb
             uint magic = BinaryPrimitives.ReadUInt32LittleEndian(bufferSpan);
             if (magic != 0x31627372u && magic != 0x72736231u)
             {
-                logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is {magic:X8}", 1, throwException);
+                if (magic == 0xDEADFED4u)
+                {
+                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}. If this rsb is smf file, please use PopCapZlibCompressor.Uncompress to uncompress it.", 1, throwException);
+                }
+                else
+                {
+                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}", 1, throwException);
+                }
             }
             bool useBigEndian = magic != 0x72736231u;
             // Read header size

@@ -1,4 +1,5 @@
-﻿using LibWindPop.Packs.Rsb;
+﻿using LibWindPop.Packs.Pak;
+using LibWindPop.Packs.Rsb;
 using LibWindPop.Packs.Rsb.ContentPipeline;
 using LibWindPop.Packs.Xpr;
 using LibWindPop.Utils.FileSystem;
@@ -102,6 +103,7 @@ namespace LibWindPop.Utils
     [JsonSerializable(typeof(WindJsonShell<PtxMetadata>))]
     [JsonSerializable(typeof(WindJsonShell<RsbContentPipelineInfo>))]
     [JsonSerializable(typeof(WindJsonShell<XprPackInfo>))]
+    [JsonSerializable(typeof(WindJsonShell<PakPackInfo>))]
     internal partial class WindJsonSerializerContext : JsonSerializerContext
     {
 

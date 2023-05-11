@@ -32,7 +32,7 @@ namespace LibWindPop.Packs.Xpr
                 uint magic = BinaryPrimitives.ReadUInt32BigEndian(buffer);
                 if (magic != 0x58505232u) // XPR2
                 {
-                    logger.LogError($"Xpr magic mismatch: XPR2 expected but value is {magic:X8}", 1, throwException);
+                    logger.LogError($"Xpr magic mismatch: XPR2 expected but value is 0x{magic:X8}", 1, throwException);
                 }
                 uint xprDataSize = BinaryPrimitives.ReadUInt32BigEndian(buffer.Slice(4, 4));
                 uint textureDataSize = BinaryPrimitives.ReadUInt32BigEndian(buffer.Slice(8, 4));
