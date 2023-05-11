@@ -63,22 +63,22 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Gcm
                 | ((mipmap & 0xFu) << 16);
         }
 
-        public override bool Equals(object? obj)
+        public readonly override bool Equals(object? obj)
         {
             return (obj is TextureFormat fmt) && value == fmt.value;
         }
 
-        public bool Equals(TextureFormat other)
+        public readonly bool Equals(TextureFormat other)
         {
             return value == other.value;
         }
 
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return value.GetHashCode();
         }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             return value.ToString();
         }

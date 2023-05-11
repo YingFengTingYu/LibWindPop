@@ -12,17 +12,17 @@ namespace LibWindPop
     {
         private static string? m_errorMessage;
         private static readonly Encoding m_utf8 = EncodingType.utf_8.GetEncoding();
-        private static readonly Encoding m_ansi = EncodingType.ansi.GetEncoding();
+        private static readonly Encoding m_Ansi = EncodingType.ansi.GetEncoding();
 
         [UnmanagedCallersOnly(EntryPoint = nameof(RsbUnpack))]
         public static int RsbUnpack(sbyte* rsbPath, sbyte* unpackPath, sbyte* ptxHandlerType, int logLevel, int useGroupFolder, int throwException)
         {
             return PCall(() => Packs.Rsb.RsbUnpacker.Unpack(
-                GetStringFromPtr(rsbPath, m_ansi),
-                GetStringFromPtr(unpackPath, m_ansi),
+                GetStringFromPtr(rsbPath, m_Ansi),
+                GetStringFromPtr(unpackPath, m_Ansi),
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
-                GetStringFromPtr(ptxHandlerType, m_ansi),
+                GetStringFromPtr(ptxHandlerType, m_Ansi),
                 useGroupFolder != 0,
                 throwException != 0
                 ));
@@ -46,8 +46,8 @@ namespace LibWindPop
         public static int RsbAddContentPipeline(sbyte* unpackPath, sbyte* pipelineName, int logLevel, int throwException)
         {
             return PCall(() => Packs.Rsb.RsbContentPipelineManager.AddContentPipeline(
-                GetStringFromPtr(unpackPath, m_ansi),
-                GetStringFromPtr(pipelineName, m_ansi),
+                GetStringFromPtr(unpackPath, m_Ansi),
+                GetStringFromPtr(pipelineName, m_Ansi),
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
                 throwException != 0
@@ -70,8 +70,8 @@ namespace LibWindPop
         public static int RsbPack(sbyte* unpackPath, sbyte* rsbPath, int logLevel, int throwException)
         {
             return PCall(() => Packs.Rsb.RsbPacker.Pack(
-                GetStringFromPtr(unpackPath, m_ansi),
-                GetStringFromPtr(rsbPath, m_ansi),
+                GetStringFromPtr(unpackPath, m_Ansi),
+                GetStringFromPtr(rsbPath, m_Ansi),
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
                 throwException != 0
@@ -93,7 +93,7 @@ namespace LibWindPop
         [UnmanagedCallersOnly(EntryPoint = nameof(GetErrorSize))]
         public static nuint GetErrorSize()
         {
-            return (nuint)PeekPtrSizeFromString(m_errorMessage, m_ansi);
+            return (nuint)PeekPtrSizeFromString(m_errorMessage, m_Ansi);
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(GetErrorSizeU8))]
@@ -107,7 +107,7 @@ namespace LibWindPop
         {
             return PCall(() =>
             {
-                GetPtrFromString(m_errorMessage, buffer, m_ansi);
+                GetPtrFromString(m_errorMessage, buffer, m_Ansi);
             });
         }
 

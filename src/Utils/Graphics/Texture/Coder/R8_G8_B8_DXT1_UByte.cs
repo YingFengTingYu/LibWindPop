@@ -5,11 +5,11 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct R8_G8_B8_DXT1_UByte : ITextureCoder, IOpenGLES20CompressedTexture
+    public readonly unsafe struct R8_G8_B8_DXT1_UByte : ITextureCoder, IOpenGLES20CompressedTexture
     {
         public static int OpenGLES20InternalFormat => 0x83F0; // GL_COMPRESSED_RGB_S3TC_DXT1_EXT
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;
@@ -39,7 +39,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;

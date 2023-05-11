@@ -2,7 +2,7 @@
 
 namespace LibWindPop.Utils
 {
-    internal unsafe struct CType_H
+    internal readonly unsafe struct CType_H
     {
         public static byte ToUpper(byte value)
         {
@@ -14,7 +14,7 @@ namespace LibWindPop.Utils
         }
     }
 
-    internal unsafe struct String_H
+    internal readonly unsafe struct String_H
     {
         public static int StrLen(byte* str)
         {

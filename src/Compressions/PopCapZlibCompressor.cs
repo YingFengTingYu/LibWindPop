@@ -11,11 +11,11 @@ namespace LibWindPop.Compressions
 {
     public static class PopCapZlibCompressor
     {
-        public static void Compress(string unPath, string soePath, IFileSystem fileSystem, ILogger logger, int level, bool throwException)
+        public static void Compress(string unPath, string smfPath, IFileSystem fileSystem, ILogger logger, int level, bool throwException)
         {
             try
             {
-                using (Stream popStream = fileSystem.Create(soePath))
+                using (Stream popStream = fileSystem.Create(smfPath))
                 {
                     using (Stream unStream = fileSystem.OpenRead(unPath))
                     {
@@ -37,16 +37,16 @@ namespace LibWindPop.Compressions
             }
         }
 
-        public static void Uncompress(string soePath, string unPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static void Uncompress(string smfPath, string unPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             try
             {
-                using (Stream popStream = fileSystem.OpenRead(soePath))
+                using (Stream popStream = fileSystem.OpenRead(smfPath))
                 {
                     Span<byte> popHeader = stackalloc byte[8];
                     popStream.Read(popHeader);
                     uint magic = BinaryPrimitives.ReadUInt32LittleEndian(popHeader);
-                    uint uncompressedSize = BinaryPrimitives.ReadUInt32LittleEndian(popHeader.Slice(8, 4));
+                    uint uncompressedSize = BinaryPrimitives.ReadUInt32LittleEndian(popHeader.Slice(4, 4));
                     if (magic != 0xDEADFED4)
                     {
                         logger.LogError($"PopCap zlib magic mismatch: 0xDEADFED4(LE) expected but value is {magic:X8}", 1, throwException);

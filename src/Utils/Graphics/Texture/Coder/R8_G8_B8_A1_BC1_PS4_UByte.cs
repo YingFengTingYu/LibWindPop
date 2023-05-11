@@ -5,11 +5,11 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct R8_G8_B8_A1_BC1_PS4_UByte : ITextureCoder, IGnmTexture
+    public readonly unsafe struct R8_G8_B8_A1_BC1_PS4_UByte : ITextureCoder, IGnmTexture
     {
         public static DataFormat GnmFormat => DataFormat.kDataFormatBc1Unorm;
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             Span<YFColor> decodeBlockData = stackalloc YFColor[16];
@@ -55,7 +55,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             Span<YFColor> encodeBlockData = stackalloc YFColor[16];

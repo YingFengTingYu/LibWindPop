@@ -10,7 +10,7 @@ namespace LibWindPop.Utils.Graphics.Bitmap
         public readonly int Area;
         public readonly Span<YFColor> Data;
 
-        public Span<YFColor> this[int y]
+        public readonly Span<YFColor> this[int y]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -25,7 +25,7 @@ namespace LibWindPop.Utils.Graphics.Bitmap
             }
         }
 
-        public ref YFColor this[int x, int y]
+        public readonly ref YFColor this[int x, int y]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -42,7 +42,7 @@ namespace LibWindPop.Utils.Graphics.Bitmap
             Data = data;
         }
 
-        public Span<YFColor> AsSpan()
+        public readonly Span<YFColor> AsSpan()
         {
             return Data;
         }

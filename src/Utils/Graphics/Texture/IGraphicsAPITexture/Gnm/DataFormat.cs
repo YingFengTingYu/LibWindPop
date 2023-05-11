@@ -51,22 +51,22 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Gnm
                 | ((m_unused & 0xFFu) << 24);
         }
 
-        public override bool Equals(object? obj)
+        public readonly override bool Equals(object? obj)
         {
             return (obj is DataFormat fmt) && value == fmt.value;
         }
 
-        public bool Equals(DataFormat other)
+        public readonly bool Equals(DataFormat other)
         {
             return value == other.value;
         }
 
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return value.GetHashCode();
         }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             return value.ToString();
         }

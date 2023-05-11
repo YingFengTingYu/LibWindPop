@@ -272,7 +272,7 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Png
             ref byte row_fliter = ref data_span[0];
             Span<byte> fliter_span = data_span.Slice(1, row_len);
             Span<byte> backup_span = data_span.Slice(1 + row_len, row_len);
-            backup_span.Fill(0x0);
+            backup_span.Clear();
             if (colorType == PngColorType.Indexedcolour)
             {
                 if (bitDepth != 1 && bitDepth != 2 && bitDepth != 4 && bitDepth != 8)

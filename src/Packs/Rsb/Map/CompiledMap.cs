@@ -38,12 +38,12 @@ namespace LibWindPop.PopCap.Packs.Rsb.Map
         /// 检测哈希表是否已经初始化
         /// </summary>
         /// <returns>是否已经初始化</returns>
-        public bool Initialized()
+        public readonly bool Initialized()
         {
             return pointer != null; // 如果指针是空就是没初始化过，否则就是初始化过
         }
 
-        public void* Find(ReadOnlySpan<char> input_string)
+        public readonly void* Find(ReadOnlySpan<char> input_string)
         {
             byte* buffer = stackalloc byte[input_string.Length + 1];
             encoding.GetBytes(input_string, new Span<byte>(buffer, input_string.Length));
@@ -56,7 +56,7 @@ namespace LibWindPop.PopCap.Packs.Rsb.Map
         /// </summary>
         /// <param name="input_string_pointer">字符串指针</param>
         /// <returns>字符串对应信息指针</returns>
-        public void* Find(void* input_string_pointer)
+        public readonly void* Find(void* input_string_pointer)
         {
             if (count != 0) // 如果长度不为0，其实我觉得没必要，但是游戏里面有这个检测，所以直接搬过来了
             {
@@ -108,7 +108,7 @@ namespace LibWindPop.PopCap.Packs.Rsb.Map
         /// <param name="alreadyString">已经找好的字符数组</param>
         /// <param name="alreadyLength">已经找好的字符长度</param>
         /// <param name="callBack">每次找到数据后的回调函数</param>
-        private void FindNextInfo(uint offset, byte* alreadyString, uint alreadyLength, Action<nuint, uint, nuint> callBack)
+        private readonly void FindNextInfo(uint offset, byte* alreadyString, uint alreadyLength, Action<nuint, uint, nuint> callBack)
         {
             uint* pointer_32_bits = (uint*)pointer; // 获取起始指针
             uint* current_pointer_32_bits = pointer_32_bits + offset; // 获取当前指针，offset不是地址差而是地址差/4！
@@ -141,7 +141,7 @@ namespace LibWindPop.PopCap.Packs.Rsb.Map
         /// 遍历每一个哈希表中的信息
         /// </summary>
         /// <param name="callBack">回调函数</param>
-        public void ForEach(Action<string, nuint> callBack)
+        public readonly void ForEach(Action<string, nuint> callBack)
         {
             if (count != 0) // 如果长度不为0
             {

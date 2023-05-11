@@ -5,11 +5,11 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct R8_G8_B8_A8_PVRTCII_2BPP_UByte : ITextureCoder, IOpenGLES20CompressedTexture
+    public readonly unsafe struct R8_G8_B8_A8_PVRTCII_2BPP_UByte : ITextureCoder, IOpenGLES20CompressedTexture
     {
         public static int OpenGLES20InternalFormat => 0x9137; // GL_COMPRESSED_RGBA_PVRTC_2BPPV2_IMG
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || !BitHelper.IsPowerOfTwo(width) || !BitHelper.IsPowerOfTwo(height));
             fixed (YFColor* color = dstBitmap.Data)
@@ -21,7 +21,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || !BitHelper.IsPowerOfTwo(width) || !BitHelper.IsPowerOfTwo(height));
             fixed (YFColor* color = srcBitmap.Data)

@@ -4,9 +4,9 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct R8_G8_B8_ETC2_UByte : ITextureCoder
+    public readonly unsafe struct R8_G8_B8_ETC2_UByte : ITextureCoder
     {
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;
@@ -36,7 +36,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;

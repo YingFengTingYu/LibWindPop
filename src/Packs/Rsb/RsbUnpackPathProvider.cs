@@ -28,24 +28,24 @@ namespace LibWindPop.Packs.Rsb
             m_unusedPath = m_fileSystem.Combine(UnpackPath, "unused");
             m_groupPath = m_fileSystem.Combine(UnpackPath, "group");
             string infoPath = m_fileSystem.Combine(UnpackPath, "info");
-            InfoPackInfoPath = m_fileSystem.Combine(infoPath, "packinfo.json");
+            InfoPackInfoPath = m_fileSystem.Combine(infoPath, "pack_info.json");
             InfoManifestPath = m_fileSystem.Combine(infoPath, "manifest.json");
             InfoContentPipelinePath = m_fileSystem.Combine(infoPath, "pipeline.json");
         }
 
-        public string GetRsgPathByGroupId(string? groupId)
+        public readonly string GetRsgPathByGroupId(string? groupId)
         {
             return UseGroupFolder ? m_fileSystem.Combine(m_fileSystem.Combine(m_groupPath, groupId), $"{groupId}.rsg") : m_fileSystem.Combine(m_rgtempPath, $"{groupId}.rsg");
         }
 
-        public string GetResourcePathByGroupIdAndPath(string? groupId, string? path)
+        public readonly string GetResourcePathByGroupIdAndPath(string? groupId, string? path)
         {
             return UseGroupFolder
                 ? m_fileSystem.Combine(m_groupPath, groupId, "resource", path)
                 : m_fileSystem.Combine(m_resourcePath, path);
         }
 
-        public string GetUnusedResourcePathByGroupIdAndIndex(string? groupId, uint index, out string recordPath)
+        public readonly string GetUnusedResourcePathByGroupIdAndIndex(string? groupId, uint index, out string recordPath)
         {
             recordPath = $"{groupId}_{index}.PTX";
             return UseGroupFolder
@@ -53,14 +53,14 @@ namespace LibWindPop.Packs.Rsb
                 : m_fileSystem.Combine(m_unusedPath, recordPath);
         }
 
-        public string GetUnusedResourcePathByGroupIdAndPath(string? groupId, string? recordPath)
+        public readonly string GetUnusedResourcePathByGroupIdAndPath(string? groupId, string? recordPath)
         {
             return UseGroupFolder
                 ? m_fileSystem.Combine(m_groupPath, groupId, "unused", recordPath)
                 : m_fileSystem.Combine(m_unusedPath, recordPath);
         }
 
-        public string AppendMetaExtension(string rawPath)
+        public readonly string AppendMetaExtension(string rawPath)
         {
             return rawPath + ".meta.json";
         }

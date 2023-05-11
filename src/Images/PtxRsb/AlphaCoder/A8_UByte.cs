@@ -3,7 +3,7 @@ using LibWindPop.Utils.Graphics;
 using LibWindPop.Utils.Graphics.Bitmap;
 using System;
 
-namespace WindLib.PopCap.Textures.PtxRsb.AlphaCoder
+namespace LibWindPop.Images.PtxRsb.AlphaCoder
 {
     public static unsafe class A8_UByte
     {

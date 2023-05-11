@@ -22,6 +22,13 @@ namespace LibWindPop.Images.PtxRsb
             { nameof(PtxHandlerPS4V1), new PtxHandlerPS4V1() },
             { nameof(PtxHandlerXbox360V1), new PtxHandlerXbox360V1() },
             { nameof(PtxHandlerXbox360V2), new PtxHandlerXbox360V2() },
+            { nameof(PtxHandlerPVZ2CNAndroidV1), new PtxHandlerPVZ2CNAndroidV1() },
+            { nameof(PtxHandlerPVZ2CNAndroidV2), new PtxHandlerPVZ2CNAndroidV2() },
+            { nameof(PtxHandlerPVZ2CNAndroidV3), new PtxHandlerPVZ2CNAndroidV3() },
+            { nameof(PtxHandlerPVZ2CNAndroidV4), new PtxHandlerPVZ2CNAndroidV4() },
+            { nameof(PtxHandlerPVZ2CNAndroidV5), new PtxHandlerPVZ2CNAndroidV5() },
+            { nameof(PtxHandlerPVZ2CNiOSV1), new PtxHandlerPVZ2CNiOSV1() },
+            { nameof(PtxHandlerPVZ2CNiOSV2), new PtxHandlerPVZ2CNiOSV2() },
         };
 
         public static IPtxRsbHandler GetHandlerFromId<TLogger>(string? handlerId, TLogger logger, bool throwException)

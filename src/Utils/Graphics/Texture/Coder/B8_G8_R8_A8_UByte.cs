@@ -4,7 +4,7 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct B8_G8_R8_A8_UByte : ITextureCoder, IPitchableTextureCoder, IOpenGLES20Texture
+    public readonly unsafe struct B8_G8_R8_A8_UByte : ITextureCoder, IPitchableTextureCoder, IOpenGLES20Texture
     {
         public static int OpenGLES20InternalFormat => 0x1908; // GL_RGBA
 
@@ -12,17 +12,17 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public static int OpenGLES20Type => 0x1401; // GL_UNSIGNED_BYTE
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             Decode(srcData, width, height, width << 2, dstBitmap);
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             Encode(srcBitmap, dstData, width, height, width << 2);
         }
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;
@@ -45,7 +45,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;

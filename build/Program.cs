@@ -72,7 +72,7 @@ namespace LibWindPop.Build
             private static void BuildSingle(string basePath, TarSys sys, TarArch arch, bool staticLibrary)
             {
                 string tName = staticLibrary ? "Static" : "Shared";
-                int dotnetVersion = 7;
+                int dotnetVersion = 8;
                 string runtimeName = "android-arm64";
 
                 if (sys == TarSys.Windows)
@@ -80,12 +80,12 @@ namespace LibWindPop.Build
                     if (arch == TarArch.X86_64)
                     {
                         runtimeName = "win-x64";
-                        dotnetVersion = Math.Max(dotnetVersion, 7);
+                        dotnetVersion = Math.Max(dotnetVersion, 8);
                     }
                     else if (arch == TarArch.Arm64)
                     {
                         runtimeName = "win-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 7);
+                        dotnetVersion = Math.Max(dotnetVersion, 8);
                     }
                     else
                     {
@@ -97,17 +97,17 @@ namespace LibWindPop.Build
                     if (arch == TarArch.X86_64)
                     {
                         runtimeName = "linux-x64";
-                        dotnetVersion = Math.Max(dotnetVersion, 7);
+                        dotnetVersion = Math.Max(dotnetVersion, 8);
                     }
                     else if (arch == TarArch.Arm64)
                     {
                         runtimeName = "linux-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 7);
+                        dotnetVersion = Math.Max(dotnetVersion, 8);
                     }
                     else if (arch == TarArch.ArmMusl64)
                     {
                         runtimeName = "linux-musl-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 7);
+                        dotnetVersion = Math.Max(dotnetVersion, 8);
                     }
                     else
                     {

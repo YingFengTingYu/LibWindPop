@@ -6,11 +6,11 @@ using System.Buffers.Binary;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct A8_B8_G8_R8_PS4_UInt : ITextureCoder, IGnmTexture
+    public readonly unsafe struct A8_B8_G8_R8_PS4_UInt : ITextureCoder, IGnmTexture
     {
         public static DataFormat GnmFormat => DataFormat.kDataFormatR8G8B8A8Unorm;
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             YFColor tempColor;
@@ -44,7 +44,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             YFColor tempColor;

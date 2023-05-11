@@ -15,7 +15,7 @@ namespace LibWindPop.Packs.Xpr
             m_fileSystem = fileSystem;
             m_resourcePath = m_fileSystem.Combine(UnpackPath, "resource");
             string infoPath = m_fileSystem.Combine(UnpackPath, "info");
-            InfoPackInfoPath = m_fileSystem.Combine(infoPath, "packinfo.json");
+            InfoPackInfoPath = m_fileSystem.Combine(infoPath, "pack_info.json");
         }
 
         public string GetFilePath(string recordPath)

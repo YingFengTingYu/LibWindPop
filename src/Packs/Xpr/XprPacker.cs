@@ -51,7 +51,7 @@ namespace LibWindPop.Packs.Xpr
                 }
                 using (NativeMemoryOwner owner = new NativeMemoryOwner(headerSize))
                 {
-                    owner.Fill(0x0);
+                    owner.Clear();
                     nuint xprDataPtrNum = (nuint)owner.Pointer;
                     using (Stream xprStream = fileSystem.Create(xprPath))
                     {

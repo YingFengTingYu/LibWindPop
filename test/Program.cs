@@ -15,30 +15,31 @@ namespace LibWindPop.Test
     {
         static void Main(string[] args)
         {
-            //const uint w = 128;
-            //const uint h = 128;
-            //const int fmt = 0;
-            //PtxCoder.Encode("D:\\BG_DESERT_LEVEL03_1080_01.png", "D:\\BG_DESERT_LEVEL03_1080_01.PTX", new NativeFileSystem(), new ConsoleLogger(), fmt, out uint width, out uint height, out uint pitch, out uint alphaSize, nameof(PtxHandlerPS4V1));
+            PopCapZlibCompressor.Uncompress("D:\\zombie3.rsb.smf", "D:\\main.rsb", new NativeFileSystem(), new NullLogger(), false);
+            //const uint w = 256;
+            //const uint h = 256;
+            //const int fmt = 147;
+            //PtxCoder.Encode("D:\\COWBOYMINIGAMEMODULE_640_00.png", "D:\\COWBOYMINIGAMEMODULE_640_00.PTX", new NativeFileSystem(), new ConsoleLogger(), fmt, out uint width, out uint height, out uint pitch, out uint alphaSize, nameof(PtxHandlerPVZ2CNAndroidV3));
             //Console.WriteLine(width);
             //Console.WriteLine(height);
             //Console.WriteLine(pitch);
-            //PtxCoder.Decode("D:\\BG_DESERT_LEVEL03_1080_01.PTX", "D:\\BG_DESERT_LEVEL03_1080_01_2.png", new NativeFileSystem(), new ConsoleLogger(), width, height, pitch, fmt, alphaSize, nameof(PtxHandlerPS4V1));
-            //RsbUnpacker.Unpack(
-            //    "D:\\main.rsb",
-            //    "D:\\main_unpack",
-            //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
-            //    nameof(PtxHandlerPS4V1),
-            //    false,
-            //    false
-            //    );
-            //RsbContentPipelineManager.AddContentPipeline(
-            //    "D:\\main_unpack",
-            //    nameof(EncodePtxFromPng),
-            //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
-            //    true
-            //    );
+            //PtxCoder.Decode("D:\\COWBOYMINIGAMEMODULE_640_00.PTX", "D:\\COWBOYMINIGAMEMODULE_640_00_2.png", new NativeFileSystem(), new ConsoleLogger(), width, height, pitch, fmt, alphaSize, nameof(PtxHandlerPVZ2CNAndroidV3));
+            RsbUnpacker.Unpack(
+                "D:\\main.rsb",
+                "D:\\main_unpack",
+                new NativeFileSystem(),
+                new ConsoleLogger(),
+                nameof(PtxHandlerPVZ2CNAndroidV3),
+                false,
+                false
+                );
+            RsbContentPipelineManager.AddContentPipeline(
+                "D:\\main_unpack",
+                nameof(EncodePtxFromPng),
+                new NativeFileSystem(),
+                new ConsoleLogger(),
+                true
+                );
             //RsbPacker.Pack(
             //    "D:\\main_unpack",
             //    "D:\\main.rsb2",

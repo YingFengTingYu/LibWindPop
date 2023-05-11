@@ -140,8 +140,8 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9
         /// <summary>
         /// MAKELEFMT(D3dFmt) (((D3dFmt) & ~D3DFORMAT_ENDIAN_MASK) | (GPUENDIAN_NONE << D3DFORMAT_ENDIAN_SHIFT))
         /// </summary>
-        /// <returns>Llittle endian format</returns>
-        public D3DFORMAT GetLEFormat()
+        /// <returns>Little endian format</returns>
+        public readonly D3DFORMAT GetLEFormat()
         {
             return new D3DFORMAT(((value) & ~0x000000C0u) | ((uint)GPUENDIAN.GPUENDIAN_NONE << 6));
         }
@@ -150,7 +150,7 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9
         /// MAKELINFMT(D3dFmt) ((D3dFmt) & ~D3DFORMAT_TILED_MASK)
         /// </summary>
         /// <returns>Linear format</returns>
-        public D3DFORMAT GetLinearFormat()
+        public readonly D3DFORMAT GetLinearFormat()
         {
             return new D3DFORMAT((value) & ~0x00000100u);
         }
@@ -159,7 +159,7 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9
         /// MAKESRGBFMT(D3dFmt)
         /// </summary>
         /// <returns>sRGB format</returns>
-        public D3DFORMAT GetSrgbFormat()
+        public readonly D3DFORMAT GetSrgbFormat()
         {
             return new D3DFORMAT(((value) & ~(0x00000600u | 0x00001800u | 0x00006000u))
                 | ((uint)GPUSIGN.GPUSIGN_GAMMA << 9)
@@ -167,22 +167,22 @@ namespace LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9
                 | ((uint)GPUSIGN.GPUSIGN_GAMMA << 13));
         }
 
-        public override bool Equals(object? obj)
+        public readonly override bool Equals(object? obj)
         {
             return (obj is D3DFORMAT fmt) && value == fmt.value;
         }
 
-        public bool Equals(D3DFORMAT other)
+        public readonly bool Equals(D3DFORMAT other)
         {
             return value == other.value;
         }
 
-        public override int GetHashCode()
+        public readonly override int GetHashCode()
         {
             return value.GetHashCode();
         }
 
-        public override string ToString()
+        public readonly override string ToString()
         {
             return value.ToString();
         }

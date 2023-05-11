@@ -9,7 +9,7 @@ namespace LibWindPop.Utils
         public uint Size;
         private bool _disposed;
 
-        public unsafe Span<byte> AsSpan()
+        public readonly unsafe Span<byte> AsSpan()
         {
             return new Span<byte>(Pointer, (int)Math.Min(Size, int.MaxValue - 1));
         }
@@ -21,9 +21,14 @@ namespace LibWindPop.Utils
             _disposed = false;
         }
 
-        public unsafe void Fill(byte value)
+        public readonly unsafe void Fill(byte value)
         {
             NativeMemory.Fill(Pointer, Size, value);
+        }
+
+        public readonly unsafe void Clear()
+        {
+            NativeMemory.Clear(Pointer, Size);
         }
 
         public unsafe void Realloc(uint memSize)

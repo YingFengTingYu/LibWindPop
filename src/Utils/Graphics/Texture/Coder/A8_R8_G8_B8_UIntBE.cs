@@ -5,7 +5,7 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct A8_R8_G8_B8_UIntBE : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture, IGcmTexture
+    public readonly unsafe struct A8_R8_G8_B8_UIntBE : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture, IGcmTexture
     {
         public static D3DFORMAT Xbox360D3D9Format => D3DFORMAT.D3DFMT_LIN_A8R8G8B8;
 
@@ -17,17 +17,17 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             1
             );
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             Decode(srcData, width, height, width << 2, dstBitmap);
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             Encode(srcBitmap, dstData, width, height, width << 2);
         }
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;
@@ -50,7 +50,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;

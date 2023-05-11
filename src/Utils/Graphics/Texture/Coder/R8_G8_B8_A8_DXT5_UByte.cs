@@ -6,23 +6,23 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public unsafe struct R8_G8_B8_A8_DXT5_UByte : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture, IOpenGLES20CompressedTexture
+    public readonly unsafe struct R8_G8_B8_A8_DXT5_UByte : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture, IOpenGLES20CompressedTexture
     {
         public static D3DFORMAT Xbox360D3D9Format => D3DFORMAT.D3DFMT_LIN_DXT5.GetLEFormat();
 
         public static int OpenGLES20InternalFormat => 0x83F3; // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             Decode(srcData, width, height, width << 2, dstBitmap);
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
             Encode(srcBitmap, dstData, width, height, width << 2);
         }
 
-        public void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;
@@ -55,7 +55,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || pitch < 0);
             int tempDataIndex;
