@@ -9,12 +9,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using PakFilePair = (string path, uint storeSize, uint rawSize, System.DateTime timeUtc);
 
 namespace LibWindPop.Packs.Pak
 {
     public static class PakUnpacker
     {
+        private record struct PakFilePair(string path, uint storeSize, uint rawSize, DateTime timeUtc);
+
         public static void Unpack(string pakPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, bool throwException)
         {
             ArgumentNullException.ThrowIfNull(pakPath, nameof(pakPath));
@@ -79,17 +80,16 @@ namespace LibWindPop.Packs.Pak
             while (true)
             {
                 byte contentType = pakStream.ReadUInt8();
-                if (contentType == 0x80)
+                if ((contentType & 0x80) != 0)
                 {
                     break;
                 }
-                Debug.Assert(contentType == 0x0);
                 byte pathSize = pakStream.ReadUInt8();
                 string path = pakStream.ReadString(pathSize, encoding);
                 uint storeSize = pakStream.ReadUInt32LE();
                 uint rawSize = useZlib ? pakStream.ReadUInt32LE() : 0u;
                 DateTime timeUtc = DateTime.FromFileTimeUtc(pakStream.ReadInt64LE());
-                fileList.Add((path, storeSize, rawSize, timeUtc));
+                fileList.Add(new PakFilePair(path, storeSize, rawSize, timeUtc));
             }
             PakPackFileInfo[] recordFiles = new PakPackFileInfo[fileList.Count];
             for (int i = 0; i < recordFiles.Length; i++)

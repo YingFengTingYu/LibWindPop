@@ -14,12 +14,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
-using CompiledMapPair = (string Key, nuint Value);
 
 namespace LibWindPop.Packs.Rsb
 {
     public static class RsbUnpacker
     {
+        private record struct CompiledMapPair(string Key, nuint Value);
 
         public static void Unpack(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, string? ptxHandlerType, bool useGroupFolder, bool throwException)
         {

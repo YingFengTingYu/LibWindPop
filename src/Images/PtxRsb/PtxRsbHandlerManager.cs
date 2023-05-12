@@ -31,6 +31,21 @@ namespace LibWindPop.Images.PtxRsb
             { nameof(PtxHandlerPVZ2CNiOSV2), new PtxHandlerPVZ2CNiOSV2() },
         };
 
+        public static bool RegistHandler(IPtxRsbHandler handler)
+        {
+            return RegistHandler(handler.GetType().Name, handler);
+        }
+
+        public static bool RegistHandler(string handlerName, IPtxRsbHandler handler)
+        {
+            if (m_ptxHandlerMap.ContainsKey(handlerName))
+            {
+                return false;
+            }
+            m_ptxHandlerMap.Add(handlerName, handler);
+            return true;
+        }
+
         public static IPtxRsbHandler GetHandlerFromId<TLogger>(string? handlerId, TLogger logger, bool throwException)
             where TLogger : ILogger
         {
@@ -51,11 +66,9 @@ namespace LibWindPop.Images.PtxRsb
 
         uint GetPtxSizeWithoutAlpha(uint width, uint height, uint pitch, uint format);
 
-        void DecodePtx<TLogger>(ReadOnlySpan<byte> ptxData, RefBitmap dstBitmap, uint width, uint height, uint pitch, uint format, uint alphaSize, TLogger logger)
-            where TLogger : ILogger;
+        void DecodePtx(ReadOnlySpan<byte> ptxData, RefBitmap dstBitmap, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger);
 
-        void EncodePtx<TLogger>(RefBitmap srcBitmap, Span<byte> ptxData, uint width, uint height, uint pitch, uint format, uint alphaSize, TLogger logger)
-            where TLogger : ILogger;
+        void EncodePtx(RefBitmap srcBitmap, Span<byte> ptxData, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger);
 
         bool PeekEncodedPtxInfo(RefBitmap srcBitmap, uint format, out uint width, out uint height, out uint pitch, out uint alphaSize);
     }

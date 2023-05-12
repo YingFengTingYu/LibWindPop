@@ -16,6 +16,11 @@ namespace LibWindPop.Build
             NativeAOTLibraryBuilder.BuildAll(basePath, false);
         }
 
+        private static void MyProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
+        }
+
         private static class ManagedLibraryBuilder
         {
             private const string DotNetPath = "dotnet";
@@ -26,7 +31,7 @@ namespace LibWindPop.Build
                 string buildPath = Path.Combine(basePath, "build");
                 string outputPath = Path.Combine(buildPath, "publish", "managed");
 
-                string sharedArg = $"publish {srcPath} -c Release -f net7.0 -o {outputPath}";
+                string sharedArg = $"publish {srcPath} -c Release -f net8.0 -o {outputPath}";
 
                 RunDotnetWithArgs(sharedArg);
 
@@ -37,7 +42,8 @@ namespace LibWindPop.Build
                         myProcess.StartInfo.UseShellExecute = false;
                         myProcess.StartInfo.FileName = DotNetPath;
                         myProcess.StartInfo.Arguments = args;
-                        myProcess.StartInfo.CreateNoWindow = true;
+                        myProcess.StartInfo.CreateNoWindow = false;
+                        myProcess.StartInfo.RedirectStandardOutput = true;
                         myProcess.Start();
                         myProcess.WaitForExit();
                     }
@@ -148,8 +154,11 @@ namespace LibWindPop.Build
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = DotNetPath;
                     myProcess.StartInfo.Arguments = sharedArg;
-                    myProcess.StartInfo.CreateNoWindow = true;
+                    myProcess.StartInfo.CreateNoWindow = false;
+                    myProcess.StartInfo.RedirectStandardOutput = true;
+                    myProcess.OutputDataReceived += MyProcess_OutputDataReceived;
                     myProcess.Start();
+                    myProcess.BeginOutputReadLine();
                     myProcess.WaitForExit();
                 }
 
@@ -157,7 +166,7 @@ namespace LibWindPop.Build
                 {
                     File.Copy(
                         Path.Combine(buildPath, "header", "libwindpop.h"),
-                        Path.Combine(outputPath, "libwindpop.h"),
+                        Path.Combine(outputPath, "LibWindPop.h"),
                         true
                         );
                 }
@@ -294,13 +303,13 @@ namespace LibWindPop.Build
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = BflatPath;
                     myProcess.StartInfo.Arguments = buildScriptBuilder.ToString();
-                    myProcess.StartInfo.CreateNoWindow = true;
+                    myProcess.StartInfo.CreateNoWindow = false;
                     myProcess.Start();
                     myProcess.WaitForExit();
                 }
                 File.Copy(
                     Path.Combine(buildPath, "header", "libwindpop.h"),
-                    Path.Combine(outputFolder, "libwindpop.h"),
+                    Path.Combine(outputFolder, "LibWindPop.h"),
                     true
                     );
             }

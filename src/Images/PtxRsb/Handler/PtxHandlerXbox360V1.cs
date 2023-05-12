@@ -29,8 +29,7 @@ namespace LibWindPop.Images.PtxRsb.Handler
             return pitch * height;
         }
 
-        public void DecodePtx<TLogger>(ReadOnlySpan<byte> ptxData, RefBitmap dstBitmap, uint width, uint height, uint pitch, uint format, uint alphaSize, TLogger logger)
-            where TLogger : ILogger
+        public void DecodePtx(ReadOnlySpan<byte> ptxData, RefBitmap dstBitmap, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger)
         {
             switch (format)
             {
@@ -56,8 +55,7 @@ namespace LibWindPop.Images.PtxRsb.Handler
             }
         }
 
-        public void EncodePtx<TLogger>(RefBitmap srcBitmap, Span<byte> ptxData, uint width, uint height, uint pitch, uint format, uint alphaSize, TLogger logger)
-            where TLogger : ILogger
+        public void EncodePtx(RefBitmap srcBitmap, Span<byte> ptxData, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger)
         {
             switch (format)
             {
