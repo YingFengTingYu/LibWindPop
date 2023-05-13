@@ -192,15 +192,15 @@ namespace LibWindPop
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(GetErrorSize))]
-        public static nuint GetErrorSize()
+        public static int GetErrorSize()
         {
-            return (nuint)PeekPtrSizeFromString(m_errorMessage, m_Ansi);
+            return PeekPtrSizeFromString(m_errorMessage, m_Ansi);
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(GetErrorSizeU8))]
-        public static nuint GetErrorSizeU8()
+        public static int GetErrorSizeU8()
         {
-            return (nuint)PeekPtrSizeFromString(m_errorMessage, m_utf8);
+            return PeekPtrSizeFromString(m_errorMessage, m_utf8);
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(GetError))]

@@ -145,10 +145,14 @@ namespace LibWindPop.Build
                 string srcPath = Path.Combine(basePath, "src", "LibWindPop.csproj");
                 string buildPath = Path.Combine(basePath, "build");
                 string outputPath = Path.Combine(buildPath, "publish", "nativeaot", tName.ToLower(), runtimeName);
+                string rawOutputPath = Path.Combine(basePath, "src", "bin", "Release", $"net{dotnetVersion}.0", runtimeName, "native");
+                string sharedArg = $"publish {srcPath} /p:NativeLib={tName};PublishAot=true -c Release -f net{dotnetVersion}.0 -r {runtimeName}";
+                
+                if (Directory.Exists(rawOutputPath))
+                {
+                    Directory.Delete(rawOutputPath, true);
+                }
 
-                string sharedArg = $"publish {srcPath} /p:NativeLib={tName};PublishAot=true -c Release -f net{dotnetVersion}.0 -o {outputPath} -r {runtimeName}";
-
-                Directory.CreateDirectory(outputPath);
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
@@ -162,14 +166,23 @@ namespace LibWindPop.Build
                     myProcess.WaitForExit();
                 }
 
-                if (staticLibrary)
+                if (Directory.Exists(outputPath))
                 {
-                    File.Copy(
-                        Path.Combine(buildPath, "header", "libwindpop.h"),
-                        Path.Combine(outputPath, "LibWindPop.h"),
-                        true
-                        );
+                    Directory.Delete(outputPath, true);
                 }
+                
+                Directory.CreateDirectory(outputPath);
+                foreach (string rawOutputFile in Directory.GetFiles(rawOutputPath))
+                {
+                    string outputFile = Path.Combine(outputPath, Path.GetFileName(rawOutputFile));
+
+                    File.Copy(rawOutputFile, outputFile, true);
+                }
+                File.Copy(
+                    Path.Combine(buildPath, "header", "libwindpop.h"),
+                    Path.Combine(outputPath, "LibWindPop.h"),
+                    true
+                    );
             }
         }
 

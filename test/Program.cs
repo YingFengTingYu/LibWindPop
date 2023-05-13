@@ -1,4 +1,6 @@
-﻿using LibWindPop.Packs.Pak;
+﻿using LibWindPop.Images.PtxRsb;
+using LibWindPop.Images.PtxRsb.Handler;
+using LibWindPop.Packs.Pak;
 using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Logger;
 
@@ -8,15 +10,27 @@ namespace LibWindPop.Test
     {
         private static void TestTask()
         {
-            PakUnpacker.Unpack(
-                "D:\\main_mac.pak",
-                "D:\\main_mac_pak_unpack",
-                new NativeFileSystem(),
-                new ConsoleLogger(),
-                false,
-                false,
-                true
-                );
+            //PakUnpacker.Unpack(
+            //    "D:\\main_mac.pak",
+            //    "D:\\main_mac_pak_unpack",
+            //    new NativeFileSystem(),
+            //    new ConsoleLogger(),
+            //    false,
+            //    false,
+            //    true
+            //    );
+            //PtxCoder.Decode(
+            //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PTX",
+            //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PNG",
+            //    new NativeFileSystem(),
+            //    new ConsoleLogger(),
+            //    4096,
+            //    4096,
+            //    2048,
+            //    30,
+            //    0,
+            //    nameof(PtxHandleriOSV5)
+            //    );
         }
 
         static void Main(string[] args)

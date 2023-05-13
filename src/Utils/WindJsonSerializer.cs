@@ -24,7 +24,6 @@ namespace LibWindPop.Utils
                 WriteIndented = true,
                 IncludeFields = true,
             };
-            options.Converters.Add(new JsonStringEnumConverter());
             context = new WindJsonSerializerContext(options);
         }
 
