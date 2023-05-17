@@ -24,7 +24,7 @@ namespace LibWindPop.Packs.Rsb
 
             // Update cache
             logger.Log("Building content pipeline...", 0);
-            RsbContentPipelineManager.BuildContentPipeline(unpackPath, fileSystem, logger, throwException);
+            RsbContentPipelineManager.StartBuildContentPipeline(unpackPath, fileSystem, logger, throwException);
 
             logger.Log("Get pack info...", 0);
 
@@ -80,6 +80,8 @@ namespace LibWindPop.Packs.Rsb
                 }
                 //}
             }
+
+            RsbContentPipelineManager.EndBuildContentPipeline(rsbPath, unpackPath, fileSystem, logger, throwException);
         }
 
         private static unsafe void PackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, RsbPackInfo pack_info, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)

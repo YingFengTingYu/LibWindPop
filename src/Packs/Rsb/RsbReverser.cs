@@ -16,7 +16,7 @@ namespace LibWindPop.Packs.Rsb
             return out_endian.IsNoneEndian() ? (in_endian.IsLittleEndian() ? Endianness.Big : Endianness.Little) : out_endian;
         }
 
-        internal static Endianness CheckRsbEndian(uint rsb_magic, Endianness in_endian)
+        public static Endianness CheckRsbEndian(uint rsb_magic, Endianness in_endian)
         {
             if (!in_endian.IsNoneEndian())
             {
@@ -29,7 +29,7 @@ namespace LibWindPop.Packs.Rsb
             return rsb_magic == 828535666u ? Endianness.Little : Endianness.Big;
         }
 
-        internal static Endianness CheckRsgEndian(uint rsg_magic, Endianness in_endian)
+        public static Endianness CheckRsgEndian(uint rsg_magic, Endianness in_endian)
         {
             if (!in_endian.IsNoneEndian())
             {
@@ -48,7 +48,7 @@ namespace LibWindPop.Packs.Rsb
         /// <param name="rsb_header_pointer">rsb头部指针</param>
         /// <param name="in_endian">输入端序，若不为Little/Big/Native/NoneNative则通过文件幻数自行判断，函数返回时为Little/Big</param>
         /// <param name="out_endian">输出端序，若不为Little/Big/Native/NoneNative则与输入端序相反，函数返回时为Little/Big</param>
-        internal static void ReverseRsbHeader(void* rsb_header_pointer, Endianness in_endian, Endianness out_endian)
+        public static void ReverseRsbHeader(void* rsb_header_pointer, Endianness in_endian, Endianness out_endian)
         {
             ArgumentNullException.ThrowIfNull(rsb_header_pointer, nameof(rsb_header_pointer));
             RsbInfo* rsb_info = (RsbInfo*)rsb_header_pointer;
@@ -73,7 +73,7 @@ namespace LibWindPop.Packs.Rsb
         /// <param name="rsg_header_pointer">rsg头部指针</param>
         /// <param name="in_endian">输入端序，若不为Little/Big/Native/NoneNative则通过文件幻数自行判断，函数返回时为Little/Big</param>
         /// <param name="out_endian">输出端序，若不为Little/Big/Native/NoneNative则与输入端序相反，函数返回时为Little/Big</param>
-        internal static void ReverseRsgHeader(void* rsg_header_pointer, Endianness in_endian, Endianness out_endian)
+        public static void ReverseRsgHeader(void* rsg_header_pointer, Endianness in_endian, Endianness out_endian)
         {
             ArgumentNullException.ThrowIfNull(rsg_header_pointer, nameof(rsg_header_pointer));
             RsgInfo* rsg_info = (RsgInfo*)rsg_header_pointer;

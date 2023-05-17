@@ -148,12 +148,14 @@ xcopy /y /d "..\ThridPart\PVRTexLib\PVRTexLib.dll" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
-    <ClCompile Include="PtxHandlerAndroidV3H.cpp" />
+    <ClCompile Include="PtxHandlerBestQuality.cpp" />
+    <ClCompile Include="RsbEncryptor.cpp" />
     <ClCompile Include="TestPtxHandlerPS3V1.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
-    <ClInclude Include="PtxHandlerAndroidV3H.h" />
+    <ClInclude Include="PtxHandlerBestQuality.h" />
+    <ClInclude Include="RsbEncryptor.h" />
     <ClInclude Include="TestPtxHandlerPS3V1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -31,19 +31,9 @@ namespace LibWindPop.Images.PtxRsb
             { nameof(PtxHandlerPVZ2CNiOSV2), new PtxHandlerPVZ2CNiOSV2() },
         };
 
-        public static bool RegistHandler(IPtxRsbHandler handler)
-        {
-            return RegistHandler(handler.GetType().Name, handler);
-        }
-
         public static bool RegistHandler(string handlerName, IPtxRsbHandler handler)
         {
-            if (m_ptxHandlerMap.ContainsKey(handlerName))
-            {
-                return false;
-            }
-            m_ptxHandlerMap.Add(handlerName, handler);
-            return true;
+            return m_ptxHandlerMap.TryAdd(handlerName, handler);
         }
 
         public static IPtxRsbHandler GetHandlerFromId<TLogger>(string? handlerId, TLogger logger, bool throwException)

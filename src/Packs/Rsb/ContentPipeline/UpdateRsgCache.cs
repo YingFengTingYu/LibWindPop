@@ -13,16 +13,21 @@ using System.Text;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    public class UpdateRsgCache : IRsbContentPipeline
+    public sealed class UpdateRsgCache : IRsbContentPipeline
     {
-        public void Build(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             BuildInternal(unpackPath, fileSystem, logger, 6, throwException);
         }
 
-        public void Add(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
+            // Nothing to do
+        }
 
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            // Nothing to do
         }
 
         private static unsafe void BuildInternal<TFileSystem, TLogger>(string unpackPath, TFileSystem fileSystem, TLogger logger, int compressionLevel, bool throwException)

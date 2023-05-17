@@ -5,8 +5,10 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
     public interface IRsbContentPipeline
     {
-        void Build(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException);
+        void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException);
 
-        void Add(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException);
+        void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger, bool throwException);
+
+        void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException);
     }
 }

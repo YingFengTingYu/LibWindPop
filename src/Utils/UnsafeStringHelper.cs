@@ -35,9 +35,9 @@ namespace LibWindPop.Utils
             if (str != null)
             {
                 ReadOnlySpan<char> strSpan = str;
-                if (strSpan.Length > 100)
+                if (strSpan.Length > (int)max_length)
                 {
-                    strSpan = strSpan[..100];
+                    strSpan = strSpan[..(int)max_length];
                 }
                 int max = (int)max_length;
                 int count = encoding.GetByteCount(strSpan);

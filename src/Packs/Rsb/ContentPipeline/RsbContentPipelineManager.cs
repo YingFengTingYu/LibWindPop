@@ -1,10 +1,9 @@
-﻿using LibWindPop.Packs.Rsb.ContentPipeline;
-using LibWindPop.Utils;
+﻿using LibWindPop.Utils;
 using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Logger;
 using System.Collections.Generic;
 
-namespace LibWindPop.Packs.Rsb
+namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
     public static class RsbContentPipelineManager
     {
@@ -19,7 +18,12 @@ namespace LibWindPop.Packs.Rsb
             return contentName == null ? null : (m_ContentPipelineMap.TryGetValue(contentName, out IRsbContentPipeline? content) ? content : null);
         }
 
-        public static void AddContentPipeline(string unpackPath, string pipelineName, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static bool RegistPipeline(string pipelineName, IRsbContentPipeline pipeline)
+        {
+            return m_ContentPipelineMap.TryAdd(pipelineName, pipeline);
+        }
+
+        public static void AddContentPipeline(string unpackPath, string pipelineName, bool atFirst, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
@@ -27,7 +31,14 @@ namespace LibWindPop.Packs.Rsb
             pipelineInfo.Pipelines ??= new List<string>();
             if (!pipelineInfo.Pipelines.Contains(pipelineName))
             {
-                pipelineInfo.Pipelines.Add(pipelineName);
+                if (atFirst)
+                {
+                    pipelineInfo.Pipelines.Insert(0, pipelineName);
+                }
+                else
+                {
+                    pipelineInfo.Pipelines.Add(pipelineName);
+                }
                 IRsbContentPipeline? pipeline = GetContentPipeline(pipelineName);
                 if (pipeline == null)
                 {
@@ -35,13 +46,13 @@ namespace LibWindPop.Packs.Rsb
                 }
                 else
                 {
-                    pipeline.Add(unpackPath, fileSystem, logger, throwException);
+                    pipeline.OnAdd(unpackPath, fileSystem, logger, throwException);
                 }
                 WindJsonSerializer.TrySerializeToFile(paths.InfoContentPipelinePath, pipelineInfo, 0u, fileSystem, logger, throwException);
             }
         }
 
-        internal static void BuildContentPipeline(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        internal static void StartBuildContentPipeline(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
@@ -51,7 +62,7 @@ namespace LibWindPop.Packs.Rsb
 
             if (pipelineInfo != null && pipelineInfo.Pipelines != null)
             {
-                for (int i = pipelineInfo.Pipelines.Count - 1; i >= 0; i--)
+                for (int i = 0; i < pipelineInfo.Pipelines.Count; i++)
                 {
                     string? pipelineName = pipelineInfo.Pipelines[i];
                     IRsbContentPipeline? pipeline = GetContentPipeline(pipelineName);
@@ -62,7 +73,34 @@ namespace LibWindPop.Packs.Rsb
                     else
                     {
                         logger.Log($"Build content pipeline: {pipelineName}", 0);
-                        pipeline.Build(unpackPath, fileSystem, logger, throwException);
+                        pipeline.OnStartBuild(unpackPath, fileSystem, logger, throwException);
+                    }
+                }
+            }
+        }
+
+        internal static void EndBuildContentPipeline(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            // define base path
+            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+
+            logger.Log("Read rsb content pipeline info...", 0);
+            RsbContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<RsbContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, logger, throwException);
+
+            if (pipelineInfo != null && pipelineInfo.Pipelines != null)
+            {
+                for (int i = 0; i < pipelineInfo.Pipelines.Count; i++)
+                {
+                    string? pipelineName = pipelineInfo.Pipelines[i];
+                    IRsbContentPipeline? pipeline = GetContentPipeline(pipelineName);
+                    if (pipeline == null)
+                    {
+                        logger.LogError($"Can not find content pipeline: {pipelineName}", 0, throwException);
+                    }
+                    else
+                    {
+                        logger.Log($"Build content pipeline: {pipelineName}", 0);
+                        pipeline.OnEndBuild(rsbPath, fileSystem, logger, throwException);
                     }
                 }
             }

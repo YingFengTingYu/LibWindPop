@@ -21,7 +21,10 @@
     <ClCompile Include="TestPtxHandlerPS3V1.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="PtxHandlerAndroidV3H.cpp">
+    <ClCompile Include="PtxHandlerBestQuality.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="RsbEncryptor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +35,10 @@
     <ClInclude Include="TestPtxHandlerPS3V1.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PtxHandlerAndroidV3H.h">
+    <ClInclude Include="PtxHandlerBestQuality.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RsbEncryptor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

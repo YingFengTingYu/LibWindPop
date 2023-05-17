@@ -11,14 +11,19 @@ using System.IO;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    public class EncodePtxFromPng : IRsbContentPipeline
+    public sealed class EncodePtxFromPng : IRsbContentPipeline
     {
-        public void Build(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             BuildInternal(unpackPath, fileSystem, logger, throwException);
         }
 
-        public void Add(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        {
+            // Nothing to do
+        }
+
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             AddInternal(unpackPath, fileSystem, logger, throwException);
         }

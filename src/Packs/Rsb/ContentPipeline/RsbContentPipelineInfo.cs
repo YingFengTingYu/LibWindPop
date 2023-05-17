@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace LibWindPop.Packs.Rsb
+namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
     public class RsbContentPipelineInfo
     {

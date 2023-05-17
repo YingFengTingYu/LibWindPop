@@ -40,13 +40,17 @@ WIND_IMPORT EResult WIND_API RsbUnpack(const char* rsbPath, const char* unpackPa
 
 WIND_IMPORT EResult WIND_API RsbUnpackU8(const char* rsbPath, const char* unpackPath, const char* ptxHandlerType, EBool useGroupFolder, int logLevel, EBool throwException);
 
-WIND_IMPORT EResult WIND_API RsbAddContentPipeline(const char* unpackPath, const char* pipelineName, int logLevel, EBool throwException);
+WIND_IMPORT EResult WIND_API RsbAddContentPipeline(const char* unpackPath, const char* pipelineName, EBool atFirst, int logLevel, EBool throwException);
 
-WIND_IMPORT EResult WIND_API RsbAddContentPipelineU8(const char* unpackPath, const char* pipelineName, int logLevel, EBool throwException);
+WIND_IMPORT EResult WIND_API RsbAddContentPipelineU8(const char* unpackPath, const char* pipelineName, EBool atFirst, int logLevel, EBool throwException);
 
 WIND_IMPORT EResult WIND_API RsbPack(const char* unpackPath, const char* rsbPath, int logLevel, EBool throwException);
 
 WIND_IMPORT EResult WIND_API RsbPackU8(const char* unpackPath, const char* rsbPath, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API RsbRegistContentPipeline(const char* pipelineName, void(WIND_API* onStartBuild)(const char* unpackPath), void(WIND_API* onEndBuild)(const char* rsbPath), void(WIND_API* onAdd)(const char* unpackPath));
+
+WIND_IMPORT EResult WIND_API RsbRegistContentPipelineU8(const char* pipelineName, void(WIND_API* onStartBuild)(const char* unpackPath), void(WIND_API* onEndBuild)(const char* rsbPath), void(WIND_API* onAdd)(const char* unpackPath));
 
 WIND_IMPORT EResult WIND_API PtxRsbDecode(const char* ptxPath, const char* pngPath, const char* ptxHandlerType, int width, int height, int pitch, int format, int alphaSize, int logLevel);
 

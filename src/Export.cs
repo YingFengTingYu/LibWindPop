@@ -44,11 +44,12 @@ namespace LibWindPop
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(RsbAddContentPipeline))]
-        public static int RsbAddContentPipeline(sbyte* unpackPath, sbyte* pipelineName, int logLevel, int throwException)
+        public static int RsbAddContentPipeline(sbyte* unpackPath, sbyte* pipelineName, int atFirst, int logLevel, int throwException)
         {
-            return PCall(() => Packs.Rsb.RsbContentPipelineManager.AddContentPipeline(
+            return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.AddContentPipeline(
                 GetStringFromPtr(unpackPath, m_Ansi),
                 GetStringFromPtr(pipelineName, m_Ansi),
+                atFirst != 0,
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
                 throwException != 0
@@ -56,11 +57,12 @@ namespace LibWindPop
         }
 
         [UnmanagedCallersOnly(EntryPoint = nameof(RsbAddContentPipelineU8))]
-        public static int RsbAddContentPipelineU8(sbyte* unpackPath, sbyte* pipelineName, int logLevel, int throwException)
+        public static int RsbAddContentPipelineU8(sbyte* unpackPath, sbyte* pipelineName, int atFirst, int logLevel, int throwException)
         {
-            return PCall(() => Packs.Rsb.RsbContentPipelineManager.AddContentPipeline(
+            return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.AddContentPipeline(
                 GetStringFromPtr(unpackPath, m_utf8),
                 GetStringFromPtr(pipelineName, m_utf8),
+                atFirst != 0,
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
                 throwException != 0
@@ -88,6 +90,24 @@ namespace LibWindPop
                 new NativeFileSystem(),
                 new ConsoleLogger(logLevel),
                 throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(RsbRegistContentPipeline))]
+        public static int RsbRegistContentPipeline(sbyte* pipelineName, delegate* unmanaged[Stdcall]<sbyte*, void> onStartBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onEndBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onAdd)
+        {
+            return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.RegistPipeline(
+                GetStringFromPtr(pipelineName, m_Ansi),
+                new Packs.Rsb.ContentPipeline.NativeRsbContentPipeline(m_Ansi, onStartBuild, onEndBuild, onAdd)
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(RsbRegistContentPipelineU8))]
+        public static int RsbRegistContentPipelineU8(sbyte* pipelineName, delegate* unmanaged[Stdcall]<sbyte*, void> onStartBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onEndBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onAdd)
+        {
+            return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.RegistPipeline(
+                GetStringFromPtr(pipelineName, m_utf8),
+                new Packs.Rsb.ContentPipeline.NativeRsbContentPipeline(m_utf8, onStartBuild, onEndBuild, onAdd)
                 ));
         }
 

@@ -585,7 +585,7 @@ namespace LibWindPop.Packs.Rsb
             {
                 logger.LogException(ex, 0, throwException);
             }
-            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), fileSystem, logger, throwException);
+            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), true, fileSystem, logger, throwException);
         }
 
         private static unsafe void UnpackRsbManifest<TFileSystem, TLogger>(uint version, nuint groupPtrNumber, nuint resPtrNumber, nuint poolPtrNumber, string outPath, TFileSystem fileSystem, TLogger logger, Encoding encoding, bool throwException)
