@@ -11,6 +11,8 @@ namespace LibWindPop
 {
     public static unsafe class Export
     {
+        private const int LibVersion = 0;
+
         private static string? m_errorMessage;
         private static readonly Encoding m_utf8 = EncodingType.utf_8.GetEncoding();
         private static readonly Encoding m_Ansi = EncodingType.ansi.GetEncoding();
@@ -98,7 +100,7 @@ namespace LibWindPop
         {
             return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.RegistPipeline(
                 GetStringFromPtr(pipelineName, m_Ansi),
-                new Packs.Rsb.ContentPipeline.NativeRsbContentPipeline(m_Ansi, onStartBuild, onEndBuild, onAdd)
+                new Packs.Common.NativeContentPipeline(m_Ansi, onStartBuild, onEndBuild, onAdd)
                 ));
         }
 
@@ -107,7 +109,7 @@ namespace LibWindPop
         {
             return PCall(() => Packs.Rsb.ContentPipeline.RsbContentPipelineManager.RegistPipeline(
                 GetStringFromPtr(pipelineName, m_utf8),
-                new Packs.Rsb.ContentPipeline.NativeRsbContentPipeline(m_utf8, onStartBuild, onEndBuild, onAdd)
+                new Packs.Common.NativeContentPipeline(m_utf8, onStartBuild, onEndBuild, onAdd)
                 ));
         }
 
@@ -211,6 +213,102 @@ namespace LibWindPop
                 ));
         }
 
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakUnpack))]
+        public static int PakUnpack(sbyte* pakPath, sbyte* unpackPath, int useZlib, int useAlign, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.PakUnpacker.Unpack(
+                GetStringFromPtr(pakPath, m_Ansi),
+                GetStringFromPtr(unpackPath, m_Ansi),
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                useZlib != 0,
+                useAlign != 0,
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakUnpackU8))]
+        public static int PakUnpackU8(sbyte* pakPath, sbyte* unpackPath, int useZlib, int useAlign, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.PakUnpacker.Unpack(
+                GetStringFromPtr(pakPath, m_utf8),
+                GetStringFromPtr(unpackPath, m_utf8),
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                useZlib != 0,
+                useAlign != 0,
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakAddContentPipeline))]
+        public static int PakAddContentPipeline(sbyte* unpackPath, sbyte* pipelineName, int atFirst, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.ContentPipeline.PakContentPipelineManager.AddContentPipeline(
+                GetStringFromPtr(unpackPath, m_Ansi),
+                GetStringFromPtr(pipelineName, m_Ansi),
+                atFirst != 0,
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakAddContentPipelineU8))]
+        public static int PakAddContentPipelineU8(sbyte* unpackPath, sbyte* pipelineName, int atFirst, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.ContentPipeline.PakContentPipelineManager.AddContentPipeline(
+                GetStringFromPtr(unpackPath, m_utf8),
+                GetStringFromPtr(pipelineName, m_utf8),
+                atFirst != 0,
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakPack))]
+        public static int PakPack(sbyte* unpackPath, sbyte* pakPath, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.PakPacker.Pack(
+                GetStringFromPtr(unpackPath, m_Ansi),
+                GetStringFromPtr(pakPath, m_Ansi),
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakPackU8))]
+        public static int PakPackU8(sbyte* unpackPath, sbyte* pakPath, int logLevel, int throwException)
+        {
+            return PCall(() => Packs.Pak.PakPacker.Pack(
+                GetStringFromPtr(unpackPath, m_utf8),
+                GetStringFromPtr(pakPath, m_utf8),
+                new NativeFileSystem(),
+                new ConsoleLogger(logLevel),
+                throwException != 0
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakRegistContentPipeline))]
+        public static int PakRegistContentPipeline(sbyte* pipelineName, delegate* unmanaged[Stdcall]<sbyte*, void> onStartBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onEndBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onAdd)
+        {
+            return PCall(() => Packs.Pak.ContentPipeline.PakContentPipelineManager.RegistPipeline(
+                GetStringFromPtr(pipelineName, m_Ansi),
+                new Packs.Common.NativeContentPipeline(m_Ansi, onStartBuild, onEndBuild, onAdd)
+                ));
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(PakRegistContentPipelineU8))]
+        public static int PakRegistContentPipelineU8(sbyte* pipelineName, delegate* unmanaged[Stdcall]<sbyte*, void> onStartBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onEndBuild, delegate* unmanaged[Stdcall]<sbyte*, void> onAdd)
+        {
+            return PCall(() => Packs.Pak.ContentPipeline.PakContentPipelineManager.RegistPipeline(
+                GetStringFromPtr(pipelineName, m_utf8),
+                new Packs.Common.NativeContentPipeline(m_utf8, onStartBuild, onEndBuild, onAdd)
+                ));
+        }
+
         [UnmanagedCallersOnly(EntryPoint = nameof(GetErrorSize))]
         public static int GetErrorSize()
         {
@@ -239,6 +337,12 @@ namespace LibWindPop
             {
                 GetPtrFromString(m_errorMessage, buffer, m_utf8);
             });
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = nameof(GetLibVersion))]
+        public static int GetLibVersion()
+        {
+            return LibVersion;
         }
 
         private static int PCall(Action action)

@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using LibWindPop.Packs.Pak.ContentPipeline;
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
@@ -14,7 +15,7 @@ namespace LibWindPop.Packs.Pak
 {
     public static class PakUnpacker
     {
-        private record struct PakFilePair(string path, uint storeSize, uint rawSize, DateTime timeUtc);
+        private record struct PakFilePair(string Path, uint StoreSize, uint RawSize, DateTime TimeUtc);
 
         public static void Unpack(string pakPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, bool throwException)
         {
@@ -29,7 +30,10 @@ namespace LibWindPop.Packs.Pak
 
             Encoding encoding = EncodingType.ansi.GetEncoding();
 
-            PakPackInfo packInfo = new PakPackInfo();
+            PakPackInfo packInfo = new PakPackInfo
+            {
+                ZlibLevel = 6
+            };
 
             using (Stream pakRawStream = fileSystem.OpenRead(pakPath))
             {
@@ -40,7 +44,7 @@ namespace LibWindPop.Packs.Pak
                 {
                     // Xor 0xF7 pak
                     packInfo.UseEncrypt = true;
-                    using (XorReadStream pakStream = new XorReadStream(pakRawStream, 0xF7))
+                    using (XorStream pakStream = new XorStream(pakRawStream, 0xF7))
                     {
                         UnpackInternal(pakStream, paths, packInfo, fileSystem, logger, useZlib, useAlign, encoding, throwException);
                     }
@@ -55,6 +59,21 @@ namespace LibWindPop.Packs.Pak
 
             logger.Log("Save pack info...", 0);
             WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+
+            // Add Content Pipeline
+            logger.Log("Create content pipeline...", 0);
+            try
+            {
+                if (File.Exists(paths.InfoContentPipelinePath))
+                {
+                    File.Delete(paths.InfoContentPipelinePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, 0, throwException);
+            }
+            PakContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(PakRebuildFile), true, fileSystem, logger, throwException);
         }
 
         private static void UnpackInternal(Stream pakStream, PakUnpackPathProvider paths, PakPackInfo packInfo, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, Encoding encoding, bool throwException)
@@ -91,8 +110,8 @@ namespace LibWindPop.Packs.Pak
                 DateTime timeUtc = DateTime.FromFileTimeUtc(pakStream.ReadInt64LE());
                 fileList.Add(new PakFilePair(path, storeSize, rawSize, timeUtc));
             }
-            PakPackFileInfo[] recordFiles = new PakPackFileInfo[fileList.Count];
-            for (int i = 0; i < recordFiles.Length; i++)
+            List<PakPackFileInfo> recordFiles = new List<PakPackFileInfo>(fileList.Count);
+            for (int i = 0; i < fileList.Count; i++)
             {
                 if (useAlign)
                 {
@@ -101,10 +120,10 @@ namespace LibWindPop.Packs.Pak
                     pakStream.Seek(alignSize, SeekOrigin.Current);
                 }
                 PakPackFileInfo fileInfo = new PakPackFileInfo();
-                fileInfo.Path = fileList[i].path;
-                fileInfo.UseZlib = useZlib && (fileList[i].rawSize != 0);
+                fileInfo.Path = fileList[i].Path;
+                fileInfo.UseZlib = useZlib && (fileList[i].RawSize != 0);
                 fileInfo.UseAlign4K = useAlign && ((pakStream.Position & 0xFFF) == 0);
-                fileInfo.TimeUtc = fileList[i].timeUtc;
+                fileInfo.TimeUtc = fileList[i].TimeUtc;
                 using (Stream fileStream = fileSystem.Create(paths.GetFilePath(fileInfo.Path)))
                 {
                     long backPos = pakStream.Position;
@@ -118,11 +137,11 @@ namespace LibWindPop.Packs.Pak
                     }
                     else
                     {
-                        pakStream.CopyLengthTo(fileStream, fileList[i].storeSize);
+                        pakStream.CopyLengthTo(fileStream, fileList[i].StoreSize);
                     }
-                    pakStream.Seek(backPos + fileList[i].storeSize, SeekOrigin.Begin);
+                    pakStream.Seek(backPos + fileList[i].StoreSize, SeekOrigin.Begin);
                 }
-                recordFiles[i] = fileInfo;
+                recordFiles.Add(fileInfo);
             }
             packInfo.RecordFiles = recordFiles;
         }

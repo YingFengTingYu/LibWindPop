@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LibWindPop.Packs.Pak
 {
@@ -8,9 +9,11 @@ namespace LibWindPop.Packs.Pak
 
         public bool UseZlib { get; set; }
 
+        public int ZlibLevel { get; set; }
+
         public bool UseAlign { get; set; }
 
-        public PakPackFileInfo[]? RecordFiles { get; set; }
+        public List<PakPackFileInfo>? RecordFiles { get; set; }
     }
 
     public class PakPackFileInfo

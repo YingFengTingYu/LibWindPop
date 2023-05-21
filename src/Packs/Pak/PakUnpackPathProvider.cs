@@ -5,22 +5,25 @@ namespace LibWindPop.Packs.Pak
     public readonly struct PakUnpackPathProvider
     {
         public readonly string UnpackPath;
+        public readonly string InfoPath;
         public readonly string InfoPackInfoPath;
+        public readonly string InfoContentPipelinePath;
+        public readonly string ResourcePath;
         private readonly IFileSystem m_fileSystem;
-        private readonly string m_resourcePath;
 
         public PakUnpackPathProvider(string unpackPath, IFileSystem fileSystem)
         {
             UnpackPath = unpackPath;
             m_fileSystem = fileSystem;
-            m_resourcePath = m_fileSystem.Combine(UnpackPath, "resource");
-            string infoPath = m_fileSystem.Combine(UnpackPath, "info");
-            InfoPackInfoPath = m_fileSystem.Combine(infoPath, "pack_info.json");
+            ResourcePath = m_fileSystem.Combine(UnpackPath, "resource");
+            InfoPath = m_fileSystem.Combine(UnpackPath, "info");
+            InfoPackInfoPath = m_fileSystem.Combine(InfoPath, "pack_info.json");
+            InfoContentPipelinePath = m_fileSystem.Combine(InfoPath, "pipeline.json");
         }
 
         public string GetFilePath(string recordPath)
         {
-            return m_fileSystem.Combine(m_resourcePath, recordPath);
+            return m_fileSystem.Combine(ResourcePath, recordPath);
         }
     }
 }

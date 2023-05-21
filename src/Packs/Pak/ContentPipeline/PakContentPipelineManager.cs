@@ -4,14 +4,13 @@ using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Logger;
 using System.Collections.Generic;
 
-namespace LibWindPop.Packs.Rsb.ContentPipeline
+namespace LibWindPop.Packs.Pak.ContentPipeline
 {
-    public static class RsbContentPipelineManager
+    public static class PakContentPipelineManager
     {
         private static readonly Dictionary<string, IContentPipeline?> m_ContentPipelineMap = new Dictionary<string, IContentPipeline?>
         {
-            { nameof(UpdateRsgCache), new UpdateRsgCache() },
-            { nameof(EncodePtxFromPng), new EncodePtxFromPng() },
+            { nameof(PakRebuildFile), new PakRebuildFile() },
         };
 
         public static IContentPipeline? GetContentPipeline(string? contentName)
@@ -27,7 +26,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
         public static void AddContentPipeline(string unpackPath, string pipelineName, bool atFirst, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             // define base path
-            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+            PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
             ContentPipelineInfo pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, new NullLogger(), false) ?? new ContentPipelineInfo();
             pipelineInfo.Pipelines ??= new List<string>();
             if (!pipelineInfo.Pipelines.Contains(pipelineName))
@@ -56,7 +55,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
         internal static void StartBuildContentPipeline(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             // define base path
-            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+            PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
 
             logger.Log("Read content pipeline info...", 0);
             ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, logger, throwException);
@@ -83,7 +82,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
         internal static void EndBuildContentPipeline(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             // define base path
-            RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
+            PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
 
             logger.Log("Read content pipeline info...", 0);
             ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, logger, throwException);

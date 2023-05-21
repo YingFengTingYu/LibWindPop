@@ -31,7 +31,10 @@ namespace LibWindPop.Build
                 string buildPath = Path.Combine(basePath, "build");
                 string outputPath = Path.Combine(buildPath, "publish", "managed");
 
-                string sharedArg = $"publish {srcPath} -c Release -f net8.0 -o {outputPath}";
+                string sharedArg = $"publish {srcPath} /p:PublishAot=false -c Release -f net8.0 -o {outputPath}";
+
+                Console.Write("dotnet ");
+                Console.WriteLine(sharedArg);
 
                 RunDotnetWithArgs(sharedArg);
 
@@ -39,12 +42,14 @@ namespace LibWindPop.Build
                 {
                     using (Process myProcess = new Process())
                     {
-                        myProcess.StartInfo.UseShellExecute = false;
+                        myProcess.StartInfo.UseShellExecute = true;
                         myProcess.StartInfo.FileName = DotNetPath;
                         myProcess.StartInfo.Arguments = args;
                         myProcess.StartInfo.CreateNoWindow = false;
-                        myProcess.StartInfo.RedirectStandardOutput = true;
+                        //myProcess.StartInfo.RedirectStandardOutput = true;
+                        //myProcess.OutputDataReceived += MyProcess_OutputDataReceived;
                         myProcess.Start();
+                        //myProcess.BeginOutputReadLine();
                         myProcess.WaitForExit();
                     }
                 }
@@ -86,12 +91,12 @@ namespace LibWindPop.Build
                     if (arch == TarArch.X86_64)
                     {
                         runtimeName = "win-x64";
-                        dotnetVersion = Math.Max(dotnetVersion, 8);
+                        dotnetVersion = Math.Max(dotnetVersion, 7);
                     }
                     else if (arch == TarArch.Arm64)
                     {
                         runtimeName = "win-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 8);
+                        dotnetVersion = Math.Max(dotnetVersion, 7);
                     }
                     else
                     {
@@ -103,17 +108,17 @@ namespace LibWindPop.Build
                     if (arch == TarArch.X86_64)
                     {
                         runtimeName = "linux-x64";
-                        dotnetVersion = Math.Max(dotnetVersion, 8);
+                        dotnetVersion = Math.Max(dotnetVersion, 7);
                     }
                     else if (arch == TarArch.Arm64)
                     {
                         runtimeName = "linux-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 8);
+                        dotnetVersion = Math.Max(dotnetVersion, 7);
                     }
                     else if (arch == TarArch.ArmMusl64)
                     {
                         runtimeName = "linux-musl-arm64";
-                        dotnetVersion = Math.Max(dotnetVersion, 8);
+                        dotnetVersion = Math.Max(dotnetVersion, 7);
                     }
                     else
                     {
@@ -146,8 +151,18 @@ namespace LibWindPop.Build
                 string buildPath = Path.Combine(basePath, "build");
                 string outputPath = Path.Combine(buildPath, "publish", "nativeaot", tName.ToLower(), runtimeName);
                 string rawOutputPath = Path.Combine(basePath, "src", "bin", "Release", $"net{dotnetVersion}.0", runtimeName, "native");
-                string sharedArg = $"publish {srcPath} /p:NativeLib={tName};PublishAot=true -c Release -f net{dotnetVersion}.0 -r {runtimeName}";
-                
+                string sharedArg = $"publish {srcPath} /p:NativeLib={tName} -c Release -f net{dotnetVersion}.0 -r {runtimeName} -o {outputPath}";
+
+                if (Directory.Exists(outputPath))
+                {
+                    Directory.Delete(outputPath, true);
+                }
+
+                Directory.CreateDirectory(outputPath);
+
+                Console.Write("dotnet ");
+                Console.WriteLine(sharedArg);
+
                 if (Directory.Exists(rawOutputPath))
                 {
                     Directory.Delete(rawOutputPath, true);
@@ -155,29 +170,22 @@ namespace LibWindPop.Build
 
                 using (Process myProcess = new Process())
                 {
-                    myProcess.StartInfo.UseShellExecute = false;
+                    myProcess.StartInfo.UseShellExecute = true;
                     myProcess.StartInfo.FileName = DotNetPath;
                     myProcess.StartInfo.Arguments = sharedArg;
                     myProcess.StartInfo.CreateNoWindow = false;
-                    myProcess.StartInfo.RedirectStandardOutput = true;
-                    myProcess.OutputDataReceived += MyProcess_OutputDataReceived;
+                    //myProcess.StartInfo.RedirectStandardOutput = true;
+                    //myProcess.OutputDataReceived += MyProcess_OutputDataReceived;
                     myProcess.Start();
-                    myProcess.BeginOutputReadLine();
+                    //myProcess.BeginOutputReadLine();
                     myProcess.WaitForExit();
                 }
+                //foreach (string rawOutputFile in Directory.GetFiles(rawOutputPath))
+                //{
+                //    string outputFile = Path.Combine(outputPath, Path.GetFileName(rawOutputFile));
 
-                if (Directory.Exists(outputPath))
-                {
-                    Directory.Delete(outputPath, true);
-                }
-                
-                Directory.CreateDirectory(outputPath);
-                foreach (string rawOutputFile in Directory.GetFiles(rawOutputPath))
-                {
-                    string outputFile = Path.Combine(outputPath, Path.GetFileName(rawOutputFile));
-
-                    File.Copy(rawOutputFile, outputFile, true);
-                }
+                //    File.Copy(rawOutputFile, outputFile, true);
+                //}
                 File.Copy(
                     Path.Combine(buildPath, "header", "libwindpop.h"),
                     Path.Combine(outputPath, "LibWindPop.h"),

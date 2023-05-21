@@ -1,4 +1,6 @@
-﻿using LibWindPop.Packs.Pak;
+﻿using LibWindPop.Packs.Common;
+using LibWindPop.Packs.Pak;
+using LibWindPop.Packs.Pak.ContentPipeline;
 using LibWindPop.Packs.Rsb;
 using LibWindPop.Packs.Rsb.ContentPipeline;
 using LibWindPop.Packs.Xpr;
@@ -11,10 +13,10 @@ using System.Text.Json.Serialization;
 
 namespace LibWindPop.Utils
 {
-    public static class WindJsonSerializer
+    internal static class WindJsonSerializer
     {
-        private static JsonSerializerOptions options;
-        private static WindJsonSerializerContext context;
+        private static readonly JsonSerializerOptions options;
+        private static readonly WindJsonSerializerContext context;
 
         static WindJsonSerializer()
         {
@@ -100,9 +102,10 @@ namespace LibWindPop.Utils
     [JsonSerializable(typeof(WindJsonShell<RsbPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<RsgMetadata>))]
     [JsonSerializable(typeof(WindJsonShell<PtxMetadata>))]
-    [JsonSerializable(typeof(WindJsonShell<RsbContentPipelineInfo>))]
+    [JsonSerializable(typeof(WindJsonShell<ContentPipelineInfo>))]
     [JsonSerializable(typeof(WindJsonShell<XprPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<PakPackInfo>))]
+    [JsonSerializable(typeof(WindJsonShell<PakRebuildFileSetting>))]
     internal partial class WindJsonSerializerContext : JsonSerializerContext
     {
 

@@ -11,14 +11,21 @@ namespace LibWindPop.Test
         private static void TestTask()
         {
             //PakUnpacker.Unpack(
-            //    "D:\\main_mac.pak",
-            //    "D:\\main_mac_pak_unpack",
+            //    "D:\\main.pak",
+            //    "D:\\main_pak_unpack",
             //    new NativeFileSystem(),
             //    new ConsoleLogger(),
             //    false,
             //    false,
             //    true
             //    );
+            PakPacker.Pack(
+                "D:\\main_pak_unpack",
+                "D:\\main2.pak",
+                new NativeFileSystem(),
+                new ConsoleLogger(),
+                true
+                );
             //PtxCoder.Decode(
             //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PTX",
             //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PNG",

@@ -84,23 +84,23 @@ namespace LibWindPop.Packs.Rsb
             RsbContentPipelineManager.EndBuildContentPipeline(rsbPath, unpackPath, fileSystem, logger, throwException);
         }
 
-        private static unsafe void PackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, RsbPackInfo pack_info, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)
+        private static unsafe void PackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, RsbPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)
         {
-            if (pack_info.Composites != null && pack_info.Groups != null)
+            if (packInfo.Composites != null && packInfo.Groups != null)
             {
                 List<RsbPackPoolInfo> poolList = new List<RsbPackPoolInfo>(512);
                 List<RsbPackGroupInfo> groupList = new List<RsbPackGroupInfo>(512);
-                if (pack_info.Pools != null)
+                if (packInfo.Pools != null)
                 {
-                    for (int i = 0; i < pack_info.Pools.Length; i++)
+                    for (int i = 0; i < packInfo.Pools.Length; i++)
                     {
-                        poolList.Add(pack_info.Pools[i]);
+                        poolList.Add(packInfo.Pools[i]);
                     }
                 }
                 int startPoolCount = poolList.Count;
-                for (int i = 0; i < pack_info.Groups.Length; i++)
+                for (int i = 0; i < packInfo.Groups.Length; i++)
                 {
-                    RsbPackGroupInfo? groupInfo = pack_info.Groups[i];
+                    RsbPackGroupInfo? groupInfo = packInfo.Groups[i];
                     if (groupInfo != null)
                     {
                         groupList.Add(groupInfo);
@@ -128,9 +128,9 @@ namespace LibWindPop.Packs.Rsb
                 uint group_pair_count = 0u;
                 uint composite_pair_count = 0u;
                 uint image_count = 0u;
-                for (int i = pack_info.Composites.Length - 1; i >= 0; i--)
+                for (int i = packInfo.Composites.Length - 1; i >= 0; i--)
                 {
-                    string? id = pack_info.Composites[i].Id;
+                    string? id = packInfo.Composites[i].Id;
                     if (id != null)
                     {
                         in_mem_len += CompiledMapEncodePair.PeekSize(id, sizeof(uint)) + (uint)sizeof(CompiledMapEncodePair);
@@ -147,7 +147,7 @@ namespace LibWindPop.Packs.Rsb
                         pool_offset += (uint)sizeof(CompiledMapEncodePair);
                         group_pair_count++;
                     }
-                    if (pack_info.UseGlobalFileIndexMap)
+                    if (packInfo.UseGlobalFileIndexMap)
                     {
                         RsbPackGroupResidentFileInfo[]? resident_file_list = groupList[i].ResidentFileList;
                         RsbPackGroupGPUFileInfo[]? image_list = groupList[i].GPUFileList;
@@ -196,9 +196,9 @@ namespace LibWindPop.Packs.Rsb
                         CompiledMapEncodePair* current_group_pair_pointer = (CompiledMapEncodePair*)group_pair_pointer_number;
                         CompiledMapEncodePair* current_resource_pair_pointer = (CompiledMapEncodePair*)resource_pair_pointer_number;
                         nuint current_pool_pointer = pool_pointer_number;
-                        for (int i = 0; i < pack_info.Composites.Length; i++)
+                        for (int i = 0; i < packInfo.Composites.Length; i++)
                         {
-                            string? key = pack_info.Composites[i].Id;
+                            string? key = packInfo.Composites[i].Id;
                             if (key != null)
                             {
                                 nuint string_pointer_number = current_pool_pointer;
@@ -235,7 +235,7 @@ namespace LibWindPop.Packs.Rsb
                                 current_group_pair_pointer++;
                                 UnsafeStringHelper.StringToUpper(string_pointer_number);
                             }
-                            if (pack_info.UseGlobalFileIndexMap)
+                            if (packInfo.UseGlobalFileIndexMap)
                             {
                                 RsbPackGroupResidentFileInfo[]? resident_file_list = groupList[i].ResidentFileList;
                                 RsbPackGroupGPUFileInfo[]? image_list = groupList[i].GPUFileList;
@@ -293,33 +293,33 @@ namespace LibWindPop.Packs.Rsb
                         }
                         // sort
                         CompiledMapEncoder.Sort((CompiledMapEncodePair*)composite_pair_pointer_number, composite_pair_count, pool_pointer_number);
-                        if (pack_info.UseGlobalFileIndexMap)
+                        if (packInfo.UseGlobalFileIndexMap)
                         {
                             CompiledMapEncoder.Sort((CompiledMapEncodePair*)resource_pair_pointer_number, resource_pair_count, pool_pointer_number);
                         }
                         CompiledMapEncoder.Sort((CompiledMapEncodePair*)group_pair_pointer_number, group_pair_count, pool_pointer_number);
                         // compute repeat len
                         CompiledMapEncoder.ComputeRepeatLength((CompiledMapEncodePair*)composite_pair_pointer_number, composite_pair_count, pool_pointer_number);
-                        if (pack_info.UseGlobalFileIndexMap)
+                        if (packInfo.UseGlobalFileIndexMap)
                         {
                             CompiledMapEncoder.ComputeRepeatLength((CompiledMapEncodePair*)resource_pair_pointer_number, resource_pair_count, pool_pointer_number);
                         }
                         CompiledMapEncoder.ComputeRepeatLength((CompiledMapEncodePair*)group_pair_pointer_number, group_pair_count, pool_pointer_number);
                         // Peek header len
-                        uint info_len = pack_info.Version >= 4 ? 0x70u : 0x6Cu;
+                        uint info_len = packInfo.Version >= 4 ? 0x70u : 0x6Cu;
                         uint resource_map_offset = info_len;
-                        uint resource_map_len = pack_info.UseGlobalFileIndexMap ? CompiledMapEncoder.PeekSize((CompiledMapEncodePair*)resource_pair_pointer_number, resource_pair_count) : 0u;
+                        uint resource_map_len = packInfo.UseGlobalFileIndexMap ? CompiledMapEncoder.PeekSize((CompiledMapEncodePair*)resource_pair_pointer_number, resource_pair_count) : 0u;
                         uint group_map_offset = resource_map_offset + resource_map_len;
                         uint group_map_len = CompiledMapEncoder.PeekSize((CompiledMapEncodePair*)group_pair_pointer_number, group_pair_count);
                         uint composite_info_offset = group_map_offset + group_map_len;
-                        uint composite_info_count = (uint)pack_info.Composites.Length;
-                        uint composite_info_each_len = pack_info.Version >= 3 ? (uint)sizeof(RsbCompositeDescriptorV3V4) : (uint)sizeof(RsbCompositeDescriptorV1);
+                        uint composite_info_count = (uint)packInfo.Composites.Length;
+                        uint composite_info_each_len = packInfo.Version >= 3 ? (uint)sizeof(RsbCompositeDescriptorV3V4) : (uint)sizeof(RsbCompositeDescriptorV1);
                         uint composite_map_offset = composite_info_offset + composite_info_count * composite_info_each_len;
                         uint composite_map_len = CompiledMapEncoder.PeekSize((CompiledMapEncodePair*)composite_pair_pointer_number, composite_pair_count);
                         uint group_info_offset = composite_map_offset + composite_map_len;
                         uint group_info_count = (uint)groupList.Count;
                         uint group_info_each_len = (uint)sizeof(RsbGroupDescriptor);
-                        if (pack_info.Version <= 1)
+                        if (packInfo.Version <= 1)
                         {
                             group_info_each_len -= 8;
                         }
@@ -328,8 +328,8 @@ namespace LibWindPop.Packs.Rsb
                         uint pool_info_each_len = (uint)sizeof(RsbPoolDescriptor);
                         uint image_info_offset = pool_info_offset + pool_info_count * pool_info_each_len;
                         uint image_info_count = image_count;
-                        uint image_info_each_len = pack_info.TextureDescriptorPitch;
-                        if (!pack_info.UseGlobalFileIndexMap)
+                        uint image_info_each_len = packInfo.TextureDescriptorPitch;
+                        if (!packInfo.UseGlobalFileIndexMap)
                         {
                             resource_map_offset = 0u;
                             resource_map_len = 0xFFFFFFFFu;
@@ -343,15 +343,15 @@ namespace LibWindPop.Packs.Rsb
                         uint header_len_no_manifest;
                         uint header_len;
                         RsbManifestInfo? manifest_info = null;
-                        if (pack_info.UseManifest)
+                        if (packInfo.UseManifest)
                         {
                             manifest_info = WindJsonSerializer.TryDeserializeFromFile<RsbManifestInfo>(paths.InfoManifestPath, 0u, fileSystem, logger, false);
                         }
-                        Dictionary<string, uint>? manifest_pool_dic = PeekRsbManifestInfo(pack_info.Version, manifest_info, encoding, out manifest_group_info_len, out manifest_resource_info_len, out manifest_pool_len);
+                        Dictionary<string, uint>? manifest_pool_dic = PeekRsbManifestInfo(packInfo.Version, manifest_info, encoding, out manifest_group_info_len, out manifest_resource_info_len, out manifest_pool_len);
                         if (manifest_info != null && manifest_pool_dic != null)
                         {
                             header_len_no_manifest = image_info_offset + image_info_count * image_info_each_len;
-                            if (pack_info.Version >= 4)
+                            if (packInfo.Version >= 4)
                             {
                                 header_len_no_manifest = Align0x1000(header_len_no_manifest);
                             }
@@ -378,8 +378,8 @@ namespace LibWindPop.Packs.Rsb
                                 // Encode info
                                 RsbInfo* rsb_info = (RsbInfo*)rsb_header_pointer_number;
                                 rsb_info->Magic = 1920164401u;
-                                rsb_info->Version = pack_info.Version;
-                                rsb_info->MinorVersion = pack_info.MinorVersion;
+                                rsb_info->Version = packInfo.Version;
+                                rsb_info->MinorVersion = packInfo.MinorVersion;
                                 rsb_info->HeaderSize = header_len;
                                 rsb_info->GlobalFileIndexMapSize = resource_map_len;
                                 rsb_info->GlobalFileIndexMapOffset = resource_map_offset;
@@ -402,17 +402,17 @@ namespace LibWindPop.Packs.Rsb
                                 rsb_info->ManifestGroupInfoOffset = manifest_group_info_offset;
                                 rsb_info->ManifestResourceInfoOffset = manifest_resource_info_offset;
                                 rsb_info->ManifestStringPoolOffset = manifest_pool_offset;
-                                if (pack_info.Version >= 4)
+                                if (packInfo.Version >= 4)
                                 {
                                     rsb_info->HeaderSizeNoManifest = header_len_no_manifest;
                                 }
                                 // Encode manifest
                                 if (manifest_info != null && manifest_pool_dic != null)
                                 {
-                                    PackRsbManifest(pack_info.Version, manifest_info, manifest_pool_dic, encoding, rsb_header_pointer_number + manifest_group_info_offset, rsb_header_pointer_number + manifest_resource_info_offset, rsb_header_pointer_number + manifest_pool_offset);
+                                    PackRsbManifest(packInfo.Version, manifest_info, manifest_pool_dic, encoding, rsb_header_pointer_number + manifest_group_info_offset, rsb_header_pointer_number + manifest_resource_info_offset, rsb_header_pointer_number + manifest_pool_offset);
                                 }
                                 // Encode cmap
-                                if (pack_info.UseGlobalFileIndexMap)
+                                if (packInfo.UseGlobalFileIndexMap)
                                 {
                                     CompiledMapEncoder.Encode((CompiledMapEncodePair*)resource_pair_pointer_number, resource_pair_count, pool_pointer_number, rsb_header_pointer_number + resource_map_offset);
                                 }
@@ -422,11 +422,11 @@ namespace LibWindPop.Packs.Rsb
                                 group_map.Init(rsb_header_pointer_number + group_map_offset, group_map_len);
                                 // Encode composite info
                                 nuint current_pointer_number = rsb_header_pointer_number + composite_info_offset;
-                                if (pack_info.Version >= 3)
+                                if (packInfo.Version >= 3)
                                 {
                                     for (uint i = 0u; i < composite_info_count; i++)
                                     {
-                                        RsbPackCompositeInfo pack_composite_info = pack_info.Composites[i];
+                                        RsbPackCompositeInfo pack_composite_info = packInfo.Composites[i];
                                         RsbCompositeDescriptorV3V4* composite_info = (RsbCompositeDescriptorV3V4*)current_pointer_number;
                                         RsbSubGroupV3V4* composite_sub_info = (RsbSubGroupV3V4*)(current_pointer_number + 0x80u);
                                         UnsafeStringHelper.SetUtf16String(pack_composite_info.Name, composite_info->Name, 0x80, encoding);
@@ -456,7 +456,7 @@ namespace LibWindPop.Packs.Rsb
                                 {
                                     for (uint i = 0u; i < composite_info_count; i++)
                                     {
-                                        RsbPackCompositeInfo pack_composite_info = pack_info.Composites[i];
+                                        RsbPackCompositeInfo pack_composite_info = packInfo.Composites[i];
                                         RsbCompositeDescriptorV1* composite_info = (RsbCompositeDescriptorV1*)current_pointer_number;
                                         RsbSubGroupV1* composite_sub_info = (RsbSubGroupV1*)(current_pointer_number + 0x80u);
                                         UnsafeStringHelper.SetUtf16String(pack_composite_info.Name, composite_info->Name, 0x80, encoding);
@@ -530,7 +530,7 @@ namespace LibWindPop.Packs.Rsb
                                             RsbPoolDescriptor* pool_info = (RsbPoolDescriptor*)(rsb_header_pointer_number + pool_info_offset + pool_info_each_len * group_info->PoolIndex);
                                             pool_info->ResidentDataMemorySize = Math.Max(pool_info->ResidentDataMemorySize, rsg_pack_info.HeaderSize + rsg_pack_info.ResidentDataUncompressedSize);
                                             pool_info->GPUDataMemorySize = Math.Max(pool_info->GPUDataMemorySize, rsg_pack_info.GPUDataUncompressedSize);
-                                            if (pack_info.Version <= 1)
+                                            if (packInfo.Version <= 1)
                                             {
                                                 pool_info->TextureCount = group_image_count;
                                                 pool_info->TextureDescriptorStartIndex = image_current_offset;
@@ -567,7 +567,7 @@ namespace LibWindPop.Packs.Rsb
                                     current_pointer_number += group_info_each_len;
                                 }
                                 rsbStream.Seek(0, SeekOrigin.Begin);
-                                RsbReverser.ReverseRsbHeader(rsb_info, Endianness.Native, pack_info.UseBigEndian ? Endianness.Big : Endianness.Little);
+                                RsbReverser.ReverseRsbHeader(rsb_info, Endianness.Native, packInfo.UseBigEndian ? Endianness.Big : Endianness.Little);
                                 rsbStream.Write((void*)rsb_header_pointer_number, header_len);
                             }
                         }

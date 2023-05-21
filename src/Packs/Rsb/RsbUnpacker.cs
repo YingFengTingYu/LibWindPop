@@ -73,6 +73,21 @@ namespace LibWindPop.Packs.Rsb
 
             logger.Log("Save pack info...", 0);
             WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+
+            // Add Content Pipeline
+            logger.Log("Create content pipeline...", 0);
+            try
+            {
+                if (File.Exists(paths.InfoContentPipelinePath))
+                {
+                    File.Delete(paths.InfoContentPipelinePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogException(ex, 0, throwException);
+            }
+            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), true, fileSystem, logger, throwException);
         }
 
         private static unsafe void UnpackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, string? ptxHandlerType, RsbPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)
@@ -572,20 +587,6 @@ namespace LibWindPop.Packs.Rsb
                     packInfo.Groups = groups;
                 }
             }
-            // Add Content Pipeline
-            logger.Log("Create content pipeline...", 0);
-            try
-            {
-                if (File.Exists(paths.InfoContentPipelinePath))
-                {
-                    File.Delete(paths.InfoContentPipelinePath);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogException(ex, 0, throwException);
-            }
-            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), true, fileSystem, logger, throwException);
         }
 
         private static unsafe void UnpackRsbManifest<TFileSystem, TLogger>(uint version, nuint groupPtrNumber, nuint resPtrNumber, nuint poolPtrNumber, string outPath, TFileSystem fileSystem, TLogger logger, Encoding encoding, bool throwException)

@@ -1,4 +1,5 @@
 ﻿using LibWindPop.Images.PtxRsb;
+using LibWindPop.Packs.Common;
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
@@ -11,7 +12,7 @@ using System.IO;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    public sealed class EncodePtxFromPng : IRsbContentPipeline
+    internal sealed class EncodePtxFromPng : IContentPipeline
     {
         public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
@@ -166,9 +167,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
             }
         }
 
-        private static unsafe void AddInternal<TFileSystem, TLogger>(string unpackPath, TFileSystem fileSystem, TLogger logger, bool throwException)
-            where TFileSystem : IFileSystem
-            where TLogger : ILogger
+        private static unsafe void AddInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));

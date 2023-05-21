@@ -1,4 +1,6 @@
 ﻿#pragma once
+#ifndef LIBWINDPOP_H
+#define LIBWINDPOP_H
 #define WIND_IMPORT
 #define WIND_API __stdcall
 
@@ -35,6 +37,7 @@ static char PtxHandlerPVZ2CNiOSV1[] = "PtxHandlerPVZ2CNiOSV1";
 static char PtxHandlerPVZ2CNiOSV2[] = "PtxHandlerPVZ2CNiOSV2";
 static char RsbPipelineUpdateRsgCache[] = "UpdateRsgCache";
 static char RsbPipelineEncodePtxFromPng[] = "EncodePtxFromPng";
+static char PakPipelinePakRebuildFile[] = "PakRebuildFile";
 
 WIND_IMPORT EResult WIND_API RsbUnpack(const char* rsbPath, const char* unpackPath, const char* ptxHandlerType, EBool useGroupFolder, int logLevel, EBool throwException);
 
@@ -64,6 +67,22 @@ WIND_IMPORT EResult WIND_API PtxRsbRegistHandler(const char* ptxHandlerType, EBo
 
 WIND_IMPORT EResult WIND_API PtxRsbRegistHandlerU8(const char* ptxHandlerType, EBool useExtend1AsAlphaSize, int(WIND_API* getPtxSize)(int width, int height, int pitch, int format, int alphaSize), int(WIND_API* getPtxSizeWithoutAlpha)(int width, int height, int pitch, int format), void(WIND_API* decodePtx)(void* ptxDataPtr, int ptxDataSize, void* bitmapDataPtr, int bitmapWidth, int bitmapHeight, int width, int height, int pitch, int format, int alphaSize), void(WIND_API* encodePtx)(void* bitmapDataPtr, int bitmapWidth, int bitmapHeight, void* ptxDataPtr, int ptxDataSize, int width, int height, int pitch, int format, int alphaSize), EResult(WIND_API* peekEncodedPtxInfo)(void* bitmapDataPtr, int bitmapWidth, int bitmapHeight, int format, int* widthPtr, int* heightPtr, int* pitchPtr, int* alphaSizePtr));
 
+WIND_IMPORT EResult WIND_API PakUnpack(const char* pakPath, const char* unpackPath, EBool useZlib, EBool useAlign, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakUnpackU8(const char* pakPath, const char* unpackPath, EBool useZlib, EBool useAlign, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakAddContentPipeline(const char* unpackPath, const char* pipelineName, EBool atFirst, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakAddContentPipelineU8(const char* unpackPath, const char* pipelineName, EBool atFirst, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakPack(const char* unpackPath, const char* pakPath, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakPackU8(const char* unpackPath, const char* pakPath, int logLevel, EBool throwException);
+
+WIND_IMPORT EResult WIND_API PakRegistContentPipeline(const char* pipelineName, void(WIND_API* onStartBuild)(const char* unpackPath), void(WIND_API* onEndBuild)(const char* pakPath), void(WIND_API* onAdd)(const char* unpackPath));
+
+WIND_IMPORT EResult WIND_API PakRegistContentPipelineU8(const char* pipelineName, void(WIND_API* onStartBuild)(const char* unpackPath), void(WIND_API* onEndBuild)(const char* pakPath), void(WIND_API* onAdd)(const char* unpackPath));
+
 WIND_IMPORT int WIND_API GetErrorSize();
 
 WIND_IMPORT int WIND_API GetErrorSizeU8();
@@ -71,3 +90,6 @@ WIND_IMPORT int WIND_API GetErrorSizeU8();
 WIND_IMPORT EResult WIND_API GetError(char* buffer);
 
 WIND_IMPORT EResult WIND_API GetErrorU8(char* buffer);
+
+WIND_IMPORT int WIND_API GetLibVersion();
+#endif

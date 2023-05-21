@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using LibWindPop.Images.PtxRsb;
+using LibWindPop.Packs.Common;
 using LibWindPop.Packs.Rsb.RsbStructures;
 using LibWindPop.PopCap.Packs.Rsb.Map;
 using LibWindPop.Utils;
@@ -13,7 +14,7 @@ using System.Text;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    public sealed class UpdateRsgCache : IRsbContentPipeline
+    internal sealed class UpdateRsgCache : IContentPipeline
     {
         public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
         {
@@ -30,9 +31,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
             // Nothing to do
         }
 
-        private static unsafe void BuildInternal<TFileSystem, TLogger>(string unpackPath, TFileSystem fileSystem, TLogger logger, int compressionLevel, bool throwException)
-            where TFileSystem : IFileSystem
-            where TLogger : ILogger
+        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, int compressionLevel, bool throwException)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));

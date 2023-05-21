@@ -29,9 +29,5 @@ namespace LibWindPop.Utils.Logger
         public LoggerException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
-
-        protected LoggerException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
     }
 }

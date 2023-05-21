@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace LibWindPop.Packs.Rsb.ContentPipeline
+namespace LibWindPop.Packs.Common
 {
-    public class RsbContentPipelineInfo
+    public class ContentPipelineInfo
     {
         public List<string>? Pipelines;
     }

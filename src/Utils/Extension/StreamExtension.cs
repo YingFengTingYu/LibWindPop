@@ -133,6 +133,20 @@ namespace LibWindPop.Utils.Extension
             stream.Write(buffer);
         }
 
+        public static void WriteUInt16LE(this Stream stream, ushort value)
+        {
+            Span<byte> buffer = stackalloc byte[2];
+            BinaryPrimitives.WriteUInt16LittleEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteUInt16BE(this Stream stream, ushort value)
+        {
+            Span<byte> buffer = stackalloc byte[2];
+            BinaryPrimitives.WriteUInt16BigEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
         public static void WriteUInt32LE(this Stream stream, uint value)
         {
             Span<byte> buffer = stackalloc byte[4];
@@ -145,6 +159,118 @@ namespace LibWindPop.Utils.Extension
             Span<byte> buffer = stackalloc byte[4];
             BinaryPrimitives.WriteUInt32BigEndian(buffer, value);
             stream.Write(buffer);
+        }
+
+        public static void WriteUInt64LE(this Stream stream, ulong value)
+        {
+            Span<byte> buffer = stackalloc byte[8];
+            BinaryPrimitives.WriteUInt64LittleEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteUInt64BE(this Stream stream, ulong value)
+        {
+            Span<byte> buffer = stackalloc byte[8];
+            BinaryPrimitives.WriteUInt64BigEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt8(this Stream stream, sbyte value)
+        {
+            Span<byte> buffer = stackalloc byte[1];
+            buffer[0] = (byte)value;
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt16LE(this Stream stream, short value)
+        {
+            Span<byte> buffer = stackalloc byte[2];
+            BinaryPrimitives.WriteInt16LittleEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt16BE(this Stream stream, short value)
+        {
+            Span<byte> buffer = stackalloc byte[2];
+            BinaryPrimitives.WriteInt16BigEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt32LE(this Stream stream, int value)
+        {
+            Span<byte> buffer = stackalloc byte[4];
+            BinaryPrimitives.WriteInt32LittleEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt32BE(this Stream stream, int value)
+        {
+            Span<byte> buffer = stackalloc byte[4];
+            BinaryPrimitives.WriteInt32BigEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt64LE(this Stream stream, long value)
+        {
+            Span<byte> buffer = stackalloc byte[8];
+            BinaryPrimitives.WriteInt64LittleEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static void WriteInt64BE(this Stream stream, long value)
+        {
+            Span<byte> buffer = stackalloc byte[8];
+            BinaryPrimitives.WriteInt64BigEndian(buffer, value);
+            stream.Write(buffer);
+        }
+
+        public static int WriteString(this Stream stream, string value, Encoding encoding)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return 0;
+            }
+            int size = encoding.GetMaxByteCount(value.Length);
+            if (size <= 0x800)
+            {
+                Span<byte> buffer = stackalloc byte[size];
+                size = encoding.GetBytes(value, buffer);
+                stream.Write(buffer[..size]);
+                return size;
+            }
+            using (NativeMemoryOwner owner = new NativeMemoryOwner((uint)size))
+            {
+                Span<byte> buffer = owner.AsSpan();
+                size = encoding.GetBytes(value, buffer);
+                stream.Write(buffer[..size]);
+                return size;
+            }
+        }
+
+        public static int WriteStringWithUInt8Head(this Stream stream, string? value, Encoding encoding)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                stream.WriteUInt8(0x0);
+                return 0;
+            }
+            int size = encoding.GetMaxByteCount(value.Length);
+            if (size <= 0x800)
+            {
+                Span<byte> buffer = stackalloc byte[size];
+                size = encoding.GetBytes(value, buffer);
+                stream.WriteUInt8((byte)size);
+                stream.Write(buffer[..size]);
+                return size;
+            }
+            using (NativeMemoryOwner owner = new NativeMemoryOwner((uint)size))
+            {
+                Span<byte> buffer = owner.AsSpan();
+                size = encoding.GetBytes(value, buffer);
+                stream.WriteUInt8((byte)size);
+                stream.Write(buffer[..size]);
+                return size;
+            }
         }
 
         public static long CopyLengthTo(this Stream src, Stream destination, long len)
