@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop", "src\LibWindPo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop.Test", "test\LibWindPop.Test.csproj", "{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibWindPop.Build", "build\LibWindPop.Build.csproj", "{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A57DF34D-921A-4225-BE17-3F12355109A5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -34,10 +32,6 @@ Global
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x64.Build.0 = Debug|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x64.ActiveCfg = Release|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x64.Build.0 = Release|Any CPU
-		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Debug|x64.Build.0 = Debug|Any CPU
-		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|x64.ActiveCfg = Release|Any CPU
-		{9EC5870C-B835-4D7D-82DE-B07AF72C2E00}.Release|x64.Build.0 = Release|Any CPU
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x64.ActiveCfg = Debug|x64
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x64.Build.0 = Debug|x64
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Release|x64.ActiveCfg = Release|x64
