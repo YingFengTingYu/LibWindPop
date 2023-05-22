@@ -18,24 +18,48 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cpp", "cpp", "{1CC6AFCE-137
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RsbAndPtxCoder", "samples\cpp\RsbAndPtxCoder\RsbAndPtxCoder.vcxproj", "{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PakAndPtxCoder", "samples\cpp\PakAndPtxCoder\PakAndPtxCoder.vcxproj", "{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x64.Build.0 = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Debug|x86.Build.0 = Debug|Any CPU
 		{A380E679-7945-451B-B9D1-856954849C57}.Release|x64.ActiveCfg = Release|Any CPU
 		{A380E679-7945-451B-B9D1-856954849C57}.Release|x64.Build.0 = Release|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|x86.ActiveCfg = Release|Any CPU
+		{A380E679-7945-451B-B9D1-856954849C57}.Release|x86.Build.0 = Release|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x64.Build.0 = Debug|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Debug|x86.Build.0 = Debug|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x64.ActiveCfg = Release|Any CPU
 		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x64.Build.0 = Release|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1B88F26-AC6E-4668-8F6E-BB043BCCAC05}.Release|x86.Build.0 = Release|Any CPU
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x64.ActiveCfg = Debug|x64
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x64.Build.0 = Debug|x64
+		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x86.ActiveCfg = Debug|Win32
+		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Debug|x86.Build.0 = Debug|Win32
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Release|x64.ActiveCfg = Release|x64
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Release|x64.Build.0 = Release|x64
+		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Release|x86.ActiveCfg = Release|Win32
+		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28}.Release|x86.Build.0 = Release|Win32
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Debug|x64.ActiveCfg = Debug|x64
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Debug|x64.Build.0 = Debug|x64
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Debug|x86.ActiveCfg = Debug|Win32
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Debug|x86.Build.0 = Debug|Win32
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Release|x64.ActiveCfg = Release|x64
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Release|x64.Build.0 = Release|x64
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Release|x86.ActiveCfg = Release|Win32
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +67,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1CC6AFCE-137C-442F-9C79-922275CF69EF} = {32583522-B6BD-475C-96B8-BBA6FB5277D3}
 		{3EA92F8B-12DD-4C6D-B1A5-6B9D213E8D28} = {1CC6AFCE-137C-442F-9C79-922275CF69EF}
+		{D9E0ECDB-D3E9-44F5-89E7-4777E1FDA637} = {1CC6AFCE-137C-442F-9C79-922275CF69EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {787A8C4E-BB0D-407A-8E5E-A8AA81989310}
