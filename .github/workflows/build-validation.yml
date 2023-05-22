@@ -40,11 +40,8 @@ jobs:
         ${{ matrix.os[2] }}
         cd ./..
 
-    - name: Zip the Build
-      run: zip -r ${{ matrix.os[3] }} ./build/publish/
-
     - name: Upload Release
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.os[3] }}
-        path: ${{ matrix.os[3] }}
+        path: ./build/publish/
