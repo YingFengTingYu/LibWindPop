@@ -17,9 +17,9 @@ jobs:
     strategy:
       matrix:
         os:
-        - [ubuntu-latest, sh ./build/linux-x64.sh, sh ./build/linux-arm64.sh, LibWindPop-Linux.zip]
-        - [windows-latest, build\windows-x64, build\windows-arm64, LibWindPop-Windows.zip]
-        - [macOS-latest, sh ./build/macos-x64.sh, sh ./build/macos-arm64.sh, LibWindPop-macOS.zip]
+        - [ubuntu-latest, sh ./linux-x64.sh, sh ./linux-arm64.sh, LibWindPop-Linux.zip]
+        - [windows-latest, windows-x64, windows-arm64, LibWindPop-Windows.zip]
+        - [macOS-latest, sh ./macos-x64.sh, sh ./macos-arm64.sh, LibWindPop-macOS.zip]
 
     steps:
     - uses: actions/checkout@v3
@@ -29,12 +29,14 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore ./src/LibWindPop.csproj
 
     - name: Build
       run: |
+        cd ./build
         ${{ matrix.os[1] }}
         ${{ matrix.os[2] }}
+        cd ./..
 
     - name: Zip the Build
       run: zip -r ${{ matrix.os[3] }} ./build/publish/
