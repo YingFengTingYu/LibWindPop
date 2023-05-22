@@ -18,7 +18,7 @@ jobs:
       matrix:
         os:
         - [ubuntu-latest, sh ./linux-x64.sh, sh ./linux-arm64.sh, LibWindPop-Linux.zip]
-        - [windows-latest, windows-x64, windows-arm64, LibWindPop-Windows.zip]
+        - [windows-latest, ./windows-x64, ./windows-arm64, LibWindPop-Windows.zip]
         - [macOS-latest, sh ./macos-x64.sh, sh ./macos-arm64.sh, LibWindPop-macOS.zip]
 
     steps:
