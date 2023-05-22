@@ -12,14 +12,14 @@ env:
 jobs:
   publish:
 
-    name: publish-${{matrix.os}}
-    runs-on: ${{matrix.os}}
+    name: publish-${{matrix.os[0]}}
+    runs-on: ${{matrix.os[0]}}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        x64cmd: [sh ./build/linux-x64.sh, build\windows-x64, sh ./build/macos-x64.sh]
-        arm64cmd: [sh ./build/linux-arm64.sh, build\windows-arm64, sh ./build/macos-arm64.sh]
-        filename: [LibWindPop-Linux.zip, LibWindPop-Windows.zip, LibWindPop-macOS.zip]
+        os:
+        - [ubuntu-latest, sh ./build/linux-x64.sh, sh ./build/linux-arm64.sh, LibWindPop-Linux.zip]
+        - [windows-latest, build\windows-x64, build\windows-arm64, LibWindPop-Windows.zip]
+        - [macOS-latest, sh ./build/macos-x64.sh, sh ./build/macos-arm64.sh, LibWindPop-macOS.zip]
 
     steps:
     - uses: actions/checkout@v3
@@ -33,11 +33,11 @@ jobs:
 
     - name: Build
       run: |
-        ${{ matrix.x64cmd }}
-        ${{ matrix.arm64cmd }}
+        ${{ matrix.os[1] }}
+        ${{ matrix.os[2] }}
 
     - name: Zip the Build
-      run: zip -r ${{ matrix.filename }} ./build/publish/
+      run: zip -r ${{ matrix.os[3] }} ./build/publish/
 
     - name: Create Release and Upload Release Asset
       uses: softprops/action-gh-release@v1
@@ -49,5 +49,5 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          ${{ matrix.filename }}
+          ${{ matrix.os[3] }}
           LICENSE
