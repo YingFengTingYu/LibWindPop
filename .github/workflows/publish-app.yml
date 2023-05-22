@@ -1,0 +1,53 @@
+name: publish
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+
+env:
+  DOTNET_VERSION: '8.0.100-preview.4.23260.5' # The .NET SDK version to use
+
+jobs:
+  publish:
+
+    name: publish-${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        x64cmd: [sh ./build/linux-x64.sh, build\windows-x64, sh ./build/macos-x64.sh]
+        arm64cmd: [sh ./build/linux-arm64.sh, build\windows-arm64, sh ./build/macos-arm64.sh]
+        filename: [LibWindPop-Linux.zip, LibWindPop-Windows.zip, LibWindPop-macOS.zip]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: |
+        ${{ matrix.x64cmd }}
+        ${{ matrix.arm64cmd }}
+
+    - name: Zip the Build
+      run: zip -r ${{ matrix.filename }} ./build/publish/
+
+    - name: Create Release and Upload Release Asset
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        tag_name: ${{ github.ref }}
+        name: Release ${{ github.ref }}
+        body: TODO New Release.
+        draft: false
+        prerelease: false
+        files: |
+          ${{ matrix.filename }}
+          LICENSE
