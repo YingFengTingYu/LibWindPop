@@ -86,36 +86,26 @@ namespace LibWindPop.Packs.Pak
                     pakStream.WriteUInt32LE(0x0u);
                     long headerPosition = 8;
                     long filePosition = headerSize;
-                    uint rawSize, zlibSize;
+                    uint rawSize, storeSize;
                     foreach (PakPackFileInfo pakFileInfo in packInfo.RecordFiles)
                     {
                         pakStream.Seek(filePosition, SeekOrigin.Begin);
                         if (packInfo.UseAlign)
                         {
                             int align = pakFileInfo.UseAlign4K ? 0x1000 : 0x8;
-                            int alignByteCount = (int)((pakStream.Position + 2) & (align - 1));
-                            if (alignByteCount == 0)
-                            {
-                                pakStream.WriteUInt16LE(0);
-                            }
-                            else
-                            {
-                                alignByteCount = align - alignByteCount;
-                                pakStream.WriteUInt16LE((ushort)alignByteCount);
-                                pakStream.Write(zeroSpan[..alignByteCount]);
-                            }
+                            int alignByteCount = align - (int)((pakStream.Position + 2) & (align - 1));
+                            pakStream.WriteUInt16LE((ushort)alignByteCount);
+                            pakStream.Write(zeroSpan[..alignByteCount]);
                         }
                         if (string.IsNullOrEmpty(pakFileInfo.Path))
                         {
                             rawSize = 0u;
-                            zlibSize = 0u;
+                            storeSize = 0u;
                         }
                         else
                         {
                             using (Stream fileStream = fileSystem.OpenRead(paths.GetFilePath(pakFileInfo.Path)))
                             {
-                                rawSize = (uint)fileStream.Length;
-                                zlibSize = 0u;
                                 if (packInfo.UseZlib && pakFileInfo.UseZlib)
                                 {
                                     long startPos = pakStream.Position;
@@ -124,11 +114,14 @@ namespace LibWindPop.Packs.Pak
                                         zlibStream.IsStreamOwner = false;
                                         fileStream.CopyTo(zlibStream);
                                     }
-                                    zlibSize = (uint)(pakStream.Position - startPos);
+                                    storeSize = (uint)(pakStream.Position - startPos);
+                                    rawSize = (uint)fileStream.Length;
                                 }
                                 else
                                 {
                                     fileStream.CopyTo(pakStream);
+                                    storeSize = (uint)fileStream.Length;
+                                    rawSize = 0u;
                                 }
                             }
                         }
@@ -136,10 +129,10 @@ namespace LibWindPop.Packs.Pak
                         pakStream.Seek(headerPosition, SeekOrigin.Begin);
                         pakStream.WriteUInt8(0x0);
                         pakStream.WriteStringWithUInt8Head(pakFileInfo.Path, encoding);
-                        pakStream.WriteUInt32LE(rawSize);
+                        pakStream.WriteUInt32LE(storeSize);
                         if (packInfo.UseZlib)
                         {
-                            pakStream.WriteUInt32LE(zlibSize);
+                            pakStream.WriteUInt32LE(rawSize);
                         }
                         pakStream.WriteInt64LE(pakFileInfo.TimeUtc.ToFileTimeUtc());
                         headerPosition = pakStream.Position;

@@ -117,7 +117,7 @@ namespace LibWindPop.Packs.Rsb
                         if (!match)
                         {
                             groupInfo.PoolIndex = (uint)poolList.Count;
-                            poolList.Add(new RsbPackPoolInfo { Name = $"{groupInfo.Name}_AutoPool", Index = uint.MaxValue, BufferCount = 1 });
+                            poolList.Add(new RsbPackPoolInfo { Name = $"{groupInfo.Name}_AutoPool", Index = uint.MaxValue, NumInstances = 1 });
                         }
                     }
                 }
@@ -488,7 +488,7 @@ namespace LibWindPop.Packs.Rsb
                                     RsbPackPoolInfo pack_pool_info = poolList[(int)i];
                                     RsbPoolDescriptor* pool_info = (RsbPoolDescriptor*)current_pointer_number;
                                     UnsafeStringHelper.SetUtf16String(pack_pool_info.Name, pool_info->Name, 0x80, encoding);
-                                    pool_info->BufferCount = pack_pool_info.BufferCount;
+                                    pool_info->BufferCount = pack_pool_info.NumInstances;
                                     current_pointer_number += pool_info_each_len;
                                 }
                                 rsbStream.SetLength(header_len);

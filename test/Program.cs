@@ -10,15 +10,28 @@ namespace LibWindPop.Test
     {
         private static void TestTask()
         {
-            //PakUnpacker.Unpack(
-            //    "D:\\main.pak",
-            //    "D:\\main_pak_unpack",
-            //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
-            //    false,
-            //    false,
-            //    true
-            //    );
+            //const string pakPath = "D:\\paks";
+            //foreach (string pak in Directory.GetFiles(pakPath))
+            //{
+            //    PakUnpacker.Unpack(
+            //        pak,
+            //        pak + "_unpack",
+            //        new NativeFileSystem(),
+            //        new ConsoleLogger(),
+            //        true,
+            //        true,
+            //        true
+            //        );
+            //}
+            PakUnpacker.Unpack(
+                "D:\\main.pak",
+                "D:\\main_pak_unpack",
+                new NativeFileSystem(),
+                new ConsoleLogger(),
+                true,
+                true,
+                true
+                );
             PakPacker.Pack(
                 "D:\\main_pak_unpack",
                 "D:\\main2.pak",

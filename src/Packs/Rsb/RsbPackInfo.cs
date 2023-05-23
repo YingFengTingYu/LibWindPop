@@ -35,7 +35,7 @@
 
         public string? Name { get; set; }
 
-        public uint BufferCount { get; set; }
+        public uint NumInstances { get; set; }
     }
 
     public class RsbPackCompositeInfo

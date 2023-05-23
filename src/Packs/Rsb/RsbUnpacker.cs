@@ -186,7 +186,7 @@ namespace LibWindPop.Packs.Rsb
                     RsbPackPoolInfo pool = new RsbPackPoolInfo();
                     pool.Index = (uint)i;
                     pool.Name = UnsafeStringHelper.GetUtf16String((nuint)poolInfo->Name, 0x80, encoding);
-                    pool.BufferCount = poolInfo->BufferCount;
+                    pool.NumInstances = poolInfo->BufferCount;
                     pools[i] = pool;
                 }
                 packInfo.Pools = pools;
