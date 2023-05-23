@@ -9,7 +9,7 @@ on:
     - '**.csproj'
 
 env:
-  DOTNET_VERSION: '8.0.100-preview.3.23178.7' # The .NET SDK version to use
+  DOTNET_VERSION: '8.0.100-preview.4.23260.5' # The .NET SDK version to use
 
 jobs:
   build:
@@ -19,9 +19,9 @@ jobs:
     strategy:
       matrix:
         os:
-        - [ubuntu-latest, sh ./linux-x64.sh, sh ./linux-arm64.sh, LibWindPop-Linux.zip]
-        - [windows-latest, ./windows-x64, ./windows-arm64, LibWindPop-Windows.zip]
-        - [macOS-latest, sh ./macos-x64.sh, sh ./macos-arm64.sh, LibWindPop-macOS.zip]
+        - [ubuntu-latest, sh ./linux-x64.sh, sh ./linux-arm64.sh, LibWindPop-Linux]
+        - [windows-latest, ./windows-x64, ./windows-arm64, LibWindPop-Windows]
+        - [macOS-latest, sh ./macos-x64.sh, sh ./macos-arm64.sh, LibWindPop-macOS]
 
     steps:
     - uses: actions/checkout@v3
