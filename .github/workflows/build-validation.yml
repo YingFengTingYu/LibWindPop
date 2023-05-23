@@ -14,14 +14,14 @@ env:
 jobs:
   build:
 
-    name: publish-${{matrix.os[0]}}
-    runs-on: ${{matrix.os[0]}}
+    name: publish-${{ matrix.os[0] }}
+    runs-on: ${{ matrix.os[0] }}
     strategy:
       matrix:
-        os:
-        - [ubuntu-latest, sh ./linux-x64.sh, sh ./linux-arm64.sh, LibWindPop-Linux]
-        - [windows-latest, ./windows-x64, ./windows-arm64, LibWindPop-Windows]
-        - [macOS-latest, sh ./macos-x64.sh, sh ./macos-arm64.sh, LibWindPop-macOS]
+        os: # osName, buildScript, osShortName
+        - [ubuntu-latest, sh ./build/actions/linux-build.sh, linux]
+        - [windows-latest, build/actions/win-build.bat, win]
+        - [macOS-latest, sh ./build/actions/osx-build.sh, osx]
 
     steps:
     - uses: actions/checkout@v3
@@ -34,14 +34,37 @@ jobs:
       run: dotnet restore ./src/LibWindPop.csproj
 
     - name: Build
-      run: |
-        cd ./build
-        ${{ matrix.os[1] }}
-        ${{ matrix.os[2] }}
-        cd ./..
+      run: ${{ matrix.os[1] }}
 
-    - name: Upload Release
+    - name: Upload x64 Shared Library
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ matrix.os[3] }}
-        path: ./build/publish/
+        name: LibWindPop-Shared-Library-${{ matrix.os[2] }}-x64
+        path: ./build/publish/nativeaot/shared/${{ matrix.os[2] }}-x64
+
+    - name: Upload x64 Static Library
+      uses: actions/upload-artifact@v3
+      with:
+        name: LibWindPop-Static-Library-${{ matrix.os[2] }}-x64
+        path: ./build/publish/nativeaot/static/${{ matrix.os[2] }}-x64
+
+    - name: Upload arm64 Shared Library
+      uses: actions/upload-artifact@v3
+      if: matrix.os[0] != 'ubuntu-latest'
+      with:
+        name: LibWindPop-Shared-Library-${{ matrix.os[2] }}-arm64
+        path: ./build/publish/nativeaot/shared/${{ matrix.os[2] }}-arm64
+
+    - name: Upload arm64 Static Library
+      uses: actions/upload-artifact@v3
+      if: matrix.os[0] != 'ubuntu-latest'
+      with:
+        name: LibWindPop-Static-Library-${{ matrix.os[2] }}-arm64
+        path: ./build/publish/nativeaot/static/${{ matrix.os[2] }}-arm64
+
+    - name: Upload Managed Library
+      uses: actions/upload-artifact@v3
+      if: matrix.os[0] == 'ubuntu-latest'
+      with:
+        name: LibWindPop-Managed-Library
+        path: ./build/publish/managed
