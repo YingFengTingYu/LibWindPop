@@ -6,7 +6,7 @@ namespace LibWindPop.Utils.Graphics.Texture
     /// <summary>
     /// Describe a texture decoder/encoder
     /// </summary>
-    public interface IPitchableTextureCoder
+    public interface IPitchableTextureCoder : ITextureCoder
     {
         /// <summary>
         /// Decode Texture Data as BGRA8888 format

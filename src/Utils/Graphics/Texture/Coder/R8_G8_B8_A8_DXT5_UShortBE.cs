@@ -11,12 +11,12 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
-            Decode(srcData, width, height, width << 2, dstBitmap);
+            Decode(srcData, width, height, (width + 3) / 4 * 16, dstBitmap);
         }
 
         public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
-            Encode(srcBitmap, dstData, width, height, width << 2);
+            Encode(srcBitmap, dstData, width, height, (width + 3) / 4 * 16);
         }
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)

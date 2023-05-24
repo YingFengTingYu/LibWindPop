@@ -1,22 +1,13 @@
 ﻿using LibWindPop.Utils.Graphics.Bitmap;
-using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Gcm;
 using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9;
 using System;
 using System.Buffers.Binary;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public readonly unsafe struct A8_R8_G8_B8_UIntBE : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture, IGcmTexture
+    public readonly unsafe struct A8_R8_G8_B8_UInt : ITextureCoder, IPitchableTextureCoder, IXbox360D3D9Texture
     {
-        public static D3DFORMAT Xbox360D3D9Format => D3DFORMAT.D3DFMT_LIN_A8R8G8B8;
-
-        public static TextureFormat GcmFormat => new TextureFormat(
-            CellGcmEnum.CELL_GCM_LOCATION_MAIN,
-            CellGcmEnum.CELL_GCM_FALSE,
-            CellGcmEnum.CELL_GCM_TEXTURE_DIMENSION_2,
-            CellGcmEnum.CELL_GCM_TEXTURE_A8R8G8B8 | CellGcmEnum.CELL_GCM_TEXTURE_LN | CellGcmEnum.CELL_GCM_TEXTURE_UN,
-            1
-            );
+        public static D3DFORMAT Xbox360D3D9Format => D3DFORMAT.D3DFMT_LIN_A8R8G8B8.GetLEFormat();
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
@@ -43,7 +34,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
                 row = dstBitmap[y];
                 for (int x = 0; x < width; x++)
                 {
-                    colorU32 = BinaryPrimitives.ReadUInt32BigEndian(srcData.Slice(tempDataIndex, 4));
+                    colorU32 = BinaryPrimitives.ReadUInt32LittleEndian(srcData.Slice(tempDataIndex, 4));
                     tempDataIndex += 4;
                     tempColor.Alpha = (byte)BitHelper.EightBitToEightBit(colorU32 >> 24);
                     tempColor.Red = (byte)BitHelper.EightBitToEightBit(colorU32 >> 16);
@@ -71,7 +62,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
                 {
                     tempColor = row[x];
                     colorU32 = (((uint)BitHelper.EightBitToFourBit(tempColor.Alpha) << 24) | ((uint)BitHelper.EightBitToFourBit(tempColor.Red) << 16) | ((uint)BitHelper.EightBitToFourBit(tempColor.Green) << 8) | (uint)BitHelper.EightBitToFourBit(tempColor.Blue));
-                    BinaryPrimitives.WriteUInt32BigEndian(dstData.Slice(tempDataIndex, 4), colorU32);
+                    BinaryPrimitives.WriteUInt32LittleEndian(dstData.Slice(tempDataIndex, 4), colorU32);
                     tempDataIndex += 4;
                 }
             }

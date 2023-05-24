@@ -5,17 +5,30 @@ using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public readonly unsafe struct R8_G8_B8_A4_ATC_Explicit_UByte : ITextureCoder, IOpenGLES20CompressedTexture
+    public readonly unsafe struct R8_G8_B8_A4_ATC_Explicit_UByte : ITextureCoder, IPitchableTextureCoder, IOpenGLES20CompressedTexture
     {
         public static int OpenGLES20InternalFormat => 0x8C93; // GL_ATC_RGBA_EXPLICIT_ALPHA_AMD
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
+            Decode(srcData, width, height, (width + 3) / 4 * 16, dstBitmap);
+        }
+
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        {
+            Encode(srcBitmap, dstData, width, height, (width + 3) / 4 * 16);
+        }
+
+        public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, int pitch, RefBitmap dstBitmap)
+        {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
-            int tempDataIndex = 0;
+            int tempDataIndex;
             Span<YFColor> decodeBlockData = stackalloc YFColor[16];
+            int srcDataIndex = 0;
             for (int yTile = 0; yTile < height; yTile += 4)
             {
+                tempDataIndex = srcDataIndex;
+                srcDataIndex += pitch;
                 for (int xTile = 0; xTile < width; xTile += 4)
                 {
                     ATCCoder.DecodeATCBlockWithExplicitAlpha(srcData.Slice(tempDataIndex, 16), decodeBlockData);
@@ -39,13 +52,16 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
             }
         }
 
-        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
+        public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height, int pitch)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
-            int tempDataIndex = 0;
+            int tempDataIndex;
             Span<YFColor> encodeBlockData = stackalloc YFColor[16];
+            int srcDataIndex = 0;
             for (int yTile = 0; yTile < height; yTile += 4)
             {
+                tempDataIndex = srcDataIndex;
+                srcDataIndex += pitch;
                 for (int xTile = 0; xTile < width; xTile += 4)
                 {
                     for (int y = 0; y < 4; y++)
