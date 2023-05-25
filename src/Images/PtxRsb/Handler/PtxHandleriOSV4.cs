@@ -75,12 +75,12 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Decode<R5_G5_B5_A1_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
             }
         }
@@ -119,12 +119,12 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Encode<R5_G5_B5_A1_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_2BPP_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandleriOSV4)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
             }
         }

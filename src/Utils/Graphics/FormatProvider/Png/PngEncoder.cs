@@ -11,14 +11,14 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Png
     /// <summary>
     /// https://www.w3.org/TR/png/
     /// </summary>
-    public static class PngEncoder
+    internal static class PngEncoder
     {
-        public static void EncodePng(Stream stream, RefBitmap bitmap)
+        public static void EncodePng(Stream stream, RefBitmap bitmap, IImageEncoderArgument? args)
         {
             WritePngMagic(stream);
             WriteIHDRChunk(stream, new IHDRInfo((uint)bitmap.Width, (uint)bitmap.Height, 8, PngColorType.TruecolourWithAlpha, 0, 0, 0));
             WritetEXtChunk(stream, "Software", "WindLib by YingFengTingYu");
-            WriteIDATChunk(stream, bitmap, 1);
+            WriteIDATChunk(stream, bitmap, args is PngEncoderArgument pngArgs ? pngArgs.ZlibLevel : 1);
             WriteIENDChunk(stream);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.DirectX;
 using UINT = System.UInt32;
 
 namespace LibWindPop.Utils.Graphics.FormatProvider.Dds

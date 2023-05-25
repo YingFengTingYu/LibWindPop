@@ -49,11 +49,16 @@ namespace LibWindPop.Utils.Graphics.FormatProvider
             return false;
         }
 
-        public static bool EncodeImage(Stream stream, RefBitmap bitmap, ImageFormat format)
+        public static bool EncodeImage(Stream stream, RefBitmap bitmap, ImageFormat format, IImageEncoderArgument? args)
         {
             if (format == ImageFormat.Png)
             {
-                PngEncoder.EncodePng(stream, bitmap);
+                PngEncoder.EncodePng(stream, bitmap, args);
+                return true;
+            }
+            if (format == ImageFormat.Dds)
+            {
+                DdsEncoder.EncodeDds(stream, bitmap, args);
                 return true;
             }
             return false;

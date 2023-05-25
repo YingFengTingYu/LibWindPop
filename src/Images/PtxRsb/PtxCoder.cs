@@ -34,7 +34,7 @@ namespace LibWindPop.Images.PtxRsb
                     logger.Log($"PtxCoder.Decode save data as png...", 0);
                     using (Stream pngStream = fileSystem.Create(pngPath))
                     {
-                        ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png);
+                        ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png, null);
                     }
                 }
             }

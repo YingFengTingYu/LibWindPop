@@ -43,5 +43,9 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Dds
         public const DWORD DDSD_MIPMAPCOUNT = 0x20000;
         public const DWORD DDSD_LINEARSIZE = 0x80000;
         public const DWORD DDSD_DEPTH = 0x800000;
+
+        public const DWORD DDSCAPS_COMPLEX = 0x8;
+        public const DWORD DDSCAPS_MIPMAP = 0x400000;
+        public const DWORD DDSCAPS_TEXTURE = 0x1000;
     }
 }

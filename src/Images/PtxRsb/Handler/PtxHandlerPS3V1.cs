@@ -27,14 +27,14 @@ namespace LibWindPop.Images.PtxRsb.Handler
 
         public void DecodePtx(ReadOnlySpan<byte> ptxData, RefBitmap dstBitmap, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger)
         {
-            logger.Log($"{nameof(PtxHandlerPS3V1)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-            TextureCoder.Decode<A8_R8_G8_B8_UIntBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+            logger.Log($"{nameof(PtxHandlerPS3V1)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+            TextureCoder.Decode<A8_R8_G8_B8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
         }
 
         public void EncodePtx(RefBitmap srcBitmap, Span<byte> ptxData, uint width, uint height, uint pitch, uint format, uint alphaSize, ILogger logger)
         {
-            logger.Log($"{nameof(PtxHandlerPS3V1)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-            TextureCoder.Encode<A8_R8_G8_B8_UIntBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+            logger.Log($"{nameof(PtxHandlerPS3V1)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+            TextureCoder.Encode<A8_R8_G8_B8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
         }
 
         public bool PeekEncodedPtxInfo(RefBitmap srcBitmap, uint format, out uint width, out uint height, out uint pitch, out uint alphaSize)

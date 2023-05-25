@@ -30,21 +30,21 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Dds
         public const DWORD DDPF_YUV = 0x200;
         public const DWORD DDPF_LUMINANCE = 0x20000;
 
-        public static readonly DWORD Dx10 = MakeFourCc('D', 'X', '1', '0'); // dds10
-        public static readonly DWORD Dxt1 = MakeFourCc('D', 'X', 'T', '1'); // DXT1
-        public static readonly DWORD Dxt2 = MakeFourCc('D', 'X', 'T', '2'); // DXT3
-        public static readonly DWORD Dxt3 = MakeFourCc('D', 'X', 'T', '3'); // DXT3
-        public static readonly DWORD Dxt4 = MakeFourCc('D', 'X', 'T', '4'); // DXT5
-        public static readonly DWORD Dxt5 = MakeFourCc('D', 'X', 'T', '5'); // DXT5
-        public static readonly DWORD Ati1 = MakeFourCc('A', 'T', 'I', '1'); // BC4
-        public static readonly DWORD Ati2 = MakeFourCc('A', 'T', 'I', '2'); // BC5
-        public static readonly DWORD Atc = MakeFourCc('A', 'T', 'C', ' '); // ATC
-        public static readonly DWORD Atci = MakeFourCc('A', 'T', 'C', 'I'); // ATCExplicit
-        public static readonly DWORD Atca = MakeFourCc('A', 'T', 'C', 'A'); // ATCInterpolated
-        public static readonly DWORD Bc4S = MakeFourCc('B', 'C', '4', 'S'); // BC4
-        public static readonly DWORD Bc4U = MakeFourCc('B', 'C', '4', 'U'); // BC4
-        public static readonly DWORD Bc5S = MakeFourCc('B', 'C', '5', 'S'); // BC5
-        public static readonly DWORD Bc5U = MakeFourCc('B', 'C', '5', 'U'); // BC5
+        public static readonly DWORD DX10 = MakeFourCc('D', 'X', '1', '0'); // dds10
+        public static readonly DWORD DXT1 = MakeFourCc('D', 'X', 'T', '1'); // DXT1
+        public static readonly DWORD DXT2 = MakeFourCc('D', 'X', 'T', '2'); // DXT3
+        public static readonly DWORD DXT3 = MakeFourCc('D', 'X', 'T', '3'); // DXT3
+        public static readonly DWORD DXT4 = MakeFourCc('D', 'X', 'T', '4'); // DXT5
+        public static readonly DWORD DXT5 = MakeFourCc('D', 'X', 'T', '5'); // DXT5
+        public static readonly DWORD ATI1 = MakeFourCc('A', 'T', 'I', '1'); // BC4
+        public static readonly DWORD ATI2 = MakeFourCc('A', 'T', 'I', '2'); // BC5
+        public static readonly DWORD ATC_ = MakeFourCc('A', 'T', 'C', ' '); // ATC
+        public static readonly DWORD ATCI = MakeFourCc('A', 'T', 'C', 'I'); // ATCExplicit
+        public static readonly DWORD ATCA = MakeFourCc('A', 'T', 'C', 'A'); // ATCInterpolated
+        public static readonly DWORD BC4S = MakeFourCc('B', 'C', '4', 'S'); // BC4
+        public static readonly DWORD BC4U = MakeFourCc('B', 'C', '4', 'U'); // BC4
+        public static readonly DWORD BC5S = MakeFourCc('B', 'C', '5', 'S'); // BC5
+        public static readonly DWORD BC5U = MakeFourCc('B', 'C', '5', 'U'); // BC5
 
         private static uint MakeFourCc(char c0, char c1, char c2, char c3)
         {

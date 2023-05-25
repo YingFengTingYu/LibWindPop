@@ -1,10 +1,10 @@
-﻿using LibWindPop.Images.PtxRsb.AlphaCoder;
-using LibWindPop.Utils;
+﻿using LibWindPop.Utils;
 using LibWindPop.Utils.Graphics.Bitmap;
 using LibWindPop.Utils.Graphics.Texture;
 using LibWindPop.Utils.Graphics.Texture.Coder;
 using LibWindPop.Utils.Logger;
 using System;
+using A8_UByte = LibWindPop.Images.PtxRsb.AlphaCoder.A8_UByte;
 
 namespace LibWindPop.Images.PtxRsb.Handler
 {
@@ -93,17 +93,17 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Decode<R5_G5_B5_A1_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
-                    TextureCoder.Decode<R8_G8_B8_PVRTCI_4BPP_UByte>(ptxData[..tex0Size_148], (int)width, (int)height, dstBitmap);
+                    TextureCoder.Decode<RGB_PVRTCI_4BPP_UByte>(ptxData[..tex0Size_148], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_148..], (int)width, (int)height, dstBitmap);
                     break;
                 case 149u:
@@ -149,17 +149,17 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Encode<R5_G5_B5_A1_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_4BPP_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_PVRTCI_2BPP_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
-                    TextureCoder.Encode<R8_G8_B8_PVRTCI_4BPP_UByte>(srcBitmap, ptxData[..tex0Size_148], (int)width, (int)height);
+                    TextureCoder.Encode<RGB_PVRTCI_4BPP_UByte>(srcBitmap, ptxData[..tex0Size_148], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_148..], (int)width, (int)height);
                     break;
                 case 149u:

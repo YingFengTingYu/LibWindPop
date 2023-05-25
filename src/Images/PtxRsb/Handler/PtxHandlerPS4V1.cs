@@ -46,12 +46,12 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Decode<R5_G6_B5_PS4_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 4u: // 0xFAC023
-                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A1_BC1_PS4_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A1_BC1_PS4_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC1_PS4_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_BC1_PS4_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 5u: // 0xFAC025
-                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_BC3_PS4_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_BC3_PS4_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_PS4_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_BC3_PS4_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
             }
         }
@@ -74,12 +74,12 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Encode<R5_G6_B5_PS4_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 4u: // 0xFAC023
-                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A1_BC1_PS4_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A1_BC1_PS4_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC1_PS4_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_BC1_PS4_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 5u: // 0xFAC025
-                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_BC3_PS4_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_BC3_PS4_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    logger.Log($"{nameof(PtxHandlerPS4V1)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_PS4_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_BC3_PS4_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
             }
         }

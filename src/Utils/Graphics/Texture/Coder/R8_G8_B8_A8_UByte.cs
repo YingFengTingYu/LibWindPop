@@ -1,11 +1,14 @@
 ﻿using LibWindPop.Utils.Graphics.Bitmap;
+using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.DirectX;
 using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.OpenGLES;
 using System;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public readonly unsafe struct R8_G8_B8_A8_UByte : ITextureCoder, IPitchableTextureCoder, IOpenGLES20Texture
+    public readonly unsafe struct R8_G8_B8_A8_UByte : ITextureCoder, IPitchableTextureCoder, IDirectXTexture, IOpenGLES20Texture
     {
+        public static DXGI_FORMAT DirectXFormat => DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
+
         public static int OpenGLES20InternalFormat => 0x1908; // GL_RGBA
 
         public static int OpenGLES20Format => 0x1908; // GL_RGBA

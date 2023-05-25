@@ -240,7 +240,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                 ptxHandler.DecodePtx(new ReadOnlySpan<byte>(ptxPtr, (int)ptxSize), refBitmap, image.Width, image.Height, image.Pitch, image.Format, image.Extend1, logger);
                                 using (Stream pngStream = fileSystem.Create(nativePngPath))
                                 {
-                                    ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png);
+                                    ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png, null);
                                 }
                                 PtxMetadata meta = new PtxMetadata
                                 {

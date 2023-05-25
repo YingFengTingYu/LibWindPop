@@ -33,8 +33,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-                    TextureCoder.Decode<A8_R8_G8_B8_UIntBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    TextureCoder.Decode<A8_R8_G8_B8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
                     logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
@@ -45,8 +45,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Decode<R5_G6_B5_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 5u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_DXT5_UByte)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_DXT5_UByte>(ptxData, (int)width, (int)height, (int)(pitch << 2), dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    TextureCoder.Decode<RGBA_BC3_UByte>(ptxData, (int)width, (int)height, (int)(pitch << 2), dstBitmap);
                     break;
                 default:
                     // Unknow gray texture?
@@ -60,8 +60,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-                    TextureCoder.Encode<A8_R8_G8_B8_UIntBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    TextureCoder.Encode<A8_R8_G8_B8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1u:
                     logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
@@ -72,8 +72,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Encode<R5_G6_B5_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 5u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_DXT5_UByte)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_DXT5_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)(pitch << 2));
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    TextureCoder.Encode<RGBA_BC3_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)(pitch << 2));
                     break;
                 default:
                     // Unknow gray texture?

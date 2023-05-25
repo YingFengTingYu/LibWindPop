@@ -34,8 +34,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-                    TextureCoder.Decode<A8_R8_G8_B8_UIntBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    TextureCoder.Decode<A8_R8_G8_B8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
                     logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
@@ -46,8 +46,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Decode<R5_G6_B5_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 256u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_DXT5_UShortBE)}", 0);
-                    TextureCoder.Decode<R8_G8_B8_A8_DXT5_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UShortBE)}", 0);
+                    TextureCoder.Decode<RGBA_BC3_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 default:
                     logger.LogError($"{nameof(PtxHandlerXbox360V1)}.{nameof(DecodePtx)} does not support format {format}", 0, true);
@@ -60,8 +60,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UIntBE)}", 0);
-                    TextureCoder.Encode<A8_R8_G8_B8_UIntBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    TextureCoder.Encode<A8_R8_G8_B8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1u:
                     logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
@@ -72,8 +72,8 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     TextureCoder.Encode<R5_G6_B5_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 256u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_DXT5_UShortBE)}", 0);
-                    TextureCoder.Encode<R8_G8_B8_A8_DXT5_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    logger.Log($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UShortBE)}", 0);
+                    TextureCoder.Encode<RGBA_BC3_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 default:
                     logger.LogError($"{nameof(PtxHandlerXbox360V1)}.{nameof(EncodePtx)} does not support format {format}", 0, true);
