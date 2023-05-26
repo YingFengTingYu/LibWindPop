@@ -1,27 +1,28 @@
 ﻿using LibWindPop.Packs.Common;
 using LibWindPop.Utils;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.Collections.Generic;
 
 namespace LibWindPop.Packs.Pak.ContentPipeline
 {
-    internal sealed class PakRebuildFile : IContentPipeline
+    public sealed class PakRebuildFile : IContentPipeline
     {
-        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
-            BuildInternal(unpackPath, fileSystem, logger, throwException);
+            BuildInternal(unpackPath, fileSystem, logger);
         }
 
-        public void OnEndBuild(string packPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string packPath, IFileSystem fileSystem, ILogger logger)
         {
 
         }
 
-        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
-            AddInternal(unpackPath, fileSystem, logger, throwException);
+            AddInternal(unpackPath, fileSystem, logger);
         }
 
         private static string GetSettingPath(PakUnpackPathProvider paths, IFileSystem fileSystem)
@@ -34,28 +35,28 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
             return path != null && path.EndsWith(".ptx", StringComparison.CurrentCultureIgnoreCase);
         }
 
-        private static void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        private static void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
-            logger.Log("Read pak pack info...", 0);
+            logger.Log("Read pak pack info...");
 
-            PakRebuildFileSetting? setting = WindJsonSerializer.TryDeserializeFromFile<PakRebuildFileSetting>(GetSettingPath(paths, fileSystem), 0u, fileSystem, logger, throwException);
+            PakRebuildFileSetting? setting = WindJsonSerializer.TryDeserializeFromFile<PakRebuildFileSetting>(GetSettingPath(paths, fileSystem), fileSystem, logger);
 
             setting ??= new PakRebuildFileSetting { PathSeparator = "\\", UnusedPathSeparator = "/", PtxAlign4K = false };
             setting.PathSeparator ??= string.Empty;
             setting.UnusedPathSeparator ??= string.Empty;
 
-            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
 
             if (packInfo == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else
             {
@@ -77,13 +78,13 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     }
                     if (delete)
                     {
-                        logger.Log($"Delete file info {pakFile?.Path}", 0);
+                        logger.Log($"Delete file info {pakFile?.Path}");
                         pakFiles.RemoveAt(i);
                     }
                 }
                 foreach (string newPakFile in nativeFiles)
                 {
-                    logger.Log($"Add file info {newPakFile}", 0);
+                    logger.Log($"Add file info {newPakFile}");
                     pakFiles.Add(new PakPackFileInfo
                     {
                         Path = newPakFile,
@@ -93,11 +94,11 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     });
                 }
                 packInfo.RecordFiles = pakFiles;
-                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
             }
         }
 
-        private static void AddInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        private static void AddInternal(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
@@ -109,7 +110,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
             bool ptxAlign4K = false;
 
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
-            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
 
             if (packInfo != null && packInfo.RecordFiles != null)
             {
@@ -147,7 +148,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                 UnusedPathSeparator = unusedPathSeparator,
                 PtxAlign4K = ptxAlign4K
             };
-            WindJsonSerializer.TrySerializeToFile(fileSystem.Combine(paths.InfoPath, GetSettingPath(paths, fileSystem)), setting, 0u, fileSystem, logger, throwException);
+            WindJsonSerializer.TrySerializeToFile(fileSystem.Combine(paths.InfoPath, GetSettingPath(paths, fileSystem)), setting, fileSystem, logger);
         }
 
         private static void GetAllFiles(string path, string add, string separator, IFileSystem fileSystem, List<string> answer)

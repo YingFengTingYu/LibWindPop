@@ -33,7 +33,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
 
@@ -49,7 +49,7 @@ namespace LibWindPop.Compressions
                     uint uncompressedSize = BinaryPrimitives.ReadUInt32LittleEndian(popHeader.Slice(4, 4));
                     if (magic != 0xDEADFED4)
                     {
-                        logger.LogError($"PopCap zlib magic mismatch: 0xDEADFED4(LE) expected but value is {magic:X8}", 1, throwException);
+                        logger.LogError($"PopCap zlib magic mismatch: 0xDEADFED4(LE) expected but value is {magic:X8}");
                     }
                     using (Stream unStream = fileSystem.Create(unPath))
                     {
@@ -64,7 +64,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
     }

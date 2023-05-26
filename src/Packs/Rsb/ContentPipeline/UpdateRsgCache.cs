@@ -7,6 +7,7 @@ using LibWindPop.PopCap.Packs.Rsb.Map;
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.IO;
@@ -16,41 +17,41 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
     internal sealed class UpdateRsgCache : IContentPipeline
     {
-        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
-            BuildInternal(unpackPath, fileSystem, logger, 6, throwException);
+            BuildInternal(unpackPath, fileSystem, logger, 6);
         }
 
-        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger, bool throwException)
-        {
-            // Nothing to do
-        }
-
-        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger)
         {
             // Nothing to do
         }
 
-        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, int compressionLevel, bool throwException)
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger)
+        {
+            // Nothing to do
+        }
+
+        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, int compressionLevel)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
 
             Encoding encoding = EncodingType.iso_8859_1.GetEncoding();
 
-            logger.Log("Read rsb pack info...", 0);
+            logger.Log("Read rsb pack info...");
 
-            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
 
             if (packInfo == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else
             {
@@ -58,11 +59,11 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                 {
                     paths = new RsbUnpackPathProvider(unpackPath, fileSystem, true);
                 }
-                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger, throwException);
+                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger);
                 RsbPackGroupInfo?[]? groupInfoList = packInfo.Groups;
                 if (groupInfoList == null)
                 {
-                    logger.LogError("Group array is null", 0, throwException);
+                    logger.LogError("Group array is null");
                 }
                 else
                 {
@@ -76,7 +77,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                         RsbPackGroupInfo? groupInfo = groupInfoList[i];
                         if (groupInfo == null)
                         {
-                            logger.LogWarning($"Group {i} is null", 0);
+                            logger.LogWarning($"Group {i} is null");
                         }
                         else
                         {
@@ -87,9 +88,9 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                             {
                                 try
                                 {
-                                    RsgMetadata? rsgPackInfo = WindJsonSerializer.TryDeserializeFromFile<RsgMetadata>(rsgMetaPath, 0u, fileSystem, logger, true);
+                                    RsgMetadata? rsgPackInfo = WindJsonSerializer.TryDeserializeFromFile<RsgMetadata>(rsgMetaPath, fileSystem, new NullLogger(true));
                                     if (rsgPackInfo != null
-                                        && rsgPackInfo.Version == packInfo.Version
+                                        && rsgPackInfo.MajorVersion == packInfo.MajorVersion
                                         && rsgPackInfo.MinorVersion == packInfo.MinorVersion
                                         && rsgPackInfo.UseBigEndian == packInfo.UseBigEndian
                                         && rsgPackInfo.ImageHandler == packInfo.ImageHandler
@@ -109,7 +110,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                             }
                             if (needToUpdate)
                             {
-                                logger.Log($"Update group {groupInfo.Id}...", 0);
+                                logger.Log($"Update group {groupInfo.Id}...");
                                 // AllocMem
                                 uint inMemSize = 0u;
                                 uint poolOffset = 0u;
@@ -222,7 +223,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                         nuint rsgHeaderPtrNumber = (nuint)rsgHeaderMemoryAllocator.Pointer;
                                         RsgInfo* rsgInfo = (RsgInfo*)rsgHeaderPtrNumber;
                                         rsgInfo->Magic = 1920165744u; // pgsr
-                                        rsgInfo->Version = packInfo.Version;
+                                        rsgInfo->Version = packInfo.MajorVersion;
                                         rsgInfo->MinorVersion = packInfo.MinorVersion;
                                         rsgInfo->CompressionFlags = groupInfo.CompressionFlags;
                                         rsgInfo->HeaderSize = rsgHeaderSize;
@@ -231,7 +232,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                         RsgMetadata rsgPackInfo = new()
                                         {
                                             UseBigEndian = packInfo.UseBigEndian,
-                                            Version = packInfo.Version,
+                                            MajorVersion = packInfo.MajorVersion,
                                             MinorVersion = packInfo.MinorVersion,
                                             ImageHandler = packInfo.ImageHandler,
                                             CompressionFlags = groupInfo.CompressionFlags,
@@ -428,7 +429,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             RsbReverser.ReverseRsgHeader(rsgInfo, Endianness.Native, rsgPackInfo.UseBigEndian ? Endianness.Big : Endianness.Little);
                                             rsgStream.Write(rsgInfo, rsgPackInfo.HeaderSize);
                                         }
-                                        WindJsonSerializer.TrySerializeToFile(rsgMetaPath, rsgPackInfo, 0u, fileSystem, logger, throwException);
+                                        WindJsonSerializer.TrySerializeToFile(rsgMetaPath, rsgPackInfo, fileSystem, logger);
                                     }
                                 }
                             }

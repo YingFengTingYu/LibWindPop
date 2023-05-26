@@ -1,6 +1,6 @@
 ﻿using LibWindPop.Packs.Common;
-using LibWindPop.Utils;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System.Collections.Generic;
 
@@ -11,6 +11,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
         private static readonly Dictionary<string, IContentPipeline?> m_ContentPipelineMap = new Dictionary<string, IContentPipeline?>
         {
             { nameof(PakRebuildFile), new PakRebuildFile() },
+            { nameof(PakPtxPS3AutoEncoder), new PakPtxPS3AutoEncoder() },
         };
 
         public static IContentPipeline? GetContentPipeline(string? contentName)
@@ -23,11 +24,11 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
             return m_ContentPipelineMap.TryAdd(pipelineName, pipeline);
         }
 
-        public static void AddContentPipeline(string unpackPath, string pipelineName, bool atFirst, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static void AddContentPipeline(string unpackPath, string pipelineName, bool atFirst, IFileSystem fileSystem, ILogger logger)
         {
             // define base path
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
-            ContentPipelineInfo pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, new NullLogger(), false) ?? new ContentPipelineInfo();
+            ContentPipelineInfo pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, fileSystem, new NullLogger(false)) ?? new ContentPipelineInfo();
             pipelineInfo.Pipelines ??= new List<string>();
             if (!pipelineInfo.Pipelines.Contains(pipelineName))
             {
@@ -42,23 +43,23 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                 IContentPipeline? pipeline = GetContentPipeline(pipelineName);
                 if (pipeline == null)
                 {
-                    logger.LogError($"Can not find content pipeline: {pipelineName}", 0, throwException);
+                    logger.LogError($"Can not find content pipeline: {pipelineName}");
                 }
                 else
                 {
-                    pipeline.OnAdd(unpackPath, fileSystem, logger, throwException);
+                    pipeline.OnAdd(unpackPath, fileSystem, logger);
                 }
-                WindJsonSerializer.TrySerializeToFile(paths.InfoContentPipelinePath, pipelineInfo, 0u, fileSystem, logger, throwException);
+                WindJsonSerializer.TrySerializeToFile(paths.InfoContentPipelinePath, pipelineInfo, fileSystem, logger);
             }
         }
 
-        internal static void StartBuildContentPipeline(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        internal static void StartBuildContentPipeline(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             // define base path
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
 
-            logger.Log("Read content pipeline info...", 0);
-            ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, logger, throwException);
+            logger.Log("Read content pipeline info...");
+            ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, fileSystem, logger);
 
             if (pipelineInfo != null && pipelineInfo.Pipelines != null)
             {
@@ -68,24 +69,24 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     IContentPipeline? pipeline = GetContentPipeline(pipelineName);
                     if (pipeline == null)
                     {
-                        logger.LogError($"Can not find content pipeline: {pipelineName}", 0, throwException);
+                        logger.LogError($"Can not find content pipeline: {pipelineName}");
                     }
                     else
                     {
-                        logger.Log($"Build content pipeline: {pipelineName}", 0);
-                        pipeline.OnStartBuild(unpackPath, fileSystem, logger, throwException);
+                        logger.Log($"Build content pipeline: {pipelineName}");
+                        pipeline.OnStartBuild(unpackPath, fileSystem, logger);
                     }
                 }
             }
         }
 
-        internal static void EndBuildContentPipeline(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        internal static void EndBuildContentPipeline(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             // define base path
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
 
-            logger.Log("Read content pipeline info...", 0);
-            ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, 0u, fileSystem, logger, throwException);
+            logger.Log("Read content pipeline info...");
+            ContentPipelineInfo? pipelineInfo = WindJsonSerializer.TryDeserializeFromFile<ContentPipelineInfo>(paths.InfoContentPipelinePath, fileSystem, logger);
 
             if (pipelineInfo != null && pipelineInfo.Pipelines != null)
             {
@@ -95,12 +96,12 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     IContentPipeline? pipeline = GetContentPipeline(pipelineName);
                     if (pipeline == null)
                     {
-                        logger.LogError($"Can not find content pipeline: {pipelineName}", 0, throwException);
+                        logger.LogError($"Can not find content pipeline: {pipelineName}");
                     }
                     else
                     {
-                        logger.Log($"Build content pipeline: {pipelineName}", 0);
-                        pipeline.OnEndBuild(rsbPath, fileSystem, logger, throwException);
+                        logger.Log($"Build content pipeline: {pipelineName}");
+                        pipeline.OnEndBuild(rsbPath, fileSystem, logger);
                     }
                 }
             }

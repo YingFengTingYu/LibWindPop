@@ -64,50 +64,50 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(B8_G8_R8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(B8_G8_R8_A8_UByte)}");
                     TextureCoder.Decode<B8_G8_R8_A8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
                 default:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 3u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
                     TextureCoder.Decode<R5_G5_B5_A1_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 21u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 22u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 23u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
                     TextureCoder.Decode<R5_G5_B5_A1_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Decode<RGBA_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Decode<RGB_PVRTCI_4BPP_UByte>(ptxData[..tex0Size_148], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_148..], (int)width, (int)height, dstBitmap);
                     break;
                 case 149u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(B8_G8_R8_A8_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(DecodePtx)} use format {nameof(B8_G8_R8_A8_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Decode<B8_G8_R8_A8_UByte>(ptxData[..tex0Size_149], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_149..], (int)width, (int)height, dstBitmap);
@@ -120,50 +120,50 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(B8_G8_R8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(B8_G8_R8_A8_UByte)}");
                     TextureCoder.Encode<B8_G8_R8_A8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1u:
                 default:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 3u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
                     TextureCoder.Encode<R5_G5_B5_A1_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 21u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 22u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 23u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
                     TextureCoder.Encode<R5_G5_B5_A1_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}");
                     TextureCoder.Encode<RGBA_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(RGB_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Encode<RGB_PVRTCI_4BPP_UByte>(srcBitmap, ptxData[..tex0Size_148], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_148..], (int)width, (int)height);
                     break;
                 case 149u:
-                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(B8_G8_R8_A8_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandleriOSV5)}.{nameof(EncodePtx)} use format {nameof(B8_G8_R8_A8_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Encode<B8_G8_R8_A8_UByte>(srcBitmap, ptxData[..tex0Size_149], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_149..], (int)width, (int)height);

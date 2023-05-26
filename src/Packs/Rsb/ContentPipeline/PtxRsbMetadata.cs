@@ -1,9 +1,12 @@
-﻿using System;
+﻿using LibWindPop.Utils.Json;
+using System;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    internal class PtxMetadata
+    internal class PtxRsbMetadata : IJsonVersionCheckable
     {
+        public static uint JsonVersion => 0u;
+
         public string? ImageHandler { get; set; }
 
         public uint Width { get; set; }

@@ -5,6 +5,7 @@ using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.IO;
@@ -14,7 +15,7 @@ namespace LibWindPop.Packs.Pak
 {
     public static class PakPacker
     {
-        public static void Pack(string unpackPath, string pakPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static void Pack(string unpackPath, string pakPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(pakPath, nameof(pakPath));
@@ -22,24 +23,24 @@ namespace LibWindPop.Packs.Pak
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
             // Update cache
-            logger.Log("Building content pipeline...", 0);
-            PakContentPipelineManager.StartBuildContentPipeline(unpackPath, fileSystem, logger, throwException);
+            logger.Log("Building content pipeline...");
+            PakContentPipelineManager.StartBuildContentPipeline(unpackPath, fileSystem, logger);
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
             // define base path
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
 
             Encoding encoding = EncodingType.ansi.GetEncoding();
 
-            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            PakPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<PakPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
             if (packInfo == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else if (packInfo.RecordFiles == null)
             {
-                logger.LogError("Record file info is null", 0, throwException);
+                logger.LogError("Record file info is null");
             }
             else
             {
@@ -49,20 +50,20 @@ namespace LibWindPop.Packs.Pak
                     {
                         using (XorStream xorStream = new XorStream(pakStream, 0xF7))
                         {
-                            PackInternal(xorStream, paths, packInfo, fileSystem, logger, encoding, throwException);
+                            PackInternal(xorStream, paths, packInfo, fileSystem, logger, encoding);
                         }
                     }
                     else
                     {
-                        PackInternal(pakStream, paths, packInfo, fileSystem, logger, encoding, throwException);
+                        PackInternal(pakStream, paths, packInfo, fileSystem, logger, encoding);
                     }
                 }
             }
 
-            PakContentPipelineManager.EndBuildContentPipeline(pakPath, unpackPath, fileSystem, logger, throwException);
+            PakContentPipelineManager.EndBuildContentPipeline(pakPath, unpackPath, fileSystem, logger);
         }
 
-        private static unsafe void PackInternal(Stream pakStream, PakUnpackPathProvider paths, PakPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)
+        private static unsafe void PackInternal(Stream pakStream, PakUnpackPathProvider paths, PakPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding)
         {
             if (packInfo.RecordFiles != null)
             {

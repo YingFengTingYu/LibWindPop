@@ -5,71 +5,74 @@ namespace LibWindPop.Utils.Logger
     public struct ConsoleLogger : ILogger
     {
         public readonly int LogLevel;
+        public readonly bool ThrowException;
+        private int m_indent;
 
-        public ConsoleLogger(int log_level)
+        public ConsoleLogger(int logLevel, bool throwException)
         {
-            LogLevel = log_level;
+            LogLevel = logLevel;
+            ThrowException = throwException;
         }
 
-        public void LogDebug(string msg, int space)
+        public readonly void LogDebug(string msg)
         {
             if (LogLevel <= -1)
             {
                 ConsoleColor backup = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Green;
-                string append = GetSpaceString(space);
+                string append = GetSpaceString(m_indent);
                 Console.WriteLine(append + msg.Replace(Environment.NewLine, Environment.NewLine + append));
                 Console.ForegroundColor = backup;
             }
         }
 
-        public void Log(string msg, int space)
+        public readonly void Log(string msg)
         {
             if (LogLevel <= 0)
             {
                 ConsoleColor backup = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.White;
-                string append = GetSpaceString(space);
+                string append = GetSpaceString(m_indent);
                 Console.WriteLine(append + msg.Replace(Environment.NewLine, Environment.NewLine + append));
                 Console.ForegroundColor = backup;
             }
         }
 
-        public void LogWarning(string msg, int space)
+        public readonly void LogWarning(string msg)
         {
             if (LogLevel <= 1)
             {
                 ConsoleColor backup = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                string append = GetSpaceString(space);
+                string append = GetSpaceString(m_indent);
                 Console.WriteLine(append + msg.Replace(Environment.NewLine, Environment.NewLine + append));
                 Console.ForegroundColor = backup;
             }
         }
 
-        public void LogError(string msg, int space, bool throwException)
+        public readonly void LogError(string msg)
         {
             if (LogLevel <= 2)
             {
                 ConsoleColor backup = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                string append = GetSpaceString(space);
+                string append = GetSpaceString(m_indent);
                 Console.WriteLine(append + msg.Replace(Environment.NewLine, Environment.NewLine + append));
                 Console.ForegroundColor = backup;
             }
-            if (throwException)
+            if (ThrowException)
             {
                 throw new LoggerException(msg);
             }
         }
 
-        public void LogException(Exception ex, int space, bool throwException)
+        public readonly void LogException(Exception ex)
         {
             if (LogLevel <= 3)
             {
                 ConsoleColor backup = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                string append = GetSpaceString(space);
+                string append = GetSpaceString(m_indent);
                 Console.WriteLine(append + ex.Message.Replace(Environment.NewLine, Environment.NewLine + append));
                 if (ex.StackTrace != null)
                 {
@@ -77,9 +80,22 @@ namespace LibWindPop.Utils.Logger
                 }
                 Console.ForegroundColor = backup;
             }
-            if (throwException)
+            if (ThrowException)
             {
                 throw new LoggerException(ex.Message, ex);
+            }
+        }
+
+        public void Indent()
+        {
+            m_indent++;
+        }
+
+        public void Unindent()
+        {
+            if (m_indent > 0)
+            {
+                m_indent--;
             }
         }
 
@@ -105,8 +121,28 @@ namespace LibWindPop.Utils.Logger
                     return "                            ";
                 case 8:
                     return "                                ";
-                case >= 9:
+                case 9:
                     return "                                    ";
+                case 10:
+                    return "                                        ";
+                case 11:
+                    return "                                            ";
+                case 12:
+                    return "                                                ";
+                case 13:
+                    return "                                                    ";
+                case 14:
+                    return "                                                        ";
+                case 15:
+                    return "                                                            ";
+                case 16:
+                    return "                                                                ";
+                case 17:
+                    return "                                                                    ";
+                case 18:
+                    return "                                                                        ";
+                case >= 19:
+                    return "                                                                            ";
             }
         }
     }

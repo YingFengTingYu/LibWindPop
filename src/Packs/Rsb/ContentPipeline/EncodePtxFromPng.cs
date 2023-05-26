@@ -6,6 +6,7 @@ using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Graphics;
 using LibWindPop.Utils.Graphics.Bitmap;
 using LibWindPop.Utils.Graphics.FormatProvider;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.IO;
@@ -14,39 +15,39 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
     internal sealed class EncodePtxFromPng : IContentPipeline
     {
-        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
-            BuildInternal(unpackPath, fileSystem, logger, throwException);
+            BuildInternal(unpackPath, fileSystem, logger);
         }
 
-        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string rsbPath, IFileSystem fileSystem, ILogger logger)
         {
             // Nothing to do
         }
 
-        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
-            AddInternal(unpackPath, fileSystem, logger, throwException);
+            AddInternal(unpackPath, fileSystem, logger);
         }
 
-        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        private static unsafe void BuildInternal(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
 
-            logger.Log("Read rsb pack info...", 0);
+            logger.Log("Read rsb pack info...");
 
-            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
 
             if (packInfo == null || packInfo.Groups == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else
             {
@@ -54,12 +55,12 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                 {
                     paths = new RsbUnpackPathProvider(unpackPath, fileSystem, true);
                 }
-                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger, throwException);
+                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger);
                 RsbPackGroupInfo?[] groups = packInfo.Groups;
                 // Get max mem size
                 const uint maxMemSize = 0x09000000u;
                 // Alloc mem
-                logger.Log($"Alloc memory buffer with size {maxMemSize}...", 0);
+                logger.Log($"Alloc memory buffer with size {maxMemSize}...");
                 using (NativeMemoryOwner owner = new NativeMemoryOwner(maxMemSize))
                 {
                     for (int i = groups.Length - 1; i >= 0; i--)
@@ -82,7 +83,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                     {
                                         try
                                         {
-                                            PtxMetadata? meta = WindJsonSerializer.TryDeserializeFromFile<PtxMetadata>(nativeMetaPath, 0u, fileSystem, logger, true);
+                                            PtxRsbMetadata? meta = WindJsonSerializer.TryDeserializeFromFile<PtxRsbMetadata>(nativeMetaPath, fileSystem, new NullLogger(true));
 
                                             if (meta != null
                                                 && meta.ImageHandler == packInfo.ImageHandler
@@ -109,7 +110,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                         uint bitmapSize = image.Width * image.Height * 4u;
                                         if (bitmapSize > owner.Size)
                                         {
-                                            logger.LogWarning($"Memory overflow! Realloc memory with size {bitmapSize}...", 0);
+                                            logger.LogWarning($"Memory overflow! Realloc memory with size {bitmapSize}...");
                                             owner.Realloc(bitmapSize);
                                         }
                                         void* bitmapPtr = owner.Pointer;
@@ -117,20 +118,20 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                         ImageCoder.DecodeImage(pngStream, refBitmap, imageFormat);
                                         if (!ptxHandler.PeekEncodedPtxInfo(refBitmap, image.Format, out uint newWidth, out uint newHeight, out uint newPitch, out uint newAlphaSize))
                                         {
-                                            logger.LogError($"PtxCoder.Encode can not encode this image with format {image.Format}: {nativePngPath}", 0, true);
+                                            logger.LogError($"PtxCoder.Encode can not encode this image with format {image.Format}: {nativePngPath}");
                                             continue;
                                         }
                                         void* ptxPtr = (void*)((nuint)owner.Pointer + bitmapSize);
                                         uint ptxSize = ptxHandler.GetPtxSize(newWidth, newHeight, newPitch, image.Format, newAlphaSize);
                                         if ((ptxSize + bitmapSize) > owner.Size)
                                         {
-                                            logger.LogWarning($"Memory overflow! Realloc memory with size {ptxSize + bitmapSize}...", 0);
+                                            logger.LogWarning($"Memory overflow! Realloc memory with size {ptxSize + bitmapSize}...");
                                             owner.Realloc(ptxSize + bitmapSize);
                                             ptxPtr = (void*)((nuint)owner.Pointer + bitmapSize);
                                             bitmapPtr = owner.Pointer;
                                             refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
                                         }
-                                        logger.Log($"Encode ptx {nativePtxPath}...", 0);
+                                        logger.Log($"Encode ptx {nativePtxPath}...");
                                         new Span<byte>(ptxPtr, (int)ptxSize).Fill(0);
                                         ptxHandler.EncodePtx(refBitmap, new Span<byte>(ptxPtr, (int)ptxSize), newWidth, newHeight, newPitch, image.Format, newAlphaSize, logger);
                                         image.Width = newWidth;
@@ -146,7 +147,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             ptxStream.Write(ptxPtr, ptxSize);
                                         }
                                         // Write meta
-                                        PtxMetadata meta = new PtxMetadata
+                                        PtxRsbMetadata meta = new PtxRsbMetadata
                                         {
                                             ImageHandler = packInfo.ImageHandler,
                                             Width = image.Width,
@@ -156,35 +157,35 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
                                             PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
                                         };
-                                        WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, 0u, fileSystem, logger, throwException);
+                                        WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
             }
         }
 
-        private static unsafe void AddInternal(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        private static unsafe void AddInternal(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, false);
 
-            logger.Log("Read rsb pack info...", 0);
+            logger.Log("Read rsb pack info...");
 
-            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            RsbPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<RsbPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
 
             if (packInfo == null || packInfo.Groups == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else
             {
@@ -192,7 +193,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                 {
                     paths = new RsbUnpackPathProvider(unpackPath, fileSystem, true);
                 }
-                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger, throwException);
+                IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(packInfo.ImageHandler, logger);
                 RsbPackGroupInfo?[] groups = packInfo.Groups;
                 // Get max mem size
                 uint maxMemSize = 0u;
@@ -211,7 +212,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                     }
                 }
                 // Alloc mem
-                logger.Log($"Alloc memory buffer with size {maxMemSize}...", 0);
+                logger.Log($"Alloc memory buffer with size {maxMemSize}...");
                 using (NativeMemoryOwner owner = new NativeMemoryOwner(maxMemSize))
                 {
                     for (int i = groups.Length - 1; i >= 0; i--)
@@ -230,7 +231,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                 uint bitmapSize = image.Width * image.Height * 4u;
                                 void* ptxPtr = owner.Pointer;
                                 void* bitmapPtr = (void*)((nuint)owner.Pointer + ptxSize);
-                                logger.Log($"Decode ptx {nativePtxPath}...", 0);
+                                logger.Log($"Decode ptx {nativePtxPath}...");
                                 // Read ptx
                                 using (Stream ptxStream = fileSystem.OpenRead(nativePtxPath))
                                 {
@@ -242,7 +243,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                 {
                                     ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png, null);
                                 }
-                                PtxMetadata meta = new PtxMetadata
+                                PtxRsbMetadata meta = new PtxRsbMetadata
                                 {
                                     ImageHandler = packInfo.ImageHandler,
                                     Width = image.Width,
@@ -252,7 +253,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                     AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
                                     PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
                                 };
-                                WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, 0u, fileSystem, logger, throwException);
+                                WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                             }
                         }
                     }

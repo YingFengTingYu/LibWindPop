@@ -1,6 +1,9 @@
-﻿using LibWindPop.Images.PtxRsb;
+﻿using LibWindPop.Images.PtxPS3;
+using LibWindPop.Images.PtxRsb;
 using LibWindPop.Images.PtxRsb.Handler;
 using LibWindPop.Packs.Pak;
+using LibWindPop.Packs.Pak.ContentPipeline;
+using LibWindPop.Packs.Rsb;
 using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Graphics.Bitmap;
 using LibWindPop.Utils.Graphics.FormatProvider;
@@ -13,69 +16,8 @@ namespace LibWindPop.Test
     {
         private static void TestTask()
         {
-            const string file = "D:\\background1.dds.png";
-            using (Stream stream = File.OpenRead(file))
-            {
-                ImageCoder.PeekImageInfo(stream, out int w, out int h, out ImageFormat f);
-                using (NativeBitmap bitmap = new NativeBitmap(w, h))
-                {
-                    RefBitmap refBitmap = bitmap.AsRefBitmap();
-                    ImageCoder.DecodeImage(stream, refBitmap, f);
-                    using (Stream outStream = File.Create(file + ".dds"))
-                    {
-                        ImageCoder.EncodeImage(outStream, refBitmap, ImageFormat.Dds, new DdsEncoderArgument(DdsEncodingFormat.RGB_ATC_UByte, false));
-                    }
-                }
-            }
-            //const string pakPath = "D:\\paks";
-            //foreach (string pak in Directory.GetFiles(pakPath))
-            //{
-            //    PakUnpacker.Unpack(
-            //        pak,
-            //        pak + "_unpack",
-            //        new NativeFileSystem(),
-            //        new ConsoleLogger(),
-            //        false,
-            //        true,
-            //        true
-            //        );
-            //}
-            //static void DecodePtxPS3(string folderPath)
-            //{
-            //    foreach (string folder in Directory.GetDirectories(folderPath))
-            //    {
-            //        DecodePtxPS3(folder);
-            //    }
-            //    foreach (string file in Directory.GetFiles(folderPath))
-            //    {
-            //        if (file.EndsWith(".ptx"))
-            //        {
-            //            using (Stream stream = File.OpenRead(file))
-            //            {
-            //                ImageCoder.PeekImageInfo(stream, out int w, out int h, out ImageFormat f);
-            //                using (NativeBitmap bitmap = new NativeBitmap(w, h))
-            //                {
-            //                    RefBitmap refBitmap = bitmap.AsRefBitmap();
-            //                    ImageCoder.DecodeImage(stream, refBitmap, f);
-            //                    using (Stream outStream = File.Create(file + ".png"))
-            //                    {
-            //                        ImageCoder.EncodeImage(outStream, refBitmap, ImageFormat.Png);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-            //PakUnpacker.Unpack(
-            //    "D:\\main.pak",
-            //    "D:\\main_pak_unpack",
-            //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
-            //    false,
-            //    false,
-            //    true
-            //    );
-            //DecodePtxPS3("D:\\main_pak_unpack");
+            RsbUnpacker.Unpack("D:\\main.rsb", "D:\\main_rsb_unpack", new NativeFileSystem(), new ConsoleLogger(), nameof(PtxHandlerXbox360V1), false);
+            RsbPacker.Pack("D:\\main_rsb_unpack", "D:\\main2.rsb", new NativeFileSystem(), new ConsoleLogger());
             //PakPacker.Pack(
             //    "D:\\main_pak_unpack",
             //    "D:\\main2.pak",

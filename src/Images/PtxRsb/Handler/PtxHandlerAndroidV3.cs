@@ -64,80 +64,80 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
                     TextureCoder.Decode<R8_G8_B8_A8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
                 default:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 3u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
                     TextureCoder.Decode<R5_G5_B5_A1_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 21u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 22u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 23u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
                     TextureCoder.Decode<R5_G5_B5_A1_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Decode<RGBA_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 32u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)}");
                     TextureCoder.Decode<RGB_ETC1_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 35u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_BC1_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_BC1_UByte)}");
                     TextureCoder.Decode<RGB_BC1_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 36u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC2_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC2_UByte)}");
                     TextureCoder.Decode<RGBA_BC2_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 37u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}");
                     TextureCoder.Decode<RGBA_BC3_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 38u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ATC_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ATC_UByte)}");
                     TextureCoder.Decode<RGB_ATC_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 39u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}");
                     TextureCoder.Decode<RGBA_ATC_Explicit_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 147u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_147 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Decode<RGB_ETC1_UByte>(ptxData[..tex0Size_147], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_147..], (int)width, (int)height, dstBitmap);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData[..tex0Size_148], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_148..], (int)width, (int)height, dstBitmap);
                     break;
                 case 149u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Decode<R8_G8_B8_A8_UByte>(ptxData[..tex0Size_149], (int)width, (int)height, dstBitmap);
                     A8_UByte.Decode(ptxData[tex0Size_149..], (int)width, (int)height, dstBitmap);
@@ -150,80 +150,80 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
                     TextureCoder.Encode<R8_G8_B8_A8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1u:
                 default:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 3u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
                     TextureCoder.Encode<R5_G5_B5_A1_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 21u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 22u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 23u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
                     TextureCoder.Encode<R5_G5_B5_A1_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 30u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
                     TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 31u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}");
                     TextureCoder.Encode<RGBA_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 32u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)}");
                     TextureCoder.Encode<RGB_ETC1_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 35u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_BC1_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_BC1_UByte)}");
                     TextureCoder.Encode<RGB_BC1_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 36u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC2_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC2_UByte)}");
                     TextureCoder.Encode<RGBA_BC2_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 37u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}");
                     TextureCoder.Encode<RGBA_BC3_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 38u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ATC_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ATC_UByte)}");
                     TextureCoder.Encode<RGB_ATC_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 39u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}");
                     TextureCoder.Encode<RGBA_ATC_Explicit_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 147u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_147 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Encode<RGB_ETC1_UByte>(srcBitmap, ptxData[..tex0Size_147], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_147..], (int)width, (int)height);
                     break;
                 case 148u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData[..tex0Size_148], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_148..], (int)width, (int)height);
                     break;
                 case 149u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV3)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A8_UByte)}");
                     int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
                     TextureCoder.Encode<R8_G8_B8_A8_UByte>(srcBitmap, ptxData[..tex0Size_149], (int)width, (int)height);
                     A8_UByte.Encode(srcBitmap, ptxData[tex0Size_149..], (int)width, (int)height);

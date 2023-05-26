@@ -24,10 +24,9 @@ namespace LibWindPop
                 GetStringFromPtr(rsbPath, m_Ansi),
                 GetStringFromPtr(unpackPath, m_Ansi),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, throwException != 0),
                 GetStringFromPtr(ptxHandlerType, m_Ansi),
-                useGroupFolder != 0,
-                throwException != 0
+                useGroupFolder != 0
                 ));
         }
 
@@ -38,10 +37,9 @@ namespace LibWindPop
                 GetStringFromPtr(rsbPath, m_utf8),
                 GetStringFromPtr(unpackPath, m_utf8),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, throwException != 0),
                 GetStringFromPtr(ptxHandlerType, m_utf8),
-                useGroupFolder != 0,
-                throwException != 0
+                useGroupFolder != 0
                 ));
         }
 
@@ -53,8 +51,7 @@ namespace LibWindPop
                 GetStringFromPtr(pipelineName, m_Ansi),
                 atFirst != 0,
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -66,8 +63,7 @@ namespace LibWindPop
                 GetStringFromPtr(pipelineName, m_utf8),
                 atFirst != 0,
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -78,8 +74,7 @@ namespace LibWindPop
                 GetStringFromPtr(unpackPath, m_Ansi),
                 GetStringFromPtr(rsbPath, m_Ansi),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -90,8 +85,7 @@ namespace LibWindPop
                 GetStringFromPtr(unpackPath, m_utf8),
                 GetStringFromPtr(rsbPath, m_utf8),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -116,11 +110,11 @@ namespace LibWindPop
         [UnmanagedCallersOnly(EntryPoint = nameof(PtxRsbDecode))]
         public static int PtxRsbDecode(sbyte* ptxPath, sbyte* pngPath, sbyte* ptxHandlerType, int width, int height, int pitch, int format, int alphaSize, int logLevel)
         {
-            return PCall(() => Images.PtxRsb.PtxCoder.Decode(
+            return PCall(() => Images.PtxRsb.PtxRsbCoder.Decode(
                 GetStringFromPtr(ptxPath, m_Ansi),
                 GetStringFromPtr(pngPath, m_Ansi),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, true),
                 (uint)width,
                 (uint)height,
                 (uint)pitch,
@@ -133,11 +127,11 @@ namespace LibWindPop
         [UnmanagedCallersOnly(EntryPoint = nameof(PtxRsbDecodeU8))]
         public static int PtxRsbDecodeU8(sbyte* ptxPath, sbyte* pngPath, sbyte* ptxHandlerType, int width, int height, int pitch, int format, int alphaSize, int logLevel)
         {
-            return PCall(() => Images.PtxRsb.PtxCoder.Decode(
+            return PCall(() => Images.PtxRsb.PtxRsbCoder.Decode(
                 GetStringFromPtr(ptxPath, m_utf8),
                 GetStringFromPtr(pngPath, m_utf8),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, true),
                 (uint)width,
                 (uint)height,
                 (uint)pitch,
@@ -152,11 +146,11 @@ namespace LibWindPop
         {
             return PCall(() =>
             {
-                Images.PtxRsb.PtxCoder.Encode(
+                Images.PtxRsb.PtxRsbCoder.Encode(
                     GetStringFromPtr(pngPath, m_Ansi),
                     GetStringFromPtr(ptxPath, m_Ansi),
                     new NativeFileSystem(),
-                    new ConsoleLogger(logLevel),
+                    new ConsoleLogger(logLevel, true),
                     (uint)format,
                     out uint tWidth,
                     out uint tHeight,
@@ -176,11 +170,11 @@ namespace LibWindPop
         {
             return PCall(() =>
             {
-                Images.PtxRsb.PtxCoder.Encode(
+                Images.PtxRsb.PtxRsbCoder.Encode(
                     GetStringFromPtr(pngPath, m_utf8),
                     GetStringFromPtr(ptxPath, m_utf8),
                     new NativeFileSystem(),
-                    new ConsoleLogger(logLevel),
+                    new ConsoleLogger(logLevel, true),
                     (uint)format,
                     out uint tWidth,
                     out uint tHeight,
@@ -220,10 +214,9 @@ namespace LibWindPop
                 GetStringFromPtr(pakPath, m_Ansi),
                 GetStringFromPtr(unpackPath, m_Ansi),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, throwException != 0),
                 useZlib != 0,
-                useAlign != 0,
-                throwException != 0
+                useAlign != 0
                 ));
         }
 
@@ -234,10 +227,9 @@ namespace LibWindPop
                 GetStringFromPtr(pakPath, m_utf8),
                 GetStringFromPtr(unpackPath, m_utf8),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
+                new ConsoleLogger(logLevel, throwException != 0),
                 useZlib != 0,
-                useAlign != 0,
-                throwException != 0
+                useAlign != 0
                 ));
         }
 
@@ -249,8 +241,7 @@ namespace LibWindPop
                 GetStringFromPtr(pipelineName, m_Ansi),
                 atFirst != 0,
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -262,8 +253,7 @@ namespace LibWindPop
                 GetStringFromPtr(pipelineName, m_utf8),
                 atFirst != 0,
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -274,8 +264,7 @@ namespace LibWindPop
                 GetStringFromPtr(unpackPath, m_Ansi),
                 GetStringFromPtr(pakPath, m_Ansi),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 
@@ -286,8 +275,7 @@ namespace LibWindPop
                 GetStringFromPtr(unpackPath, m_utf8),
                 GetStringFromPtr(pakPath, m_utf8),
                 new NativeFileSystem(),
-                new ConsoleLogger(logLevel),
-                throwException != 0
+                new ConsoleLogger(logLevel, throwException != 0)
                 ));
         }
 

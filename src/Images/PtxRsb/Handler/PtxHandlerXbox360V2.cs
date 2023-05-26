@@ -33,24 +33,24 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}");
                     TextureCoder.Decode<A8_R8_G8_B8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}");
                     TextureCoder.Decode<A4_R4_G4_B4_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShortBE)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShortBE)}");
                     TextureCoder.Decode<R5_G6_B5_UShortBE>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 5u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}");
                     TextureCoder.Decode<RGBA_BC3_UByte>(ptxData, (int)width, (int)height, (int)(pitch << 2), dstBitmap);
                     break;
                 default:
                     // Unknow gray texture?
-                    logger.LogError($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} does not support format {format}", 0, true);
+                    logger.LogError($"{nameof(PtxHandlerXbox360V2)}.{nameof(DecodePtx)} does not support format {format}");
                     break;
             }
         }
@@ -60,24 +60,24 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A8_R8_G8_B8_UByte)}");
                     TextureCoder.Encode<A8_R8_G8_B8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(A4_R4_G4_B4_UShortBE)}");
                     TextureCoder.Encode<A4_R4_G4_B4_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShortBE)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShortBE)}");
                     TextureCoder.Encode<R5_G6_B5_UShortBE>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 5u:
-                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}");
                     TextureCoder.Encode<RGBA_BC3_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)(pitch << 2));
                     break;
                 default:
                     // Unknow gray texture?
-                    logger.LogError($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} does not support format {format}", 0, true);
+                    logger.LogError($"{nameof(PtxHandlerXbox360V2)}.{nameof(EncodePtx)} does not support format {format}");
                     break;
             }
         }

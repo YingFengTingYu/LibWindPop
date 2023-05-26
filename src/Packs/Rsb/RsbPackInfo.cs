@@ -1,14 +1,16 @@
-﻿namespace LibWindPop.Packs.Rsb
+﻿using LibWindPop.Utils.Json;
+
+namespace LibWindPop.Packs.Rsb
 {
-    public class RsbPackInfo
+    public class RsbPackInfo : IJsonVersionCheckable
     {
-        public uint Version { get; set; }
+        public static uint JsonVersion => 1u;
+
+        public uint MajorVersion { get; set; }
 
         public uint MinorVersion { get; set; }
 
         public bool UseBigEndian { get; set; }
-
-        //public bool UseWholeZLib { get; set; }
 
         public bool UseExternalRsg { get; set; }
 
@@ -31,7 +33,7 @@
 
     public class RsbPackPoolInfo
     {
-        public uint Index { get; set; }
+        public uint Id { get; set; }
 
         public string? Name { get; set; }
 
@@ -62,7 +64,7 @@
 
         public string? Name { get; set; }
 
-        public uint PoolIndex { get; set; }
+        public uint PoolId { get; set; }
 
         public uint CompressionFlags { get; set; }
 

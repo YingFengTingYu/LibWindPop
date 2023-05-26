@@ -40,24 +40,24 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
                     TextureCoder.Decode<R8_G8_B8_A8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 1u:
                 default:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 2u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
                     break;
                 case 21u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Decode<R4_G4_B4_A4_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
                 case 22u:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Decode<R5_G6_B5_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
             }
@@ -68,24 +68,24 @@ namespace LibWindPop.Images.PtxRsb.Handler
             switch (format)
             {
                 case 0:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
                     TextureCoder.Encode<R8_G8_B8_A8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 1:
                 default:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 2:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
                     break;
                 case 21:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
                     TextureCoder.Encode<R4_G4_B4_A4_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
                 case 22:
-                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}", 0);
+                    logger.Log($"{nameof(PtxHandlerAndroidV1)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
                     TextureCoder.Encode<R5_G6_B5_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
             }

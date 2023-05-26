@@ -27,7 +27,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
 
@@ -49,7 +49,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
     }

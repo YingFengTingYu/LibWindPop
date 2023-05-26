@@ -8,7 +8,7 @@ namespace LibWindPop.Compressions
 {
     public static class Bzip2Compressor
     {
-        public static void Compress(string unPath, string bzip2Path, IFileSystem fileSystem, ILogger logger, int level, bool throwException)
+        public static void Compress(string unPath, string bzip2Path, IFileSystem fileSystem, ILogger logger, int level)
         {
             try
             {
@@ -26,11 +26,11 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
 
-        public static void Uncompress(string bzip2Path, string unPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static void Uncompress(string bzip2Path, string unPath, IFileSystem fileSystem, ILogger logger)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
     }

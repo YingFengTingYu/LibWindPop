@@ -1,10 +1,13 @@
-﻿using System;
+﻿using LibWindPop.Utils.Json;
+using System;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    internal class RsgMetadata
+    internal class RsgMetadata : IJsonVersionCheckable
     {
-        public uint Version { get; set; }
+        public static uint JsonVersion => 1u;
+
+        public uint MajorVersion { get; set; }
 
         public uint MinorVersion { get; set; }
 

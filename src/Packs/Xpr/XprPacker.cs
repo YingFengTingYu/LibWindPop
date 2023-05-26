@@ -2,6 +2,7 @@
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.Buffers.Binary;
@@ -12,7 +13,7 @@ namespace LibWindPop.Packs.Xpr
 {
     public static class XprPacker
     {
-        public static unsafe void Pack(string unpackPath, string xprPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public static unsafe void Pack(string unpackPath, string xprPath, IFileSystem fileSystem, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(xprPath, nameof(xprPath));
@@ -22,16 +23,16 @@ namespace LibWindPop.Packs.Xpr
             Encoding encoding = EncodingType.iso_8859_1.GetEncoding();
             XprUnpackPathProvider paths = new XprUnpackPathProvider(unpackPath, fileSystem);
 
-            logger.Log("Get pack info...", 0);
+            logger.Log("Get pack info...");
 
-            XprPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<XprPackInfo>(paths.InfoPackInfoPath, 0u, fileSystem, logger, throwException);
+            XprPackInfo? packInfo = WindJsonSerializer.TryDeserializeFromFile<XprPackInfo>(paths.InfoPackInfoPath, fileSystem, logger);
             if (packInfo == null)
             {
-                logger.LogError("Pack info is null", 0, throwException);
+                logger.LogError("Pack info is null");
             }
             else if (packInfo.RecordFiles == null)
             {
-                logger.LogError("Record paths is null", 0, throwException);
+                logger.LogError("Record paths is null");
             }
             else
             {

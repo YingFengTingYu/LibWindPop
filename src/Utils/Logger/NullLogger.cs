@@ -2,37 +2,54 @@
 
 namespace LibWindPop.Utils.Logger
 {
-    public struct NullLogger : ILogger
+    public readonly struct NullLogger : ILogger
     {
-        public void LogDebug(string msg, int space)
+        public readonly bool ThrowException;
+
+        public NullLogger(bool throwException)
+        {
+            ThrowException = throwException;
+        }
+
+        public readonly void LogDebug(string msg)
         {
 
         }
 
-        public void Log(string msg, int space)
+        public readonly void Log(string msg)
         {
 
         }
 
-        public void LogWarning(string msg, int space)
+        public readonly void LogWarning(string msg)
         {
 
         }
 
-        public void LogError(string msg, int space, bool throwException)
+        public readonly void LogError(string msg)
         {
-            if (throwException)
+            if (ThrowException)
             {
                 throw new LoggerException(msg);
             }
         }
 
-        public void LogException(Exception ex, int space, bool throwException)
+        public readonly void LogException(Exception ex)
         {
-            if (throwException)
+            if (ThrowException)
             {
                 throw new LoggerException(ex.Message, ex);
             }
+        }
+
+        public readonly void Indent()
+        {
+
+        }
+
+        public readonly void Unindent()
+        {
+
         }
     }
 }

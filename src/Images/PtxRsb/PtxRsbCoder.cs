@@ -8,7 +8,7 @@ using System.IO;
 
 namespace LibWindPop.Images.PtxRsb
 {
-    public static class PtxCoder
+    public static class PtxRsbCoder
     {
         public static void Decode(string ptxPath, string pngPath, IFileSystem fileSystem, ILogger logger, uint width, uint height, uint pitch, uint format, uint alphaSize, string? ptxHandlerType)
         {
@@ -16,9 +16,9 @@ namespace LibWindPop.Images.PtxRsb
             ArgumentNullException.ThrowIfNull(pngPath, nameof(pngPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            IPtxRsbHandler handler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger, false);
+            IPtxRsbHandler handler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger);
             uint dataSize = handler.GetPtxSize(width, height, pitch, format, alphaSize);
-            logger.Log($"PtxCoder.Decode load data from ptx...", 0);
+            logger.Log($"PtxRsbCoder.Decode load data from ptx...");
             using (NativeMemoryOwner owner = new NativeMemoryOwner(dataSize))
             {
                 Span<byte> ptxData = owner.AsSpan();
@@ -29,9 +29,9 @@ namespace LibWindPop.Images.PtxRsb
                 using (IDisposableBitmap bitmap = new NativeBitmap((int)width, (int)height))
                 {
                     RefBitmap refBitmap = bitmap.AsRefBitmap();
-                    logger.Log($"PtxCoder.Decode decode ptx with width = {width}, height = {height}, pitch = {pitch}, format = {format}, chineseAlphaSize = {alphaSize}...", 0);
+                    logger.Log($"PtxRsbCoder.Decode decode ptx with width = {width}, height = {height}, pitch = {pitch}, format = {format}, chineseAlphaSize = {alphaSize}...");
                     handler.DecodePtx(ptxData, refBitmap, width, height, pitch, format, alphaSize, logger);
-                    logger.Log($"PtxCoder.Decode save data as png...", 0);
+                    logger.Log($"PtxRsbCoder.Decode save data as png...");
                     using (Stream pngStream = fileSystem.Create(pngPath))
                     {
                         ImageCoder.EncodeImage(pngStream, refBitmap, ImageFormat.Png, null);
@@ -46,8 +46,8 @@ namespace LibWindPop.Images.PtxRsb
             ArgumentNullException.ThrowIfNull(ptxPath, nameof(ptxPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            IPtxRsbHandler handler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger, false);
-            logger.Log($"PtxCoder.Encode load data from png...", 0);
+            IPtxRsbHandler handler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger);
+            logger.Log($"PtxRsbCoder.Encode load data from png...");
             using (Stream pngStream = fileSystem.OpenRead(pngPath))
             {
                 ImageCoder.PeekImageInfo(pngStream, out int imgWidth, out int imgHeight, out ImageFormat imgFormat);
@@ -57,16 +57,16 @@ namespace LibWindPop.Images.PtxRsb
                     ImageCoder.DecodeImage(pngStream, refBitmap, imgFormat);
                     if (!handler.PeekEncodedPtxInfo(refBitmap, format, out width, out height, out pitch, out alphaSize))
                     {
-                        logger.LogError($"PtxCoder.Encode can not encode this image with format {format}", 0, true);
+                        logger.LogError($"PtxRsbCoder.Encode can not encode this image with format {format}");
                     }
                     uint dataSize = handler.GetPtxSize(width, height, pitch, format, alphaSize);
                     using (NativeMemoryOwner owner = new NativeMemoryOwner(dataSize))
                     {
                         owner.Fill(0);
                         Span<byte> ptxData = owner.AsSpan();
-                        logger.Log($"PtxCoder.Encode encode ptx with width = {width}, height = {height}, pitch = {pitch}, format = {format}, chineseAlphaSize = {alphaSize}...", 0);
+                        logger.Log($"PtxRsbCoder.Encode encode ptx with width = {width}, height = {height}, pitch = {pitch}, format = {format}, chineseAlphaSize = {alphaSize}...");
                         handler.EncodePtx(refBitmap, ptxData, width, height, pitch, format, alphaSize, logger);
-                        logger.Log($"PtxCoder.Encode save data as ptx...", 0);
+                        logger.Log($"PtxRsbCoder.Encode save data as ptx...");
                         using (Stream ptxStream = fileSystem.Create(ptxPath))
                         {
                             ptxStream.Write(ptxData);

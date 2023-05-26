@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using LibWindPop.Utils.Json;
+using System.Collections.Generic;
 
 namespace LibWindPop.Packs.Rsb
 {
-    public class RsbManifestInfo
+    public class RsbManifestInfo : IJsonVersionCheckable
     {
+        public static uint JsonVersion => 0u;
+
         public RsbManifestCompositeInfo[]? CompositeGroups { get; set; }
     }
 

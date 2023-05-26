@@ -3,6 +3,7 @@ using LibWindPop.Packs.Pak.ContentPipeline;
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.Buffers.Binary;
@@ -17,24 +18,29 @@ namespace LibWindPop.Packs.Pak
     {
         private record struct PakFilePair(string Path, uint StoreSize, uint RawSize, DateTime TimeUtc);
 
-        public static void Unpack(string pakPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, bool throwException)
+        public static void Unpack(string pakPath, string unpackPath, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign)
         {
             ArgumentNullException.ThrowIfNull(pakPath, nameof(pakPath));
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get unpack info...", 0);
+            logger.Log($"Start task: {nameof(PakUnpacker)}.{nameof(Unpack)}");
 
+            logger.Log("Get unpack info...");
+            logger.Indent();
             PakUnpackPathProvider paths = new PakUnpackPathProvider(unpackPath, fileSystem);
-
             Encoding encoding = EncodingType.ansi.GetEncoding();
-
+            logger.Log($"String encoding: {encoding.EncodingName}");
             PakPackInfo packInfo = new PakPackInfo
             {
                 ZlibLevel = 6
             };
+            logger.Log($"Default zlib level: {packInfo.ZlibLevel}");
+            logger.Unindent();
 
+            logger.Log("Open pak file...");
+            logger.Indent();
             using (Stream pakRawStream = fileSystem.OpenRead(pakPath))
             {
                 uint magic = pakRawStream.ReadUInt32LE();
@@ -46,22 +52,26 @@ namespace LibWindPop.Packs.Pak
                     packInfo.UseEncrypt = true;
                     using (XorStream pakStream = new XorStream(pakRawStream, 0xF7))
                     {
-                        UnpackInternal(pakStream, paths, packInfo, fileSystem, logger, useZlib, useAlign, encoding, throwException);
+                        UnpackInternal(pakStream, paths, packInfo, fileSystem, logger, useZlib, useAlign, encoding);
                     }
                 }
                 else
                 {
                     // Raw pak
                     packInfo.UseEncrypt = false;
-                    UnpackInternal(pakRawStream, paths, packInfo, fileSystem, logger, useZlib, useAlign, encoding, throwException);
+                    UnpackInternal(pakRawStream, paths, packInfo, fileSystem, logger, useZlib, useAlign, encoding);
                 }
+                logger.Log("Close pak file...");
             }
+            logger.Unindent();
 
-            logger.Log("Save pack info...", 0);
-            WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+            logger.Log("Save pack info...");
+            logger.Indent();
+            WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
+            logger.Unindent();
 
             // Add Content Pipeline
-            logger.Log("Create content pipeline...", 0);
+            logger.Log("Create content pipeline...");
             try
             {
                 if (File.Exists(paths.InfoContentPipelinePath))
@@ -71,12 +81,12 @@ namespace LibWindPop.Packs.Pak
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
-            PakContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(PakRebuildFile), true, fileSystem, logger, throwException);
+            PakContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(PakRebuildFile), true, fileSystem, logger);
         }
 
-        private static void UnpackInternal(Stream pakStream, PakUnpackPathProvider paths, PakPackInfo packInfo, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, Encoding encoding, bool throwException)
+        private static void UnpackInternal(Stream pakStream, PakUnpackPathProvider paths, PakPackInfo packInfo, IFileSystem fileSystem, ILogger logger, bool useZlib, bool useAlign, Encoding encoding)
         {
             uint magic = pakStream.ReadUInt32LE();
             if (magic != 0xBAC04AC0u)
@@ -84,11 +94,11 @@ namespace LibWindPop.Packs.Pak
                 if (BinaryPrimitives.ReverseEndianness(magic) == 0x0FF512EDu)
                 {
                     // Xmem unsupported
-                    logger.LogError($"Pak magic mismatch: 0xBAC04AC0 expected but value is 0x{magic:X8}. If this pak is xmem file, please use xbdecompress.exe to uncompress it.", 0, throwException);
+                    logger.LogError($"Pak magic mismatch: 0xBAC04AC0 expected but value is 0x{magic:X8}. If this pak is xmem file, please use xbdecompress.exe to uncompress it.");
                 }
                 else
                 {
-                    logger.LogError($"Pak magic mismatch: 0xBAC04AC0 expected but value is 0x{magic:X8}", 1, throwException);
+                    logger.LogError($"Pak magic mismatch: 0xBAC04AC0 expected but value is 0x{magic:X8}");
                 }
             }
             uint version = pakStream.ReadUInt32LE();

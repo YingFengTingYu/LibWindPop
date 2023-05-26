@@ -39,7 +39,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
 
@@ -58,11 +58,11 @@ namespace LibWindPop.Compressions
                     uint version = BinaryPrimitives.ReadUInt32LittleEndian(soeHeader.Slice(16, 4));
                     if (magic != 0x00454F53u) // SOE\0
                     {
-                        logger.LogError($"Soe magic mismatch: SOE\0 expected but value is {magic:X8}", 1, throwException);
+                        logger.LogError($"Soe magic mismatch: SOE\0 expected but value is {magic:X8}");
                     }
                     if (compression != 0x00424C5Au) // ZLB\0
                     {
-                        logger.LogError($"Soe compression mismatch: ZLB\0 expected but value is {compression:X8}", 1, throwException);
+                        logger.LogError($"Soe compression mismatch: ZLB\0 expected but value is {compression:X8}");
                     }
                     Debug.Assert(version == 1u);
                     using (Stream unStream = fileSystem.Create(unPath))
@@ -79,7 +79,7 @@ namespace LibWindPop.Compressions
             }
             catch (Exception ex) when (ex is not LoggerException)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
         }
     }

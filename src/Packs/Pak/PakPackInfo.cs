@@ -1,10 +1,13 @@
-﻿using System;
+﻿using LibWindPop.Utils.Json;
+using System;
 using System.Collections.Generic;
 
 namespace LibWindPop.Packs.Pak
 {
-    public class PakPackInfo
+    public class PakPackInfo : IJsonVersionCheckable
     {
+        public static uint JsonVersion => 0u;
+
         public bool UseEncrypt { get; set; }
 
         public bool UseZlib { get; set; }

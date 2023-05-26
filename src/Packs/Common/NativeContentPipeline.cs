@@ -21,7 +21,7 @@ namespace LibWindPop.Packs.Common
             m_onAdd = onAdd;
         }
 
-        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             if (m_onStartBuild != null)
             {
@@ -37,7 +37,7 @@ namespace LibWindPop.Packs.Common
             }
         }
 
-        public void OnEndBuild(string packPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnEndBuild(string packPath, IFileSystem fileSystem, ILogger logger)
         {
             if (m_onEndBuild != null)
             {
@@ -53,7 +53,7 @@ namespace LibWindPop.Packs.Common
             }
         }
 
-        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger, bool throwException)
+        public void OnAdd(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             if (m_onAdd != null)
             {

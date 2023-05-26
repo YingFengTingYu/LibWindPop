@@ -36,14 +36,14 @@ namespace LibWindPop.Images.PtxRsb
             return m_ptxHandlerMap.TryAdd(handlerName, handler);
         }
 
-        public static IPtxRsbHandler GetHandlerFromId<TLogger>(string? handlerId, TLogger logger, bool throwException)
+        public static IPtxRsbHandler GetHandlerFromId<TLogger>(string? handlerId, TLogger logger)
             where TLogger : ILogger
         {
             if (handlerId != null && m_ptxHandlerMap.TryGetValue(handlerId, out IPtxRsbHandler? handler) && handler != null)
             {
                 return handler;
             }
-            logger.LogError($"Cannot find ptx handler {handlerId}", 0, throwException);
+            logger.LogError($"Cannot find ptx handler {handlerId}");
             return m_ptxHandlerMap[nameof(PtxHandlerAndroidV3)];
         }
     }

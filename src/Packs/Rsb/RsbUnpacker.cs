@@ -7,6 +7,7 @@ using LibWindPop.PopCap.Packs.Rsb.Map;
 using LibWindPop.Utils;
 using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
+using LibWindPop.Utils.Json;
 using LibWindPop.Utils.Logger;
 using System;
 using System.Buffers.Binary;
@@ -21,14 +22,14 @@ namespace LibWindPop.Packs.Rsb
     {
         private record struct CompiledMapPair(string Key, nuint Value);
 
-        public static void Unpack(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, string? ptxHandlerType, bool useGroupFolder, bool throwException)
+        public static void Unpack(string rsbPath, string unpackPath, IFileSystem fileSystem, ILogger logger, string? ptxHandlerType, bool useGroupFolder)
         {
             ArgumentNullException.ThrowIfNull(rsbPath, nameof(rsbPath));
             ArgumentNullException.ThrowIfNull(unpackPath, nameof(unpackPath));
             ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
 
-            logger.Log("Get unpack info...", 0);
+            logger.Log("Get unpack info...");
 
             // define base path
             RsbUnpackPathProvider paths = new RsbUnpackPathProvider(unpackPath, fileSystem, useGroupFolder);
@@ -39,43 +40,17 @@ namespace LibWindPop.Packs.Rsb
             // create content
             RsbPackInfo packInfo = new RsbPackInfo();
 
-            logger.Log("Open rsb file...", 0);
+            logger.Log("Open rsb file...");
             using (Stream rsbRawStream = fileSystem.OpenRead(rsbPath))
             {
-                //logger.Log("Check whole zlib...", 0);
-                //uint magic = rsbRawStream.ReadUInt32LE();
-                //if (magic == 0xDEADFED4u)
-                //{
-                //    logger.Log("This rsb file uses whole zlib", 1);
-                //    // read size
-                //    uint size = rsbRawStream.ReadUInt32LE();
-                //    // Create temp file
-                //    logger.Log("Create temp file to uncompress...", 1);
-                //    // uncompress
-                //    using (ITempFile tempFile = fileSystem.CreateTempFile())
-                //    {
-                //        using (InflaterInputStream zlibStream = new InflaterInputStream(rsbRawStream))
-                //        {
-                //            zlibStream.IsStreamOwner = false;
-                //            zlibStream.CopyTo(tempFile.Stream);
-                //        }
-                //        UnpackInternal(tempFile.Stream, paths, parentPath, ptxHandlerType, packInfo, fileSystem, logger, encoding, throwException);
-                //        packInfo.UseWholeZLib = true;
-                //    }
-                //}
-                //else
-                //{
-                //    logger.Log("This rsb file does not use whole zlib", 1);
-                UnpackInternal(rsbRawStream, paths, parentPath, ptxHandlerType, packInfo, fileSystem, logger, encoding, throwException);
-                //    packInfo.UseWholeZLib = false;
-                //}
+                UnpackInternal(rsbRawStream, paths, parentPath, ptxHandlerType, packInfo, fileSystem, logger, encoding);
             }
 
-            logger.Log("Save pack info...", 0);
-            WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, 0u, fileSystem, logger, throwException);
+            logger.Log("Save pack info...");
+            WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
 
             // Add Content Pipeline
-            logger.Log("Create content pipeline...", 0);
+            logger.Log("Create content pipeline...");
             try
             {
                 if (File.Exists(paths.InfoContentPipelinePath))
@@ -85,15 +60,15 @@ namespace LibWindPop.Packs.Rsb
             }
             catch (Exception ex)
             {
-                logger.LogException(ex, 0, throwException);
+                logger.LogException(ex);
             }
-            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), true, fileSystem, logger, throwException);
+            RsbContentPipelineManager.AddContentPipeline(paths.UnpackPath, nameof(UpdateRsgCache), true, fileSystem, logger);
         }
 
-        private static unsafe void UnpackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, string? ptxHandlerType, RsbPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding, bool throwException)
+        private static unsafe void UnpackInternal(Stream rsbStream, RsbUnpackPathProvider paths, string? parentPath, string? ptxHandlerType, RsbPackInfo packInfo, IFileSystem fileSystem, ILogger logger, Encoding encoding)
         {
-            logger.Log("Read rsb info...", 0);
-            IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger, throwException);
+            logger.Log("Read rsb info...");
+            IPtxRsbHandler ptxHandler = PtxRsbHandlerManager.GetHandlerFromId(ptxHandlerType, logger);
             Span<byte> bufferSpan = stackalloc byte[16];
             //rsbStream.Seek(0, SeekOrigin.Begin);
             rsbStream.Read(bufferSpan);
@@ -102,11 +77,11 @@ namespace LibWindPop.Packs.Rsb
             {
                 if (magic == 0xDEADFED4u)
                 {
-                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}. If this rsb is smf file, please use PopCapZlibCompressor.Uncompress to uncompress it.", 1, throwException);
+                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}. If this rsb is smf file, please use PopCapZlibCompressor.Uncompress to uncompress it.");
                 }
                 else
                 {
-                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}", 1, throwException);
+                    logger.LogError($"Rsb magic mismatch: 1bsr(LE)/rsb1(BE) expected but value is 0x{magic:X8}");
                 }
             }
             bool useBigEndian = magic != 0x72736231u;
@@ -114,7 +89,7 @@ namespace LibWindPop.Packs.Rsb
             uint headerSize = useBigEndian
                 ? BinaryPrimitives.ReadUInt32BigEndian(bufferSpan[12..])
                 : BinaryPrimitives.ReadUInt32LittleEndian(bufferSpan[12..]);
-            logger.Log("Read rsb header...", 0);
+            logger.Log("Read rsb header...");
             // read header
             using (NativeMemoryOwner rsbHeaderMemoryAllocator = new NativeMemoryOwner(headerSize))
             {
@@ -125,11 +100,11 @@ namespace LibWindPop.Packs.Rsb
                 RsbInfo* rsbInfo = (RsbInfo*)headerPtrNumber;
                 if (reverseEndian)
                 {
-                    logger.Log("Reverse rsb header endianness...", 0);
+                    logger.Log("Reverse rsb header endianness...");
                     RsbReverser.ReverseRsbHeader(rsbInfo, Endianness.NoneNative, Endianness.Native);
                 }
                 bool externalRsg = rsbStream.Length == rsbInfo->HeaderSize;
-                packInfo.Version = rsbInfo->Version;
+                packInfo.MajorVersion = rsbInfo->Version;
                 packInfo.MinorVersion = rsbInfo->MinorVersion;
                 packInfo.UseBigEndian = useBigEndian;
                 packInfo.UseExternalRsg = externalRsg;
@@ -140,14 +115,14 @@ namespace LibWindPop.Packs.Rsb
                 packInfo.ImageHandler = ptxHandlerType;
                 if (rsbInfo->ManifestGroupInfoOffset != 0u)
                 {
-                    logger.Log("Unpack rsb manifest...", 0);
-                    UnpackRsbManifest(rsbInfo->Version, headerPtrNumber + rsbInfo->ManifestGroupInfoOffset, headerPtrNumber + rsbInfo->ManifestResourceInfoOffset, headerPtrNumber + rsbInfo->ManifestStringPoolOffset, paths.InfoManifestPath, fileSystem, logger, encoding, throwException);
+                    logger.Log("Unpack rsb manifest...");
+                    UnpackRsbManifest(rsbInfo->Version, headerPtrNumber + rsbInfo->ManifestGroupInfoOffset, headerPtrNumber + rsbInfo->ManifestResourceInfoOffset, headerPtrNumber + rsbInfo->ManifestStringPoolOffset, paths.InfoManifestPath, fileSystem, logger, encoding);
                 }
                 nuint currentPtrNumber;
                 string[] groupIdList = new string[rsbInfo->GroupCount];
                 string[] compositeIdList = new string[rsbInfo->CompositeCount];
                 CompiledMap map = new CompiledMap();
-                logger.Log("Read sub group map...", 0);
+                logger.Log("Read sub group map...");
                 map.Init(headerPtrNumber + rsbInfo->GroupIndexMapOffset, rsbInfo->GroupIndexMapSize);
                 map.ForEach((string groupId, nuint groupInfoPtrNumber) =>
                 {
@@ -158,10 +133,10 @@ namespace LibWindPop.Packs.Rsb
                     }
                     else
                     {
-                        logger.LogWarning($"SubGroup index out of range: [0,{groupIdList.Length}) expected but value is {index}", 0);
+                        logger.LogWarning($"SubGroup index out of range: [0,{groupIdList.Length}) expected but value is {index}");
                     }
                 });
-                logger.Log("Read composite group map...", 0);
+                logger.Log("Read composite group map...");
                 map.Init(headerPtrNumber + rsbInfo->CompositeIndexMapOffset, rsbInfo->CompositeIndexMapSize);
                 map.ForEach((string compositeId, nuint compositeInfoPtrNumber) =>
                 {
@@ -172,11 +147,11 @@ namespace LibWindPop.Packs.Rsb
                     }
                     else
                     {
-                        logger.LogWarning($"CompositeGroup index out of range: [0,{compositeIdList.Length}) expected but value is {index}", 0);
+                        logger.LogWarning($"CompositeGroup index out of range: [0,{compositeIdList.Length}) expected but value is {index}");
                     }
                 });
 
-                logger.Log("Read res streams pool info...", 0);
+                logger.Log("Read res streams pool info...");
                 RsbPackPoolInfo[] pools = new RsbPackPoolInfo[rsbInfo->PoolCount];
                 currentPtrNumber = headerPtrNumber + rsbInfo->PoolDescriptorOffset;
                 for (int i = 0; i < pools.Length; i++)
@@ -184,14 +159,14 @@ namespace LibWindPop.Packs.Rsb
                     RsbPoolDescriptor* poolInfo = (RsbPoolDescriptor*)currentPtrNumber;
                     currentPtrNumber += rsbInfo->PoolDescriptorPitch;
                     RsbPackPoolInfo pool = new RsbPackPoolInfo();
-                    pool.Index = (uint)i;
+                    pool.Id = (uint)i;
                     pool.Name = UnsafeStringHelper.GetUtf16String((nuint)poolInfo->Name, 0x80, encoding);
                     pool.NumInstances = poolInfo->BufferCount;
                     pools[i] = pool;
                 }
                 packInfo.Pools = pools;
 
-                logger.Log("Read composite group info...", 0);
+                logger.Log("Read composite group info...");
                 RsbPackCompositeInfo[] composites = new RsbPackCompositeInfo[rsbInfo->CompositeCount];
                 currentPtrNumber = headerPtrNumber + rsbInfo->CompositeDescriptorOffset;
                 if (rsbInfo->Version < 3u)
@@ -210,7 +185,7 @@ namespace LibWindPop.Packs.Rsb
                             RsbPackSubGroupInfo compositeGroup = new RsbPackSubGroupInfo();
                             if (compositeGroupInfo->GroupIndex >= groupIdList.Length)
                             {
-                                logger.LogWarning($"Group index out of range: [0,{groupIdList.Length}) expected but value is {compositeGroupInfo->GroupIndex}", 0);
+                                logger.LogWarning($"Group index out of range: [0,{groupIdList.Length}) expected but value is {compositeGroupInfo->GroupIndex}");
                                 compositeGroup.Id = null;
                             }
                             else
@@ -242,7 +217,7 @@ namespace LibWindPop.Packs.Rsb
                             RsbPackSubGroupInfo compositeGroup = new RsbPackSubGroupInfo();
                             if (compositeGroupInfo->GroupIndex >= groupIdList.Length)
                             {
-                                logger.LogWarning($"Group index out of range: [0,{groupIdList.Length}) expected but value is {compositeGroupInfo->GroupIndex}", 0);
+                                logger.LogWarning($"Group index out of range: [0,{groupIdList.Length}) expected but value is {compositeGroupInfo->GroupIndex}");
                                 compositeGroup.Id = null;
                             }
                             else
@@ -261,7 +236,7 @@ namespace LibWindPop.Packs.Rsb
                 packInfo.Composites = composites;
 
                 // peek rsg size
-                logger.Log("Peek rsg max header size...", 0);
+                logger.Log("Peek rsg max header size...");
                 uint maxRsgHeaderSize = 0u;
                 uint maxRsgImageCount = 0u;
                 uint[] rsgSizeList = new uint[groupIdList.Length];
@@ -303,23 +278,23 @@ namespace LibWindPop.Packs.Rsb
                     Stream decompressedStream = decompressedTempFile.Stream;
                     uint* imageSizeList = stackalloc uint[(int)maxRsgImageCount];
                     uint* imageOffsetList = stackalloc uint[(int)maxRsgImageCount];
-                    logger.Log("Unpack rsg and resource...", 0);
+                    logger.Log("Unpack rsg and resource...");
                     for (int i = 0; i < groups.Length; i++)
                     {
-                        logger.Log($"Unpack group {groupIdList[i]}...", 1);
-                        logger.Log($"Read group info...", 2);
+                        logger.Log($"Unpack group {groupIdList[i]}...");
+                        logger.Log($"Read group info...");
                         RsbGroupDescriptor* groupInfo = (RsbGroupDescriptor*)currentPtrNumber;
                         currentPtrNumber += rsbInfo->GroupDescriptorPitch;
                         RsbPackGroupInfo group = new()
                         {
                             Id = groupIdList[i],
                             Name = UnsafeStringHelper.GetUtf16String((nuint)groupInfo->Name, 0x80, encoding),
-                            PoolIndex = groupInfo->PoolIndex,
+                            PoolId = groupInfo->PoolIndex,
                             CompressionFlags = groupInfo->RsgCompressionFlags
                         };
                         RsgMetadata rsgPackInfo = new()
                         {
-                            Version = rsbInfo->Version,
+                            MajorVersion = rsbInfo->Version,
                             UseBigEndian = useBigEndian,
                             CompressionFlags = groupInfo->RsgCompressionFlags,
                             ImageHandler = ptxHandlerType,
@@ -358,7 +333,7 @@ namespace LibWindPop.Packs.Rsb
                             imageSize = Align(imageOffsetList[imageCount - 1] + imageSizeList[imageCount - 1]);
                         }
                         // extract rsg
-                        logger.Log($"Extract rsg...", 2);
+                        logger.Log($"Extract rsg...");
                         string rsgPath = paths.GetRsgPathByGroupId(groupIdList[i]);
                         string rsgMetaPath = paths.AppendMetaExtension(rsgPath);
                         try
@@ -379,7 +354,7 @@ namespace LibWindPop.Packs.Rsb
                                 }
                                 else
                                 {
-                                    logger.LogWarning($"Can not find rsg {group.Id}", 3);
+                                    logger.LogWarning($"Can not find rsg {group.Id}");
                                     continue;
                                 }
                             }
@@ -397,15 +372,15 @@ namespace LibWindPop.Packs.Rsb
                                     rsbStream.Seek(groupInfo->RsgOffset, SeekOrigin.Begin);
                                     rsbStream.CopyLengthTo(rsgStream, rsgSizeList[i]);
                                 }
-                                logger.Log($"Read rsg header...", 2);
+                                logger.Log($"Read rsg header...");
                                 rsgStream.Seek(0, SeekOrigin.Begin);
                                 rsgStream.Read(rsgInfo, groupInfo->RsgHeaderSize);
                                 if (reverseEndian)
                                 {
-                                    logger.Log("Reverse rsg header endianness...", 2);
+                                    logger.Log("Reverse rsg header endianness...");
                                     RsbReverser.ReverseRsgHeader(rsgInfo, Endianness.NoneNative, Endianness.Native);
                                 }
-                                logger.Log($"Read resource map...", 2);
+                                logger.Log($"Read resource map...");
                                 map.Init(rsgHeaderPtrNumber + rsgInfo->FileIndexDataMapOffset, rsgInfo->FileIndexDataMapSize);
                                 residentFileList.Clear();
                                 imageList.Clear();
@@ -426,12 +401,12 @@ namespace LibWindPop.Packs.Rsb
                                     }
                                     else
                                     {
-                                        logger.LogError($"Unknow resource type {type} at {resourceName}", 3, throwException);
+                                        logger.LogError($"Unknow resource type {type} at {resourceName}");
                                     }
                                 });
                                 if (residentFileList.Count > 0)
                                 {
-                                    logger.Log($"Extract resident files...", 2);
+                                    logger.Log($"Extract resident files...");
                                     residentFileList.Sort((CompiledMapPair p1, CompiledMapPair p2) =>
                                     {
                                         uint p1Offset = ((RsgResidentFileExtraData*)p1.Value)->Offset;
@@ -461,7 +436,7 @@ namespace LibWindPop.Packs.Rsb
                                     }
                                     for (int j = 0; j < residentFileList.Count; j++)
                                     {
-                                        logger.Log($"Extract resident file {residentFileList[j].Key}...", 3);
+                                        logger.Log($"Extract resident file {residentFileList[j].Key}...");
                                         try
                                         {
                                             RsgResidentFileExtraData* extra = (RsgResidentFileExtraData*)residentFileList[j].Value;
@@ -483,7 +458,7 @@ namespace LibWindPop.Packs.Rsb
                                         }
                                         catch (Exception ex) when (ex is not LoggerException)
                                         {
-                                            logger.LogException(ex, 4, throwException);
+                                            logger.LogException(ex);
                                         }
                                     }
                                     group.ResidentFileList = residentFiles;
@@ -491,7 +466,7 @@ namespace LibWindPop.Packs.Rsb
                                 }
                                 if (imageCount > 0u)
                                 {
-                                    logger.Log($"Extract images...", 2);
+                                    logger.Log($"Extract images...");
                                     RsbPackGroupGPUFileInfo[] images = new RsbPackGroupGPUFileInfo[imageCount];
                                     RsgMetadataGPUFileInfo[] rsgImages = new RsgMetadataGPUFileInfo[imageCount];
                                     Stream readStream;
@@ -539,7 +514,7 @@ namespace LibWindPop.Packs.Rsb
                                             {
                                                 path = paths.GetUnusedResourcePathByGroupIdAndIndex(groupIdList[i], j, out recordPath);
                                             }
-                                            logger.Log($"Extract image {recordPath}...", 3);
+                                            logger.Log($"Extract image {recordPath}...");
                                             using (Stream resourceStream = fileSystem.Create(path))
                                             {
                                                 readStream.Seek(readOffset + imageOffsetList[j], SeekOrigin.Begin);
@@ -568,18 +543,18 @@ namespace LibWindPop.Packs.Rsb
                                         }
                                         catch (Exception ex) when (ex is not LoggerException)
                                         {
-                                            logger.LogException(ex, 3, throwException);
+                                            logger.LogException(ex);
                                         }
                                     }
                                     group.GPUFileList = images;
                                     rsgPackInfo.GPUFileList = rsgImages;
                                 }
                             }
-                            WindJsonSerializer.TrySerializeToFile(rsgMetaPath, rsgPackInfo, 0u, fileSystem, logger, throwException);
+                            WindJsonSerializer.TrySerializeToFile(rsgMetaPath, rsgPackInfo, fileSystem, logger);
                         }
                         catch (Exception ex) when (ex is not LoggerException)
                         {
-                            logger.LogException(ex, 3, throwException);
+                            logger.LogException(ex);
                             continue;
                         }
                         groups[i] = group;
@@ -589,7 +564,7 @@ namespace LibWindPop.Packs.Rsb
             }
         }
 
-        private static unsafe void UnpackRsbManifest<TFileSystem, TLogger>(uint version, nuint groupPtrNumber, nuint resPtrNumber, nuint poolPtrNumber, string outPath, TFileSystem fileSystem, TLogger logger, Encoding encoding, bool throwException)
+        private static unsafe void UnpackRsbManifest<TFileSystem, TLogger>(uint version, nuint groupPtrNumber, nuint resPtrNumber, nuint poolPtrNumber, string outPath, TFileSystem fileSystem, TLogger logger, Encoding encoding)
             where TFileSystem : IFileSystem
             where TLogger : ILogger
         {
@@ -708,7 +683,7 @@ namespace LibWindPop.Packs.Rsb
                 }
                 composites[i] = composite;
             }
-            WindJsonSerializer.TrySerializeToFile(outPath, manifestInfo, 0u, fileSystem, logger, throwException);
+            WindJsonSerializer.TrySerializeToFile(outPath, manifestInfo, fileSystem, logger);
         }
 
 
