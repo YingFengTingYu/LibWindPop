@@ -34,10 +34,12 @@ namespace LibWindPop.Images.PtxPS3
             ImageCoder.PeekImageInfo(pngStream, out int width, out int height, out ImageFormat imageFormat);
             DdsEncodingFormat ddsFormat = format switch
             {
+                PtxPS3PixelFormat.RGB_BC1_UByte => DdsEncodingFormat.RGB_BC1_UByte,
                 PtxPS3PixelFormat.RGBA_BC1_UByte => DdsEncodingFormat.RGBA_BC1_UByte,
                 PtxPS3PixelFormat.RGBA_BC2_UByte => DdsEncodingFormat.RGBA_BC2_UByte,
                 PtxPS3PixelFormat.RGBA_BC3_UByte => DdsEncodingFormat.RGBA_BC3_UByte,
                 PtxPS3PixelFormat.L8_UByte => DdsEncodingFormat.L8_UByte,
+                PtxPS3PixelFormat.A8_UByte => DdsEncodingFormat.A8_UByte,
                 PtxPS3PixelFormat.R8_G8_B8_A8_UByte => DdsEncodingFormat.R8_G8_B8_A8_UByte,
                 PtxPS3PixelFormat.R8_G8_B8_X8_UByte => DdsEncodingFormat.R8_G8_B8_X8_UByte,
                 PtxPS3PixelFormat.R8_G8_B8_UByte => DdsEncodingFormat.R8_G8_B8_UByte,
@@ -71,14 +73,14 @@ namespace LibWindPop.Images.PtxPS3
             ArgumentNullException.ThrowIfNull(ptxStream, nameof(ptxStream));
             ArgumentNullException.ThrowIfNull(pngStream, nameof(pngStream));
             ArgumentNullException.ThrowIfNull(logger, nameof(logger));
-            if (!DdsDecoder.IsDds(ptxStream))
+            long pos = ptxStream.Position;
+            uint magic = ptxStream.ReadUInt32LE();
+            if (magic != 0x20534444u)
             {
                 logger.LogError($"Ptx magic mismatch: DDS  expected");
             }
             PtxPS3PixelFormat format = PtxPS3PixelFormat.None;
-            long pos = ptxStream.Position;
             DDS_HEADER header;
-            ptxStream.Seek(pos + 4, SeekOrigin.Begin);
             ptxStream.Read(&header, (nuint)sizeof(DDS_HEADER));
             ptxStream.Seek(pos, SeekOrigin.Begin);
             if (header.dwSize == (uint)sizeof(DDS_HEADER))
@@ -147,6 +149,16 @@ namespace LibWindPop.Images.PtxPS3
                             {
                                 format = PtxPS3PixelFormat.L8_UByte;
                             }
+                        }
+                    }
+                }
+                else if ((header.ddspf.dwFlags | DDS_PIXELFORMAT.DDPF_ALPHA) != 0u)
+                {
+                    if (header.ddspf.dwRGBBitCount == 8u)
+                    {
+                        if (header.ddspf.dwABitMask == 0xFFu)
+                        {
+                            format = PtxPS3PixelFormat.A8_UByte;
                         }
                     }
                 }

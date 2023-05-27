@@ -16,19 +16,19 @@ namespace LibWindPop.Test
             //    "D:\\main_pak_unpack",
             //    new NativeFileSystem(),
             //    new ConsoleLogger(0, true),
-            //    true,
+            //    false,
             //    true
             //    );
             //PakContentPipelineManager.AddContentPipeline(
             //    "D:\\main_pak_unpack",
-            //    nameof(PakPtxPS3AutoEncoder),
+            //    nameof(PakPtxXbox360AutoEncoder),
             //    true,
             //    new NativeFileSystem(),
             //    new ConsoleLogger(0, true)
             //    );
             PakPacker.Pack(
                 "D:\\main_pak_unpack",
-                "F:\\SoftWare\\rpcs3\\dev_hdd0\\game\\NPHB00307\\USRDIR\\data\\main.pak",
+                "F:\\Games\\pvzx360\\main.pak",
                 new NativeFileSystem(),
                 new ConsoleLogger()
                 );

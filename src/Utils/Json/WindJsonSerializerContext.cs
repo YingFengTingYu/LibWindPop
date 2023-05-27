@@ -18,7 +18,7 @@ namespace LibWindPop.Utils.Json
     [JsonSerializable(typeof(WindJsonShell<RsbPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<RsgMetadata>))]
     [JsonSerializable(typeof(WindJsonShell<PtxRsbMetadata>))]
-    [JsonSerializable(typeof(WindJsonShell<PtxPS3Metadata>))]
+    [JsonSerializable(typeof(WindJsonShell<PtxPakMetadata>))]
     [JsonSerializable(typeof(WindJsonShell<ContentPipelineInfo>))]
     [JsonSerializable(typeof(WindJsonShell<XprPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<PakPackInfo>))]

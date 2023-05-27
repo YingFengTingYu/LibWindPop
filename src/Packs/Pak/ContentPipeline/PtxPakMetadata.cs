@@ -3,7 +3,7 @@ using System;
 
 namespace LibWindPop.Packs.Pak.ContentPipeline
 {
-    internal class PtxPS3Metadata : IJsonVersionCheckable
+    internal class PtxPakMetadata : IJsonVersionCheckable
     {
         public static uint JsonVersion => 0u;
 

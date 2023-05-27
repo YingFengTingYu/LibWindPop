@@ -12,6 +12,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
         {
             { nameof(PakRebuildFile), new PakRebuildFile() },
             { nameof(PakPtxPS3AutoEncoder), new PakPtxPS3AutoEncoder() },
+            { nameof(PakPtxXbox360AutoEncoder), new PakPtxXbox360AutoEncoder() },
         };
 
         public static IContentPipeline? GetContentPipeline(string? contentName)
