@@ -15,7 +15,7 @@ using System.Text;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    internal sealed class UpdateRsgCache : IContentPipeline
+    public sealed class UpdateRsgCache : IContentPipeline
     {
         public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {

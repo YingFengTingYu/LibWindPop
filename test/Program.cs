@@ -1,13 +1,8 @@
-﻿using LibWindPop.Images.PtxPS3;
-using LibWindPop.Images.PtxRsb;
-using LibWindPop.Images.PtxRsb.Handler;
-using LibWindPop.Packs.Pak;
+﻿using LibWindPop.Packs.Pak;
 using LibWindPop.Packs.Pak.ContentPipeline;
 using LibWindPop.Packs.Rsb;
+using LibWindPop.Packs.Rsb.ContentPipeline;
 using LibWindPop.Utils.FileSystem;
-using LibWindPop.Utils.Graphics.Bitmap;
-using LibWindPop.Utils.Graphics.FormatProvider;
-using LibWindPop.Utils.Graphics.FormatProvider.Dds;
 using LibWindPop.Utils.Logger;
 
 namespace LibWindPop.Test
@@ -16,27 +11,27 @@ namespace LibWindPop.Test
     {
         private static void TestTask()
         {
-            RsbUnpacker.Unpack("D:\\main.rsb", "D:\\main_rsb_unpack", new NativeFileSystem(), new ConsoleLogger(), nameof(PtxHandlerXbox360V1), false);
-            RsbPacker.Pack("D:\\main_rsb_unpack", "D:\\main2.rsb", new NativeFileSystem(), new ConsoleLogger());
-            //PakPacker.Pack(
+            //PakUnpacker.Unpack(
+            //    "D:\\main.pak",
             //    "D:\\main_pak_unpack",
-            //    "D:\\main2.pak",
             //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
+            //    new ConsoleLogger(0, true),
+            //    true,
             //    true
             //    );
-            //PtxCoder.Decode(
-            //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PTX",
-            //    "D:\\DELAYLOAD_BACKGROUND_EGYPT_COMPRESSED_1536_00.PNG",
+            //PakContentPipelineManager.AddContentPipeline(
+            //    "D:\\main_pak_unpack",
+            //    nameof(PakPtxPS3AutoEncoder),
+            //    true,
             //    new NativeFileSystem(),
-            //    new ConsoleLogger(),
-            //    4096,
-            //    4096,
-            //    2048,
-            //    30,
-            //    0,
-            //    nameof(PtxHandleriOSV5)
+            //    new ConsoleLogger(0, true)
             //    );
+            PakPacker.Pack(
+                "D:\\main_pak_unpack",
+                "F:\\SoftWare\\rpcs3\\dev_hdd0\\game\\NPHB00307\\USRDIR\\data\\main.pak",
+                new NativeFileSystem(),
+                new ConsoleLogger()
+                );
         }
 
         static void Main(string[] args)

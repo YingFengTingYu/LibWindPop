@@ -13,7 +13,7 @@ using System.IO;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
-    internal sealed class EncodePtxFromPng : IContentPipeline
+    public sealed class EncodePtxFromPng : IContentPipeline
     {
         public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {

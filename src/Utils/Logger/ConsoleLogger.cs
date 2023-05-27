@@ -14,6 +14,18 @@ namespace LibWindPop.Utils.Logger
             ThrowException = throwException;
         }
 
+        public ConsoleLogger(int logLevel)
+        {
+            LogLevel = logLevel;
+            ThrowException = false;
+        }
+
+        public ConsoleLogger(bool throwException)
+        {
+            LogLevel = 0;
+            ThrowException = throwException;
+        }
+
         public readonly void LogDebug(string msg)
         {
             if (LogLevel <= -1)

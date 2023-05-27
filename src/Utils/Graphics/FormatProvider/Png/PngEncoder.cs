@@ -11,7 +11,7 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Png
     /// <summary>
     /// https://www.w3.org/TR/png/
     /// </summary>
-    internal static class PngEncoder
+    public static class PngEncoder
     {
         public static void EncodePng(Stream stream, RefBitmap bitmap, IImageEncoderArgument? args)
         {

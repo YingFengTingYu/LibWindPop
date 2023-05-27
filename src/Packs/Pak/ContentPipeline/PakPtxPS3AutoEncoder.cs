@@ -10,6 +10,38 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
 {
     public sealed class PakPtxPS3AutoEncoder : IContentPipeline
     {
+        private const PtxPS3PixelFormat DEFAULTFORMAT = PtxPS3PixelFormat.RGBA_BC3_UByte;
+
+        private static PtxPS3PixelFormat GetFormatFromString(string? str)
+        {
+            return str switch
+            {
+                nameof(PtxPS3PixelFormat.RGBA_BC1_UByte) => PtxPS3PixelFormat.RGBA_BC1_UByte,
+                nameof(PtxPS3PixelFormat.RGBA_BC2_UByte) => PtxPS3PixelFormat.RGBA_BC2_UByte,
+                nameof(PtxPS3PixelFormat.RGBA_BC3_UByte) => PtxPS3PixelFormat.RGBA_BC3_UByte,
+                nameof(PtxPS3PixelFormat.L8_UByte) => PtxPS3PixelFormat.L8_UByte,
+                nameof(PtxPS3PixelFormat.R8_G8_B8_A8_UByte) => PtxPS3PixelFormat.R8_G8_B8_A8_UByte,
+                nameof(PtxPS3PixelFormat.R8_G8_B8_X8_UByte) => PtxPS3PixelFormat.R8_G8_B8_X8_UByte,
+                nameof(PtxPS3PixelFormat.R8_G8_B8_UByte) => PtxPS3PixelFormat.R8_G8_B8_UByte,
+                _ => PtxPS3PixelFormat.RGBA_BC3_UByte
+            };
+        }
+
+        private static string GetStringFromFormat(PtxPS3PixelFormat format)
+        {
+            return format switch
+            {
+                PtxPS3PixelFormat.RGBA_BC1_UByte => nameof(PtxPS3PixelFormat.RGBA_BC1_UByte),
+                PtxPS3PixelFormat.RGBA_BC2_UByte => nameof(PtxPS3PixelFormat.RGBA_BC2_UByte),
+                PtxPS3PixelFormat.RGBA_BC3_UByte => nameof(PtxPS3PixelFormat.RGBA_BC3_UByte),
+                PtxPS3PixelFormat.L8_UByte => nameof(PtxPS3PixelFormat.L8_UByte),
+                PtxPS3PixelFormat.R8_G8_B8_A8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_A8_UByte),
+                PtxPS3PixelFormat.R8_G8_B8_X8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_X8_UByte),
+                PtxPS3PixelFormat.R8_G8_B8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_UByte),
+                _ => nameof(PtxPS3PixelFormat.RGBA_BC3_UByte)
+            };
+        }
+
         public void OnStartBuild(string unpackPath, IFileSystem fileSystem, ILogger logger)
         {
             BuildInternal(unpackPath, fileSystem, logger);
@@ -56,13 +88,23 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                             string nativePtxPath = paths.GetFilePath(file.Path);
                             string nativePngPath = GetNativePngPath(unpackPath, file.Path, fileSystem);
                             string nativeMetaPath = GetNativeMetaPath(unpackPath, file.Path, fileSystem);
-                            PtxPS3Metadata? meta = WindJsonSerializer.TryDeserializeFromFile<PtxPS3Metadata>(nativeMetaPath, fileSystem, logger);
-                            DateTime pngTime = fileSystem.GetModifyTimeUtc(nativePngPath);
-                            if (meta == null || meta.PngModifyTimeUtc != pngTime)
+                            bool convert = true;
+                            PtxPS3Metadata? meta = null;
+                            if (fileSystem.FileExists(nativeMetaPath))
                             {
-                                meta ??= new PtxPS3Metadata { Format = Utils.Graphics.FormatProvider.Dds.DdsEncodingFormat.RGBA_BC3_UByte };
-                                meta.PngModifyTimeUtc = pngTime;
-                                PtxPS3Coder.Encode(nativePngPath, nativePtxPath, fileSystem, logger, meta.Format);
+                                meta = WindJsonSerializer.TryDeserializeFromFile<PtxPS3Metadata>(nativeMetaPath, fileSystem, new NullLogger());
+                                if (meta != null && meta.PngModifyTimeUtc == fileSystem.GetModifyTimeUtc(nativePngPath) && meta.Format == meta.LastPtxFormat)
+                                {
+                                    convert = false;
+                                }
+                            }
+                            if (convert)
+                            {
+                                meta ??= new PtxPS3Metadata { Format = GetStringFromFormat(DEFAULTFORMAT) };
+                                logger.Log($"Create {file.Path} by format {meta.Format}");
+                                PtxPS3Coder.Encode(nativePngPath, nativePtxPath, fileSystem, logger, GetFormatFromString(meta.Format));
+                                meta.PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath);
+                                meta.LastPtxFormat = meta.Format;
                                 WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                             }
                         }
@@ -102,11 +144,13 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                             string nativePtxPath = paths.GetFilePath(file.Path);
                             string nativePngPath = GetNativePngPath(unpackPath, file.Path, fileSystem);
                             string nativeMetaPath = GetNativeMetaPath(unpackPath, file.Path, fileSystem);
-                            PtxPS3Coder.Decode(nativePtxPath, nativePngPath, fileSystem, logger);
+                            PtxPS3PixelFormat format = PtxPS3Coder.Decode(nativePtxPath, nativePngPath, fileSystem, logger);
+                            string formatStr = GetStringFromFormat(format);
                             PtxPS3Metadata meta = new PtxPS3Metadata
                             {
-                                Format = Utils.Graphics.FormatProvider.Dds.DdsEncodingFormat.RGBA_BC3_UByte,
-                                PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
+                                Format = formatStr,
+                                PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath),
+                                LastPtxFormat = formatStr
                             };
                             WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                         }

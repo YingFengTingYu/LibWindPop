@@ -251,17 +251,17 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Dds
                             else if (header.ddspf.dwRGBBitCount == 24u)
                             {
                                 if (header.ddspf.dwRBitMask == 0xFFu
-                                   && header.ddspf.dwGBitMask == 0xFF00u
-                                   && header.ddspf.dwBBitMask == 0xFF0000u) // RRGGBBRRGGBB...
+                                    && header.ddspf.dwGBitMask == 0xFF00u
+                                    && header.ddspf.dwBBitMask == 0xFF0000u) // RRGGBBRRGGBB...
                                 {
                                     pitchableCoder = new R8_G8_B8_UByte();
                                     memSize = pitchable
                                         ? (header.dwPitchOrLinearSize * header.dwHeight)
                                         : (header.dwWidth * header.dwHeight * 3);
                                 }
-                                if (header.ddspf.dwRBitMask == 0xFF0000u
-                                   && header.ddspf.dwGBitMask == 0xFF00u
-                                   && header.ddspf.dwBBitMask == 0xFFu) // BBGGRRBBGGRR...
+                                else if (header.ddspf.dwRBitMask == 0xFF0000u
+                                    && header.ddspf.dwGBitMask == 0xFF00u
+                                    && header.ddspf.dwBBitMask == 0xFFu) // BBGGRRBBGGRR...
                                 {
                                     pitchableCoder = new B8_G8_R8_UByte();
                                     memSize = pitchable

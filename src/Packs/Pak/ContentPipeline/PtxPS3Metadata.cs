@@ -1,5 +1,4 @@
-﻿using LibWindPop.Utils.Graphics.FormatProvider.Dds;
-using LibWindPop.Utils.Json;
+﻿using LibWindPop.Utils.Json;
 using System;
 
 namespace LibWindPop.Packs.Pak.ContentPipeline
@@ -8,8 +7,10 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
     {
         public static uint JsonVersion => 0u;
 
-        public DdsEncodingFormat Format { get; set; }
+        public string? Format { get; set; }
 
         public DateTime PngModifyTimeUtc { get; set; }
+
+        public string? LastPtxFormat { get; set; }
     }
 }
