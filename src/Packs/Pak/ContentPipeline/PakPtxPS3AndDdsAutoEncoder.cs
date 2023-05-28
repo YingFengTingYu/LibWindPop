@@ -8,7 +8,7 @@ using LibWindPop.Utils.Json;
 
 namespace LibWindPop.Packs.Pak.ContentPipeline
 {
-    public sealed class PakPtxPS3AutoEncoder : IContentPipeline
+    public sealed class PakPtxPS3AndDdsAutoEncoder : IContentPipeline
     {
         private const PtxPS3PixelFormat DEFAULTFORMAT = PtxPS3PixelFormat.RGBA_BC3_UByte;
 
@@ -25,6 +25,9 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                 nameof(PtxPS3PixelFormat.R8_G8_B8_A8_UByte) => PtxPS3PixelFormat.R8_G8_B8_A8_UByte,
                 nameof(PtxPS3PixelFormat.R8_G8_B8_X8_UByte) => PtxPS3PixelFormat.R8_G8_B8_X8_UByte,
                 nameof(PtxPS3PixelFormat.R8_G8_B8_UByte) => PtxPS3PixelFormat.R8_G8_B8_UByte,
+                nameof(PtxPS3PixelFormat.B8_G8_R8_A8_UByte) => PtxPS3PixelFormat.B8_G8_R8_A8_UByte,
+                nameof(PtxPS3PixelFormat.B8_G8_R8_X8_UByte) => PtxPS3PixelFormat.B8_G8_R8_X8_UByte,
+                nameof(PtxPS3PixelFormat.B8_G8_R8_UByte) => PtxPS3PixelFormat.B8_G8_R8_UByte,
                 _ => PtxPS3PixelFormat.RGBA_BC3_UByte
             };
         }
@@ -42,6 +45,9 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                 PtxPS3PixelFormat.R8_G8_B8_A8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_A8_UByte),
                 PtxPS3PixelFormat.R8_G8_B8_X8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_X8_UByte),
                 PtxPS3PixelFormat.R8_G8_B8_UByte => nameof(PtxPS3PixelFormat.R8_G8_B8_UByte),
+                PtxPS3PixelFormat.B8_G8_R8_A8_UByte => nameof(PtxPS3PixelFormat.B8_G8_R8_A8_UByte),
+                PtxPS3PixelFormat.B8_G8_R8_X8_UByte => nameof(PtxPS3PixelFormat.B8_G8_R8_X8_UByte),
+                PtxPS3PixelFormat.B8_G8_R8_UByte => nameof(PtxPS3PixelFormat.B8_G8_R8_UByte),
                 _ => nameof(PtxPS3PixelFormat.RGBA_BC3_UByte)
             };
         }
@@ -87,7 +93,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     for (int i = files.Count - 1; i >= 0; i--)
                     {
                         PakPackFileInfo? file = files[i];
-                        if (file != null && file.Path != null && file.Path.EndsWith(".ptx", StringComparison.CurrentCultureIgnoreCase))
+                        if (file != null && file.Path != null && IsPtxOrDds(file.Path))
                         {
                             string nativePtxPath = paths.GetFilePath(file.Path);
                             string nativePngPath = GetNativePngPath(unpackPath, file.Path, fileSystem);
@@ -143,7 +149,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                     for (int i = files.Count - 1; i >= 0; i--)
                     {
                         PakPackFileInfo? file = files[i];
-                        if (file != null && file.Path != null && file.Path.EndsWith(".ptx", StringComparison.CurrentCultureIgnoreCase))
+                        if (file != null && file.Path != null && IsPtxOrDds(file.Path))
                         {
                             string nativePtxPath = paths.GetFilePath(file.Path);
                             string nativePngPath = GetNativePngPath(unpackPath, file.Path, fileSystem);
@@ -163,14 +169,19 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
             }
         }
 
+        private static bool IsPtxOrDds(string path)
+        {
+            return path.EndsWith(".ptx", StringComparison.CurrentCultureIgnoreCase) || path.EndsWith(".dds", StringComparison.CurrentCultureIgnoreCase);
+        }
+
         private static string GetNativePngPath(string unpackPath, string recordPath, IFileSystem fileSystem)
         {
-            return fileSystem.Combine(unpackPath, "ptx_ps3_raw_image", fileSystem.ChangeExtension(recordPath, ".png"));
+            return fileSystem.Combine(unpackPath, "ptx_dds_raw_image", fileSystem.ChangeExtension(recordPath, ".png"));
         }
 
         private static string GetNativeMetaPath(string unpackPath, string recordPath, IFileSystem fileSystem)
         {
-            return fileSystem.Combine(unpackPath, "ptx_ps3_raw_image", recordPath + ".meta.json");
+            return fileSystem.Combine(unpackPath, "ptx_dds_raw_image", recordPath + ".meta.json");
         }
     }
 }

@@ -3,7 +3,6 @@ using LibWindPop.Utils.Extension;
 using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Graphics.Bitmap;
 using LibWindPop.Utils.Graphics.FormatProvider;
-using LibWindPop.Utils.Graphics.Texture;
 using LibWindPop.Utils.Graphics.Texture.Coder;
 using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Xbox360D3D9;
 using LibWindPop.Utils.Logger;
@@ -29,36 +28,6 @@ namespace LibWindPop.Images.PtxXbox360
             }
         }
 
-        private static uint Align4(uint value)
-        {
-            if ((value & 3u) != 0u)
-            {
-                value |= 3u;
-                value++;
-            }
-            return value;
-        }
-
-        private static uint Align256(uint value)
-        {
-            if ((value & 255u) != 0u)
-            {
-                value |= 255u;
-                value++;
-            }
-            return value;
-        }
-
-        private static uint Align512(uint value)
-        {
-            if ((value & 511u) != 0u)
-            {
-                value |= 511u;
-                value++;
-            }
-            return value;
-        }
-
         public static unsafe void Encode(Stream pngStream, Stream ptxStream, ILogger logger)
         {
             ArgumentNullException.ThrowIfNull(pngStream, nameof(pngStream));
@@ -68,9 +37,9 @@ namespace LibWindPop.Images.PtxXbox360
             uint width, height, pitch, dataSize;
             width = (uint)pngWidth;
             height = (uint)pngHeight;
-            uint aW = Align4(width);
-            uint aH = Align4(height);
-            pitch = Align512(aW * 4u);
+            uint aW = (width + 3u) / 4u * 4u;
+            uint aH = (height + 3u) / 4u * 4u;
+            pitch = (aW * 4u + 511u) / 512u * 512u;
             dataSize = pitch * aH / 4u + pitch;
             using (NativeBitmap bitmap = new NativeBitmap(pngWidth, pngHeight))
             {

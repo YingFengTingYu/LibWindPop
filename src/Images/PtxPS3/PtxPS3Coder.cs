@@ -91,19 +91,11 @@ namespace LibWindPop.Images.PtxPS3
                     {
                         format = PtxPS3PixelFormat.RGBA_BC1_UByte;
                     }
-                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT2)
+                    else if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT2 || header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT3)
                     {
                         format = PtxPS3PixelFormat.RGBA_BC2_UByte;
                     }
-                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT3)
-                    {
-                        format = PtxPS3PixelFormat.RGBA_BC2_UByte;
-                    }
-                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT4)
-                    {
-                        format = PtxPS3PixelFormat.RGBA_BC3_UByte;
-                    }
-                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT5)
+                    else if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT4 || header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT5)
                     {
                         format = PtxPS3PixelFormat.RGBA_BC3_UByte;
                     }
@@ -121,6 +113,13 @@ namespace LibWindPop.Images.PtxPS3
                             {
                                 format = PtxPS3PixelFormat.R8_G8_B8_A8_UByte;
                             }
+                            else if (header.ddspf.dwBBitMask == 0xFFu
+                                    && header.ddspf.dwGBitMask == 0xFF00u
+                                    && header.ddspf.dwRBitMask == 0xFF0000u
+                                    && header.ddspf.dwABitMask == 0xFF000000u)
+                            {
+                                format = PtxPS3PixelFormat.B8_G8_R8_A8_UByte;
+                            }
                         }
                     }
                     else
@@ -133,6 +132,12 @@ namespace LibWindPop.Images.PtxPS3
                             {
                                 format = PtxPS3PixelFormat.R8_G8_B8_X8_UByte;
                             }
+                            else if (header.ddspf.dwBBitMask == 0xFFu
+                                && header.ddspf.dwGBitMask == 0xFF00u
+                                && header.ddspf.dwRBitMask == 0xFF0000u)
+                            {
+                                format = PtxPS3PixelFormat.B8_G8_R8_X8_UByte;
+                            }
                         }
                         else if (header.ddspf.dwRGBBitCount == 24u)
                         {
@@ -141,6 +146,12 @@ namespace LibWindPop.Images.PtxPS3
                                 && header.ddspf.dwBBitMask == 0xFF0000u)
                             {
                                 format = PtxPS3PixelFormat.R8_G8_B8_UByte;
+                            }
+                            else if (header.ddspf.dwRBitMask == 0xFF0000u
+                                && header.ddspf.dwGBitMask == 0xFF00u
+                                && header.ddspf.dwBBitMask == 0xFFu)
+                            {
+                                format = PtxPS3PixelFormat.B8_G8_R8_UByte;
                             }
                         }
                         else if (header.ddspf.dwRGBBitCount == 8u)

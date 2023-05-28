@@ -12,5 +12,8 @@
         R8_G8_B8_A8_UByte,
         R8_G8_B8_X8_UByte,
         R8_G8_B8_UByte,
+        B8_G8_R8_A8_UByte,
+        B8_G8_R8_X8_UByte,
+        B8_G8_R8_UByte,
     }
 }

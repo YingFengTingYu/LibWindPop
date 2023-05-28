@@ -2,322 +2,534 @@
 
 namespace LibWindPop.Packs.Rsb.RsbStructures
 {
+    // from Bejeweled Classic iOS version
+
+    /// <summary>
+    /// Sexy::ResStreamCompositeDescriptor
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x484)]
-    public unsafe struct RsbCompositeDescriptorV3V4
+    public unsafe struct ResStreamCompositeDescriptorV3V4
     {
+        /// <summary>
+        /// name of composite
+        /// </summary>
         [FieldOffset(0x0)]
         public fixed byte Name[0x80];
 
+        //[FieldOffset(0x80)]
+        //public fixed ResStreamCompositeDescriptorChildV3V4 Childs[64];
+
+        /// <summary>
+        /// count of child
+        /// </summary>
         [FieldOffset(0x480)]
-        public uint SubGroupCount;
+        public uint ChildCount;
     }
 
+    /// <summary>
+    /// Sexy::ResStreamCompositeDescriptor::Child
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x10)]
-    public unsafe struct RsbSubGroupV3V4
+    public unsafe struct ResStreamCompositeDescriptorChildV3V4
     {
+        /// <summary>
+        /// index of ResStreamsGroup
+        /// </summary>
         [FieldOffset(0x0)]
         public uint GroupIndex;
 
+        /// <summary>
+        /// art resolution
+        /// </summary>
         [FieldOffset(0x4)]
-        public uint Res;
+        public uint ArtResolution;
 
+        /// <summary>
+        /// localization
+        /// </summary>
         [FieldOffset(0x8)]
-        public uint Loc;
-
-        [FieldOffset(0xC)]
-        public uint Unknow0xC;
+        public uint Localization;
     }
 
+    /// <summary>
+    /// Sexy::ResStreamCompositeDescriptor
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x284)]
-    public unsafe struct RsbCompositeDescriptorV1
+    public unsafe struct ResStreamCompositeDescriptorV1
     {
+        /// <summary>
+        /// name of composite
+        /// </summary>
         [FieldOffset(0x0)]
         public fixed byte Name[0x80];
 
+        //[FieldOffset(0x80)]
+        //public fixed ResStreamCompositeDescriptorChildV1 Childs[64];
+
+        /// <summary>
+        /// count of child
+        /// </summary>
         [FieldOffset(0x280)]
         public uint SubGroupCount;
     }
 
+    /// <summary>
+    /// Sexy::ResStreamCompositeDescriptor::Child
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x8)]
-    public unsafe struct RsbSubGroupV1
+    public unsafe struct ResStreamCompositeDescriptorChildV1
     {
+        /// <summary>
+        /// index of ResStreamsGroup
+        /// </summary>
         [FieldOffset(0x0)]
         public uint GroupIndex;
 
+        /// <summary>
+        /// art resolution
+        /// </summary>
         [FieldOffset(0x4)]
-        public uint Res;
+        public uint ArtResolution;
     }
 
+    /// <summary>
+    /// Sexy::ResStreamTextureDescriptor
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x18)]
-    public struct RsbTextureDescriptor
+    public struct ResStreamTextureDescriptor
     {
+        /// <summary>
+        /// ptx width
+        /// </summary>
         [FieldOffset(0x0)]
         public uint Width;
 
+        /// <summary>
+        /// ptx height
+        /// </summary>
         [FieldOffset(0x4)]
         public uint Height;
 
+        /// <summary>
+        /// ptx pitch
+        /// </summary>
         [FieldOffset(0x8)]
         public uint Pitch;
 
+        /// <summary>
+        /// ptx format
+        /// </summary>
         [FieldOffset(0xC)]
         public uint Format;
 
+        /// <summary>
+        /// ptx pvz2cn alpha size or scale or null
+        /// </summary>
         [FieldOffset(0x10)]
-        public uint Extend0x10;
+        public uint Extend1; // PVZ2CN
 
+        /// <summary>
+        /// ptx pvz2cn scale or null
+        /// </summary>
         [FieldOffset(0x14)]
-        public uint Extend0x14;
+        public uint Extend2; // PVZ2CN
     }
 
+    /// <summary>
+    /// Sexy::ResStreamPoolDescriptor
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x98)]
-    public unsafe struct RsbPoolDescriptor
+    public unsafe struct ResStreamPoolDescriptor
     {
+        /// <summary>
+        /// name of pool
+        /// </summary>
         [FieldOffset(0x0)]
         public fixed byte Name[0x80];
 
+        /// <summary>
+        /// allocated size of each instance of pool for resident data for rsg info and uncompressed resident data
+        /// </summary>
         [FieldOffset(0x80)]
         public uint ResidentDataMemorySize;
 
+        /// <summary>
+        /// allocated size for rsg uncompressed texture data
+        /// </summary>
         [FieldOffset(0x84)]
         public uint GPUDataMemorySize;
 
+        /// <summary>
+        /// instance count
+        /// </summary>
         [FieldOffset(0x88)]
-        public uint BufferCount;
+        public uint NumInstances;
 
+        /// <summary>
+        /// Unknow boolean (I have never seen this value was used)
+        /// </summary>
         [FieldOffset(0x8C)]
-        public uint Unknow0x8C;
+        public uint UnknowBoolean;
 
+        /// <summary>
+        /// count of texture for rsb v1
+        /// </summary>
         [FieldOffset(0x90)]
         public uint TextureCount; // Only v1
 
+        /// <summary>
+        /// offset of texture descriptor for rsb v1
+        /// </summary>
         [FieldOffset(0x94)]
         public uint TextureDescriptorStartIndex; // Only v1
     }
 
+    /// <summary>
+    /// Sexy::ResStreamGroupDescriptor
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0xCC)]
-    public unsafe struct RsbGroupDescriptor
+    public unsafe struct ResStreamGroupDescriptor
     {
+        /// <summary>
+        /// name of group
+        /// </summary>
         [FieldOffset(0x0)]
         public fixed byte Name[0x80];
 
+        /// <summary>
+        /// offset of rsg in rsb
+        /// </summary>
         [FieldOffset(0x80)]
         public uint RsgOffset;
 
+        /// <summary>
+        /// size of rsg
+        /// </summary>
         [FieldOffset(0x84)]
         public uint RsgSize;
 
+        /// <summary>
+        /// index of pool
+        /// </summary>
         [FieldOffset(0x88)]
         public uint PoolIndex;
 
+        /// <summary>
+        /// compression flags
+        /// </summary>
         [FieldOffset(0x8C)]
         public uint RsgCompressionFlags;
 
+        /// <summary>
+        /// size of res stream header
+        /// </summary>
         [FieldOffset(0x90)]
         public uint RsgHeaderSize;
 
+        /// <summary>
+        /// resident data offset of rsg
+        /// </summary>
         [FieldOffset(0x94)]
         public uint RsgResidentDataOffset;
 
+        /// <summary>
+        /// compressed resident data size
+        /// </summary>
         [FieldOffset(0x98)]
         public uint RsgResidentDataCompressedSize;
 
+        /// <summary>
+        /// uncompressed resident data size
+        /// </summary>
         [FieldOffset(0x9C)]
         public uint RsgResidentDataUncompressedSize;
 
+        /// <summary>
+        /// used pool resident data size
+        /// </summary>
         [FieldOffset(0xA0)]
         public uint RsgResidentDataPoolSize;
 
+        /// <summary>
+        /// GPU data offset of rsg
+        /// </summary>
         [FieldOffset(0xA4)]
         public uint RsgGPUDataOffset;
 
+        /// <summary>
+        /// compressed GPU data size
+        /// </summary>
         [FieldOffset(0xA8)]
         public uint RsgGPUDataCompressedSize;
 
+        /// <summary>
+        /// uncompressed GPU data size
+        /// </summary>
         [FieldOffset(0xAC)]
         public uint RsgGPUDataUncompressedSize;
 
+        /// <summary>
+        /// used pool GPU data size (but GPU data never hold memory in pool)
+        /// </summary>
         [FieldOffset(0xB0)]
-        public uint Unknow0xB0;
+        public uint RsgGPUDataPoolSize;
 
-        [FieldOffset(0xB4)]
-        public uint Unknow0xB4;
-
-        [FieldOffset(0xB8)]
-        public uint Unknow0xB8;
-
-        [FieldOffset(0xBC)]
-        public uint Unknow0xBC;
-
-        [FieldOffset(0xC0)]
-        public uint Unknow0xC0;
-
+        /// <summary>
+        /// count of texture for rsb v3/v4 
+        /// </summary>
         [FieldOffset(0xC4)]
-        public uint TextureCount; // Only v3/v4
+        public uint TextureCount;
 
+        /// <summary>
+        /// offset of texture descriptor for rsb v3/v4
+        /// </summary>
         [FieldOffset(0xC8)]
-        public uint TextureDescriptorStartIndex; // Only v3/v4
+        public uint TextureDescriptorStartIndex;
     }
 
+    /// <summary>
+    /// no offical name from PopCap Games
+    /// </summary>
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x70)]
-    public struct RsbInfo
+    public struct ResStreamsHeader
     {
+        /// <summary>
+        /// magic number 1bsr(LE)/rsb1(BE)
+        /// </summary>
         [FieldOffset(0x0)]
         public uint Magic;
 
+        /// <summary>
+        /// major version, 1/3/4
+        /// </summary>
         [FieldOffset(0x4)]
-        public uint Version;
+        public uint MajorVersion;
 
+        /// <summary>
+        /// minor version, 0/1
+        /// </summary>
         [FieldOffset(0x8)]
         public uint MinorVersion;
 
+        /// <summary>
+        /// size of header
+        /// </summary>
         [FieldOffset(0xC)]
         public uint HeaderSize;
 
+        /// <summary>
+        /// size of global file index data compiled map, or -1 for not exist
+        /// </summary>
         [FieldOffset(0x10)]
         public uint GlobalFileIndexMapSize;
 
+        /// <summary>
+        /// offset of global file index data compiled map
+        /// </summary>
         [FieldOffset(0x14)]
         public uint GlobalFileIndexMapOffset;
 
-        [FieldOffset(0x18)]
-        public uint Unknow0x18;
-
-        [FieldOffset(0x1C)]
-        public uint Unknow0x1C;
-
+        /// <summary>
+        /// size of group index data compiled map
+        /// </summary>
         [FieldOffset(0x20)]
         public uint GroupIndexMapSize;
 
+        /// <summary>
+        /// offset of group index data compiled map
+        /// </summary>
         [FieldOffset(0x24)]
         public uint GroupIndexMapOffset;
 
+        /// <summary>
+        /// count of group
+        /// </summary>
         [FieldOffset(0x28)]
         public uint GroupCount;
 
+        /// <summary>
+        /// offset of group descriptor
+        /// </summary>
         [FieldOffset(0x2C)]
         public uint GroupDescriptorOffset;
 
+        /// <summary>
+        /// size of group descriptor
+        /// </summary>
         [FieldOffset(0x30)]
-        public uint GroupDescriptorPitch;
+        public uint GroupDescriptorSize;
 
+        /// <summary>
+        /// count of composite
+        /// </summary>
         [FieldOffset(0x34)]
         public uint CompositeCount;
 
+        /// <summary>
+        /// offset of composite descriptor
+        /// </summary>
         [FieldOffset(0x38)]
         public uint CompositeDescriptorOffset;
 
+        /// <summary>
+        /// size of composite descriptor
+        /// </summary>
         [FieldOffset(0x3C)]
-        public uint CompositeDescriptorPitch;
+        public uint CompositeDescriptorSize;
 
+        /// <summary>
+        /// size of composite index data compiled map
+        /// </summary>
         [FieldOffset(0x40)]
         public uint CompositeIndexMapSize;
 
+        /// <summary>
+        /// offset of composite index data compiled map
+        /// </summary>
         [FieldOffset(0x44)]
         public uint CompositeIndexMapOffset;
 
+        /// <summary>
+        /// count of pool
+        /// </summary>
         [FieldOffset(0x48)]
         public uint PoolCount;
 
+        /// <summary>
+        /// offset of pool descriptor
+        /// </summary>
         [FieldOffset(0x4C)]
         public uint PoolDescriptorOffset;
 
+        /// <summary>
+        /// size of pool descriptor
+        /// </summary>
         [FieldOffset(0x50)]
-        public uint PoolDescriptorPitch;
+        public uint PoolDescriptorSize;
 
+        /// <summary>
+        /// count of texture
+        /// </summary>
         [FieldOffset(0x54)]
         public uint TextureCount;
 
+        /// <summary>
+        /// offset of texture descriptor
+        /// </summary>
         [FieldOffset(0x58)]
         public uint TextureDescriptorOffset;
 
+        /// <summary>
+        /// size of texture descriptor
+        /// </summary>
         [FieldOffset(0x5C)]
-        public uint TextureDescriptorPitch;
+        public uint TextureDescriptorSize;
 
+        /// <summary>
+        /// manifest bin group offset
+        /// </summary>
         [FieldOffset(0x60)]
         public uint ManifestGroupInfoOffset;
 
+        /// <summary>
+        /// manifest bin resource offset
+        /// </summary>
         [FieldOffset(0x64)]
         public uint ManifestResourceInfoOffset;
 
+        /// <summary>
+        /// manifest bin string pool offset
+        /// </summary>
         [FieldOffset(0x68)]
         public uint ManifestStringPoolOffset;
 
+        /// <summary>
+        /// header size without manifest for rsb v4
+        /// </summary>
         [FieldOffset(0x6C)]
         public uint HeaderSizeNoManifest;
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x5C)]
-    public unsafe struct RsgInfo
+    public unsafe struct ResStreamGroupHeader
     {
+        /// <summary>
+        /// magic number 1bsr(LE)/rsb1(BE)
+        /// </summary>
         [FieldOffset(0x0)]
         public uint Magic;
 
+        /// <summary>
+        /// major version, 1/3/4
+        /// </summary>
         [FieldOffset(0x4)]
-        public uint Version;
+        public uint MajorVersion;
 
+        /// <summary>
+        /// minor version, 0/1
+        /// </summary>
         [FieldOffset(0x8)]
         public uint MinorVersion;
 
-        [FieldOffset(0xC)]
-        public uint Unknow0xC;
-
+        /// <summary>
+        /// compression flags
+        /// </summary>
         [FieldOffset(0x10)]
         public uint CompressionFlags;
 
+        /// <summary>
+        /// size of header
+        /// </summary>
         [FieldOffset(0x14)]
         public uint HeaderSize;
 
+        /// <summary>
+        /// offset of resident data
+        /// </summary>
         [FieldOffset(0x18)]
         public uint ResidentDataOffset;
 
+        /// <summary>
+        /// compressed size of resident data
+        /// </summary>
         [FieldOffset(0x1C)]
         public uint ResidentDataCompressedSize;
 
+        /// <summary>
+        /// uncompressed size of resident data
+        /// </summary>
         [FieldOffset(0x20)]
         public uint ResidentDataUncompressedSize;
 
-        [FieldOffset(0x24)]
-        public uint Unknow0x24;
-
+        /// <summary>
+        /// offset of GPU data
+        /// </summary>
         [FieldOffset(0x28)]
         public uint GPUDataOffset;
 
+        /// <summary>
+        /// compressed size of GPU data
+        /// </summary>
         [FieldOffset(0x2C)]
         public uint GPUDataCompressedSize;
 
+        /// <summary>
+        /// uncompressed size of GPU data
+        /// </summary>
         [FieldOffset(0x30)]
         public uint GPUDataUncompressedSize;
 
-        [FieldOffset(0x34)]
-        public uint Unknow0x34;
-
-        [FieldOffset(0x38)]
-        public uint Unknow0x38;
-
-        [FieldOffset(0x3C)]
-        public uint Unknow0x3C;
-
-        [FieldOffset(0x40)]
-        public uint Unknow0x40;
-
-        [FieldOffset(0x44)]
-        public uint Unknow0x44;
-
+        /// <summary>
+        /// map size
+        /// </summary>
         [FieldOffset(0x48)]
         public uint FileIndexDataMapSize;
 
+        /// <summary>
+        /// map offset
+        /// </summary>
         [FieldOffset(0x4C)]
         public uint FileIndexDataMapOffset;
-
-        [FieldOffset(0x50)]
-        public uint Unknow0x50;
-
-        [FieldOffset(0x54)]
-        public uint Unknow0x54;
-
-        [FieldOffset(0x58)]
-        public uint Unknow0x58;
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0xC)]
@@ -348,12 +560,6 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
         [FieldOffset(0xC)]
         public uint Index;
 
-        [FieldOffset(0x10)]
-        public uint Unknow0x10;
-
-        [FieldOffset(0x14)]
-        public uint Unknow0x14;
-
         [FieldOffset(0x18)]
         public uint Width;
 
@@ -362,23 +568,23 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0xC)]
-    public struct ManifestCompositeGroupInfo
+    public struct ManifestCompositeInfo
     {
         [FieldOffset(0x0)]
         public uint IdOffset;
 
         [FieldOffset(0x4)]
-        public uint SubGroupCount;
+        public uint ChildCount;
 
         [FieldOffset(0x8)]
-        public uint SubGroupInfoEachSize;
+        public uint GroupInfoSize;
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0xC)]
-    public struct ManifestSubGroupInfoForRsbV1
+    public struct ManifestGroupInfoV1
     {
         [FieldOffset(0x0)]
-        public uint Res;
+        public uint ArtResolution;
 
         [FieldOffset(0x4)]
         public uint IdOffset;
@@ -388,26 +594,19 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x10)]
-    public struct ManifestSubGroupInfoForRsbV3V4
+    public struct ManifestGroupInfoV3V4
     {
         [FieldOffset(0x0)]
-        public uint Res;
+        public uint ArtResolution;
 
         [FieldOffset(0x4)]
-        public uint Loc;
+        public uint Localization;
 
         [FieldOffset(0x8)]
         public uint IdOffset;
 
         [FieldOffset(0xC)]
         public uint ResourceCount;
-    }
-
-    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x4)]
-    public struct ManifestResourceInfo
-    {
-        [FieldOffset(0x0)]
-        public uint Offset;
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x1C)]
@@ -480,9 +679,6 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
     {
         [FieldOffset(0x0)]
         public uint KeyOffset;
-
-        [FieldOffset(0x4)]
-        public uint Unknow0x4;
 
         [FieldOffset(0x8)]
         public uint ValueOffset;

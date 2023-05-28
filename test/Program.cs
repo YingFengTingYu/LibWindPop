@@ -11,27 +11,27 @@ namespace LibWindPop.Test
     {
         private static void TestTask()
         {
-            //PakUnpacker.Unpack(
-            //    "D:\\main.pak",
-            //    "D:\\main_pak_unpack",
-            //    new NativeFileSystem(),
-            //    new ConsoleLogger(0, true),
-            //    false,
-            //    true
-            //    );
+            PakUnpacker.Unpack(
+                "D:\\main.pak",
+                "D:\\main_pak_unpack",
+                new NativeFileSystem(),
+                new ConsoleLogger(0, true),
+                false,
+                true
+                );
             //PakContentPipelineManager.AddContentPipeline(
             //    "D:\\main_pak_unpack",
-            //    nameof(PakPtxXbox360AutoEncoder),
+            //    nameof(PakPtxPS3AndDdsAutoEncoder),
             //    true,
             //    new NativeFileSystem(),
             //    new ConsoleLogger(0, true)
             //    );
-            PakPacker.Pack(
-                "D:\\main_pak_unpack",
-                "F:\\Games\\pvzx360\\main.pak",
-                new NativeFileSystem(),
-                new ConsoleLogger()
-                );
+            //PakPacker.Pack(
+            //    "D:\\main_pak_unpack",
+            //    "F:\\Games\\pvzx360\\main.pak",
+            //    new NativeFileSystem(),
+            //    new ConsoleLogger()
+            //    );
         }
 
         static void Main(string[] args)

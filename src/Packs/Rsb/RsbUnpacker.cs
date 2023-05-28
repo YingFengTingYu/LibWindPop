@@ -97,26 +97,26 @@ namespace LibWindPop.Packs.Rsb
                 rsbStream.Seek(0, SeekOrigin.Begin);
                 rsbStream.Read(headerPtrNumber, headerSize);
                 bool reverseEndian = (magic == 0x72736231u) ^ BitConverter.IsLittleEndian;
-                RsbInfo* rsbInfo = (RsbInfo*)headerPtrNumber;
+                ResStreamsHeader* rsbInfo = (ResStreamsHeader*)headerPtrNumber;
                 if (reverseEndian)
                 {
                     logger.Log("Reverse rsb header endianness...");
                     RsbReverser.ReverseRsbHeader(rsbInfo, Endianness.NoneNative, Endianness.Native);
                 }
                 bool externalRsg = rsbStream.Length == rsbInfo->HeaderSize;
-                packInfo.MajorVersion = rsbInfo->Version;
+                packInfo.MajorVersion = rsbInfo->MajorVersion;
                 packInfo.MinorVersion = rsbInfo->MinorVersion;
                 packInfo.UseBigEndian = useBigEndian;
                 packInfo.UseExternalRsg = externalRsg;
                 packInfo.UseGlobalFileIndexMap = rsbInfo->GlobalFileIndexMapSize != 0xFFFFFFFFu;
                 packInfo.UseManifest = rsbInfo->ManifestGroupInfoOffset != 0u;
                 packInfo.UseGroupFolder = paths.UseGroupFolder;
-                packInfo.TextureDescriptorPitch = rsbInfo->TextureDescriptorPitch;
+                packInfo.TextureDescriptorPitch = rsbInfo->TextureDescriptorSize;
                 packInfo.ImageHandler = ptxHandlerType;
                 if (rsbInfo->ManifestGroupInfoOffset != 0u)
                 {
                     logger.Log("Unpack rsb manifest...");
-                    UnpackRsbManifest(rsbInfo->Version, headerPtrNumber + rsbInfo->ManifestGroupInfoOffset, headerPtrNumber + rsbInfo->ManifestResourceInfoOffset, headerPtrNumber + rsbInfo->ManifestStringPoolOffset, paths.InfoManifestPath, fileSystem, logger, encoding);
+                    UnpackRsbManifest(rsbInfo->MajorVersion, headerPtrNumber + rsbInfo->ManifestGroupInfoOffset, headerPtrNumber + rsbInfo->ManifestResourceInfoOffset, headerPtrNumber + rsbInfo->ManifestStringPoolOffset, paths.InfoManifestPath, fileSystem, logger, encoding);
                 }
                 nuint currentPtrNumber;
                 string[] groupIdList = new string[rsbInfo->GroupCount];
@@ -156,12 +156,12 @@ namespace LibWindPop.Packs.Rsb
                 currentPtrNumber = headerPtrNumber + rsbInfo->PoolDescriptorOffset;
                 for (int i = 0; i < pools.Length; i++)
                 {
-                    RsbPoolDescriptor* poolInfo = (RsbPoolDescriptor*)currentPtrNumber;
-                    currentPtrNumber += rsbInfo->PoolDescriptorPitch;
+                    ResStreamPoolDescriptor* poolInfo = (ResStreamPoolDescriptor*)currentPtrNumber;
+                    currentPtrNumber += rsbInfo->PoolDescriptorSize;
                     RsbPackPoolInfo pool = new RsbPackPoolInfo();
                     pool.Id = (uint)i;
                     pool.Name = UnsafeStringHelper.GetUtf16String((nuint)poolInfo->Name, 0x80, encoding);
-                    pool.NumInstances = poolInfo->BufferCount;
+                    pool.NumInstances = poolInfo->NumInstances;
                     pools[i] = pool;
                 }
                 packInfo.Pools = pools;
@@ -169,17 +169,17 @@ namespace LibWindPop.Packs.Rsb
                 logger.Log("Read composite group info...");
                 RsbPackCompositeInfo[] composites = new RsbPackCompositeInfo[rsbInfo->CompositeCount];
                 currentPtrNumber = headerPtrNumber + rsbInfo->CompositeDescriptorOffset;
-                if (rsbInfo->Version < 3u)
+                if (rsbInfo->MajorVersion < 3u)
                 {
                     for (int i = 0; i < composites.Length; i++)
                     {
-                        RsbCompositeDescriptorV1* compositeInfo = (RsbCompositeDescriptorV1*)currentPtrNumber;
-                        currentPtrNumber += rsbInfo->CompositeDescriptorPitch;
+                        ResStreamCompositeDescriptorV1* compositeInfo = (ResStreamCompositeDescriptorV1*)currentPtrNumber;
+                        currentPtrNumber += rsbInfo->CompositeDescriptorSize;
                         RsbPackCompositeInfo composite = new RsbPackCompositeInfo();
                         composite.Id = compositeIdList[i];
                         composite.Name = UnsafeStringHelper.GetUtf16String((nuint)compositeInfo->Name, 0x80, encoding);
                         RsbPackSubGroupInfo[] compositeGroups = new RsbPackSubGroupInfo[compositeInfo->SubGroupCount];
-                        RsbSubGroupV1* compositeGroupInfo = (RsbSubGroupV1*)((nuint)compositeInfo + 0x80);
+                        ResStreamCompositeDescriptorChildV1* compositeGroupInfo = (ResStreamCompositeDescriptorChildV1*)((nuint)compositeInfo + 0x80);
                         for (int j = 0; j < compositeGroups.Length; j++)
                         {
                             RsbPackSubGroupInfo compositeGroup = new RsbPackSubGroupInfo();
@@ -192,7 +192,7 @@ namespace LibWindPop.Packs.Rsb
                             {
                                 compositeGroup.Id = groupIdList[compositeGroupInfo->GroupIndex];
                             }
-                            compositeGroup.Res = compositeGroupInfo->Res;
+                            compositeGroup.Res = compositeGroupInfo->ArtResolution;
                             compositeGroup.Loc = null;
                             compositeGroupInfo++;
                             compositeGroups[j] = compositeGroup;
@@ -205,13 +205,13 @@ namespace LibWindPop.Packs.Rsb
                 {
                     for (int i = 0; i < composites.Length; i++)
                     {
-                        RsbCompositeDescriptorV3V4* compositeInfo = (RsbCompositeDescriptorV3V4*)currentPtrNumber;
-                        currentPtrNumber += rsbInfo->CompositeDescriptorPitch;
+                        ResStreamCompositeDescriptorV3V4* compositeInfo = (ResStreamCompositeDescriptorV3V4*)currentPtrNumber;
+                        currentPtrNumber += rsbInfo->CompositeDescriptorSize;
                         RsbPackCompositeInfo composite = new RsbPackCompositeInfo();
                         composite.Id = compositeIdList[i];
                         composite.Name = UnsafeStringHelper.GetUtf16String((nuint)compositeInfo->Name, 0x80, encoding);
-                        RsbPackSubGroupInfo[] compositeGroups = new RsbPackSubGroupInfo[compositeInfo->SubGroupCount];
-                        RsbSubGroupV3V4* compositeGroupInfo = (RsbSubGroupV3V4*)((nuint)compositeInfo + 0x80);
+                        RsbPackSubGroupInfo[] compositeGroups = new RsbPackSubGroupInfo[compositeInfo->ChildCount];
+                        ResStreamCompositeDescriptorChildV3V4* compositeGroupInfo = (ResStreamCompositeDescriptorChildV3V4*)((nuint)compositeInfo + 0x80);
                         for (int j = 0; j < compositeGroups.Length; j++)
                         {
                             RsbPackSubGroupInfo compositeGroup = new RsbPackSubGroupInfo();
@@ -224,8 +224,8 @@ namespace LibWindPop.Packs.Rsb
                             {
                                 compositeGroup.Id = groupIdList[compositeGroupInfo->GroupIndex];
                             }
-                            compositeGroup.Res = compositeGroupInfo->Res;
-                            compositeGroup.Loc = UInt32StringConvertor.UInt32ToString(compositeGroupInfo->Loc);
+                            compositeGroup.Res = compositeGroupInfo->ArtResolution;
+                            compositeGroup.Loc = UInt32StringConvertor.UInt32ToString(compositeGroupInfo->Localization);
                             compositeGroupInfo++;
                             compositeGroups[j] = compositeGroup;
                         }
@@ -244,14 +244,14 @@ namespace LibWindPop.Packs.Rsb
                 currentPtrNumber = headerPtrNumber + rsbInfo->GroupDescriptorOffset;
                 for (int i = 0; i < rsgSortList.Length; i++)
                 {
-                    RsbGroupDescriptor* groupInfo = (RsbGroupDescriptor*)currentPtrNumber;
-                    currentPtrNumber += rsbInfo->GroupDescriptorPitch;
+                    ResStreamGroupDescriptor* groupInfo = (ResStreamGroupDescriptor*)currentPtrNumber;
+                    currentPtrNumber += rsbInfo->GroupDescriptorSize;
                     rsgSortList[i] = ((uint)i, groupInfo->RsgOffset);
                     maxRsgHeaderSize = Math.Max(maxRsgHeaderSize, groupInfo->RsgHeaderSize);
                     maxRsgImageCount = Math.Max(
                         maxRsgImageCount,
-                        rsbInfo->Version <= 1
-                            ? ((RsbPoolDescriptor*)(headerPtrNumber + rsbInfo->PoolDescriptorOffset + rsbInfo->PoolDescriptorPitch * groupInfo->PoolIndex))->TextureCount
+                        rsbInfo->MajorVersion <= 1
+                            ? ((ResStreamPoolDescriptor*)(headerPtrNumber + rsbInfo->PoolDescriptorOffset + rsbInfo->PoolDescriptorSize * groupInfo->PoolIndex))->TextureCount
                             : groupInfo->TextureCount
                         );
                 }
@@ -271,7 +271,7 @@ namespace LibWindPop.Packs.Rsb
                 using (NativeMemoryOwner rsgHeaderMemoryAllocator = new NativeMemoryOwner(maxRsgHeaderSize))
                 {
                     nuint rsgHeaderPtrNumber = (nuint)rsgHeaderMemoryAllocator.Pointer;
-                    RsgInfo* rsgInfo = (RsgInfo*)rsgHeaderPtrNumber;
+                    ResStreamGroupHeader* rsgInfo = (ResStreamGroupHeader*)rsgHeaderPtrNumber;
                     List<CompiledMapPair> residentFileList = new List<CompiledMapPair>();
                     List<CompiledMapPair> imageList = new List<CompiledMapPair>();
                     using ITempFile decompressedTempFile = fileSystem.CreateTempFile();
@@ -283,8 +283,8 @@ namespace LibWindPop.Packs.Rsb
                     {
                         logger.Log($"Unpack group {groupIdList[i]}...");
                         logger.Log($"Read group info...");
-                        RsbGroupDescriptor* groupInfo = (RsbGroupDescriptor*)currentPtrNumber;
-                        currentPtrNumber += rsbInfo->GroupDescriptorPitch;
+                        ResStreamGroupDescriptor* groupInfo = (ResStreamGroupDescriptor*)currentPtrNumber;
+                        currentPtrNumber += rsbInfo->GroupDescriptorSize;
                         RsbPackGroupInfo group = new()
                         {
                             Id = groupIdList[i],
@@ -294,7 +294,7 @@ namespace LibWindPop.Packs.Rsb
                         };
                         RsgMetadata rsgPackInfo = new()
                         {
-                            MajorVersion = rsbInfo->Version,
+                            MajorVersion = rsbInfo->MajorVersion,
                             UseBigEndian = useBigEndian,
                             CompressionFlags = groupInfo->RsgCompressionFlags,
                             ImageHandler = ptxHandlerType,
@@ -311,9 +311,9 @@ namespace LibWindPop.Packs.Rsb
                         // compute image len
                         uint imageSize = 0u;
                         uint imageCount, imageOffset;
-                        if (rsbInfo->Version <= 1)
+                        if (rsbInfo->MajorVersion <= 1)
                         {
-                            RsbPoolDescriptor* poolInfo = (RsbPoolDescriptor*)(headerPtrNumber + rsbInfo->PoolDescriptorOffset + rsbInfo->PoolDescriptorPitch * groupInfo->PoolIndex);
+                            ResStreamPoolDescriptor* poolInfo = (ResStreamPoolDescriptor*)(headerPtrNumber + rsbInfo->PoolDescriptorOffset + rsbInfo->PoolDescriptorSize * groupInfo->PoolIndex);
                             imageCount = poolInfo->TextureCount;
                             imageOffset = poolInfo->TextureDescriptorStartIndex;
                         }
@@ -324,9 +324,9 @@ namespace LibWindPop.Packs.Rsb
                         }
                         for (uint j = 0u; j < imageCount; j++)
                         {
-                            RsbTextureDescriptor* imagePtr = (RsbTextureDescriptor*)(headerPtrNumber + rsbInfo->TextureDescriptorOffset + rsbInfo->TextureDescriptorPitch * (imageOffset + j));
+                            ResStreamTextureDescriptor* imagePtr = (ResStreamTextureDescriptor*)(headerPtrNumber + rsbInfo->TextureDescriptorOffset + rsbInfo->TextureDescriptorSize * (imageOffset + j));
                             imageOffsetList[j] = j == 0u ? 0u : Align(imageOffsetList[j - 1] + imageSizeList[j - 1]);
-                            imageSizeList[j] = ptxHandler.GetPtxSize(imagePtr->Width, imagePtr->Height, imagePtr->Pitch, imagePtr->Format, rsbInfo->TextureDescriptorPitch >= 0x14u ? imagePtr->Extend0x10 : 0u);
+                            imageSizeList[j] = ptxHandler.GetPtxSize(imagePtr->Width, imagePtr->Height, imagePtr->Pitch, imagePtr->Format, rsbInfo->TextureDescriptorSize >= 0x14u ? imagePtr->Extend1 : 0u);
                         }
                         if (imageCount > 0u)
                         {
@@ -488,11 +488,11 @@ namespace LibWindPop.Packs.Rsb
                                         readStream = rsgStream;
                                         readOffset = groupInfo->RsgGPUDataOffset;
                                     }
-                                    nuint imgInfoBaseOffset = headerPtrNumber + rsbInfo->TextureDescriptorOffset + rsbInfo->TextureDescriptorPitch * imageOffset;
+                                    nuint imgInfoBaseOffset = headerPtrNumber + rsbInfo->TextureDescriptorOffset + rsbInfo->TextureDescriptorSize * imageOffset;
                                     for (uint j = 0; j < imageCount; j++)
                                     {
-                                        RsbTextureDescriptor* imgInfo = (RsbTextureDescriptor*)imgInfoBaseOffset;
-                                        imgInfoBaseOffset += rsbInfo->TextureDescriptorPitch;
+                                        ResStreamTextureDescriptor* imgInfo = (ResStreamTextureDescriptor*)imgInfoBaseOffset;
+                                        imgInfoBaseOffset += rsbInfo->TextureDescriptorSize;
                                         try
                                         {
                                             CompiledMapPair? pair = null;
@@ -528,8 +528,8 @@ namespace LibWindPop.Packs.Rsb
                                                 Height = imgInfo->Height,
                                                 Pitch = imgInfo->Pitch,
                                                 Format = imgInfo->Format,
-                                                Extend1 = rsbInfo->TextureDescriptorPitch >= 0x14u ? imgInfo->Extend0x10 : 0u,
-                                                Extend2 = rsbInfo->TextureDescriptorPitch >= 0x18u ? imgInfo->Extend0x14 : 0u
+                                                Extend1 = rsbInfo->TextureDescriptorSize >= 0x14u ? imgInfo->Extend1 : 0u,
+                                                Extend2 = rsbInfo->TextureDescriptorSize >= 0x18u ? imgInfo->Extend2 : 0u
                                             };
                                             images[j] = rsbGroupImageInfo;
                                             rsgImages[j] = new RsgMetadataGPUFileInfo
@@ -572,28 +572,28 @@ namespace LibWindPop.Packs.Rsb
             // peek composite number
             uint compositeCount = 0, resCount;
             nuint currentGroupPtrNumber = groupPtrNumber;
-            ManifestCompositeGroupInfo* compositePtr;
-            ManifestSubGroupInfoForRsbV3V4* groupPtrV3V4;
-            ManifestSubGroupInfoForRsbV1* groupPtrV1;
+            ManifestCompositeInfo* compositePtr;
+            ManifestGroupInfoV3V4* groupPtrV3V4;
+            ManifestGroupInfoV1* groupPtrV1;
             ManifestResourceHeader* resHeaderPtr;
             ManifestResourceImageProperty* imgPropPtr;
             ManifestResourceUniversalProperty* uniPropPtr;
             while (currentGroupPtrNumber < resPtrNumber)
             {
-                compositePtr = (ManifestCompositeGroupInfo*)currentGroupPtrNumber;
-                currentGroupPtrNumber += (uint)sizeof(ManifestCompositeGroupInfo);
-                for (uint i = 0; i < compositePtr->SubGroupCount; i++)
+                compositePtr = (ManifestCompositeInfo*)currentGroupPtrNumber;
+                currentGroupPtrNumber += (uint)sizeof(ManifestCompositeInfo);
+                for (uint i = 0; i < compositePtr->ChildCount; i++)
                 {
                     if (version < 3u)
                     {
-                        groupPtrV1 = (ManifestSubGroupInfoForRsbV1*)currentGroupPtrNumber;
-                        currentGroupPtrNumber += compositePtr->SubGroupInfoEachSize;
+                        groupPtrV1 = (ManifestGroupInfoV1*)currentGroupPtrNumber;
+                        currentGroupPtrNumber += compositePtr->GroupInfoSize;
                         currentGroupPtrNumber += 4 * groupPtrV1->ResourceCount;
                     }
                     else
                     {
-                        groupPtrV3V4 = (ManifestSubGroupInfoForRsbV3V4*)currentGroupPtrNumber;
-                        currentGroupPtrNumber += compositePtr->SubGroupInfoEachSize;
+                        groupPtrV3V4 = (ManifestGroupInfoV3V4*)currentGroupPtrNumber;
+                        currentGroupPtrNumber += compositePtr->GroupInfoSize;
                         currentGroupPtrNumber += 4 * groupPtrV3V4->ResourceCount;
                     }
                 }
@@ -605,30 +605,30 @@ namespace LibWindPop.Packs.Rsb
             for (uint i = 0; i < compositeCount; i++)
             {
                 RsbManifestCompositeInfo composite = new RsbManifestCompositeInfo();
-                compositePtr = (ManifestCompositeGroupInfo*)currentGroupPtrNumber;
-                currentGroupPtrNumber += (uint)sizeof(ManifestCompositeGroupInfo);
+                compositePtr = (ManifestCompositeInfo*)currentGroupPtrNumber;
+                currentGroupPtrNumber += (uint)sizeof(ManifestCompositeInfo);
                 composite.Id = UnsafeStringHelper.GetUtf16String(poolPtrNumber + compositePtr->IdOffset, encoding);
-                RsbManifestGroupInfo[] groups = new RsbManifestGroupInfo[compositePtr->SubGroupCount];
+                RsbManifestGroupInfo[] groups = new RsbManifestGroupInfo[compositePtr->ChildCount];
                 composite.SubGroups = groups;
-                for (uint j = 0; j < compositePtr->SubGroupCount; j++)
+                for (uint j = 0; j < compositePtr->ChildCount; j++)
                 {
                     RsbManifestGroupInfo group = new RsbManifestGroupInfo();
                     if (version < 3u)
                     {
-                        groupPtrV1 = (ManifestSubGroupInfoForRsbV1*)currentGroupPtrNumber;
-                        currentGroupPtrNumber += compositePtr->SubGroupInfoEachSize;
+                        groupPtrV1 = (ManifestGroupInfoV1*)currentGroupPtrNumber;
+                        currentGroupPtrNumber += compositePtr->GroupInfoSize;
                         group.Id = UnsafeStringHelper.GetUtf16String(poolPtrNumber + groupPtrV1->IdOffset, encoding);
-                        group.Res = groupPtrV1->Res;
+                        group.Res = groupPtrV1->ArtResolution;
                         group.Loc = null;
                         resCount = groupPtrV1->ResourceCount;
                     }
                     else
                     {
-                        groupPtrV3V4 = (ManifestSubGroupInfoForRsbV3V4*)currentGroupPtrNumber;
-                        currentGroupPtrNumber += compositePtr->SubGroupInfoEachSize;
+                        groupPtrV3V4 = (ManifestGroupInfoV3V4*)currentGroupPtrNumber;
+                        currentGroupPtrNumber += compositePtr->GroupInfoSize;
                         group.Id = UnsafeStringHelper.GetUtf16String(poolPtrNumber + groupPtrV3V4->IdOffset, encoding);
-                        group.Res = groupPtrV3V4->Res;
-                        group.Loc = UInt32StringConvertor.UInt32ToString(groupPtrV3V4->Loc);
+                        group.Res = groupPtrV3V4->ArtResolution;
+                        group.Loc = UInt32StringConvertor.UInt32ToString(groupPtrV3V4->Localization);
                         resCount = groupPtrV3V4->ResourceCount;
                     }
                     RsbManifestResourceInfo[] resources = new RsbManifestResourceInfo[resCount];

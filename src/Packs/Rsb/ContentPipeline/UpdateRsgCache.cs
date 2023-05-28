@@ -147,6 +147,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                 }
                                 using (NativeMemoryOwner rawDataAllocator = new NativeMemoryOwner(inMemSize))
                                 {
+                                    rawDataAllocator.Clear();
                                     nuint pairPtrNumber = (nuint)rawDataAllocator.Pointer;
                                     nuint poolPtrNumber = pairPtrNumber + poolOffset;
                                     CompiledMapEncodePair* currentPairPtr = (CompiledMapEncodePair*)pairPtrNumber;
@@ -202,8 +203,6 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                 extra->Offset = 0u;
                                                 extra->Size = 0u;
                                                 extra->Index = (uint)j;
-                                                extra->Unknow0x10 = 0u;
-                                                extra->Unknow0x14 = 0u;
                                                 extra->Width = groupInfo.GPUFileList[j].Width;
                                                 extra->Height = groupInfo.GPUFileList[j].Height;
                                                 currentPoolPtr += (uint)sizeof(RsgImageExtraData);
@@ -216,14 +215,14 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                     CompiledMapEncoder.Sort(currentPairPtr, pairCount, poolPtrNumber);
                                     CompiledMapEncoder.ComputeRepeatLength(currentPairPtr, pairCount, poolPtrNumber);
                                     uint mapSize = CompiledMapEncoder.PeekSize(currentPairPtr, pairCount);
-                                    uint rsgHeaderSize = Align((uint)sizeof(RsgInfo) + mapSize);
+                                    uint rsgHeaderSize = Align((uint)sizeof(ResStreamGroupHeader) + mapSize);
                                     using (NativeMemoryOwner rsgHeaderMemoryAllocator = new NativeMemoryOwner(rsgHeaderSize))
                                     {
                                         rsgHeaderMemoryAllocator.Fill(0);
                                         nuint rsgHeaderPtrNumber = (nuint)rsgHeaderMemoryAllocator.Pointer;
-                                        RsgInfo* rsgInfo = (RsgInfo*)rsgHeaderPtrNumber;
+                                        ResStreamGroupHeader* rsgInfo = (ResStreamGroupHeader*)rsgHeaderPtrNumber;
                                         rsgInfo->Magic = 1920165744u; // pgsr
-                                        rsgInfo->Version = packInfo.MajorVersion;
+                                        rsgInfo->MajorVersion = packInfo.MajorVersion;
                                         rsgInfo->MinorVersion = packInfo.MinorVersion;
                                         rsgInfo->CompressionFlags = groupInfo.CompressionFlags;
                                         rsgInfo->HeaderSize = rsgHeaderSize;
