@@ -6,6 +6,7 @@ namespace LibWindPop.Utils.FileSystem
     public struct NativeFileSystem : IFileSystem
     {
         private readonly bool m_IsWindows;
+        private static StreamWriter? m_outStream;
 
         public NativeFileSystem()
         {

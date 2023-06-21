@@ -164,7 +164,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                 {
                     bool create = true;
                     string rawPath = paths.GetResourcePathByGroupIdAndPath(null, atlasPair.Value.path);
-                    AtlasMetadata? atlasMeta = WindJsonSerializer.TryDeserializeFromFile<AtlasMetadata>(paths.AppendMetaExtension(rawPath), fileSystem, logger);
+                    AtlasMetadata? atlasMeta = WindJsonSerializer.TryDeserializeFromFile<AtlasMetadata>(paths.AppendMetaExtension(rawPath), fileSystem, new NullLogger(false));
                     if (atlasMeta != null)
                     {
                         AtlasMetadata allocNewMeta = atlasPair.Value.meta;
@@ -180,7 +180,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                 int subimageCount = atlasMeta.SubImages.Count;
                                 for (int i = 0; i < subimageCount; i++)
                                 {
-                                    if (atlasMeta.SubImages[i].Id != allocNewMeta.SubImages[i].Id || atlasMeta.SubImages[i].Path != allocNewMeta.SubImages[i].Path || atlasMeta.SubImages[i].AW != allocNewMeta.SubImages[i].AW || atlasMeta.SubImages[i].AH != allocNewMeta.SubImages[i].AH || !DateTimeHelper.IsEqual(atlasMeta.SubImages[i].PngModifyTimeUtc, allocNewMeta.SubImages[i].PngModifyTimeUtc))
+                                    if (atlasMeta.SubImages[i].Id != allocNewMeta.SubImages[i].Id || atlasMeta.SubImages[i].Path != allocNewMeta.SubImages[i].Path || atlasMeta.SubImages[i].AW != allocNewMeta.SubImages[i].AW || atlasMeta.SubImages[i].AH != allocNewMeta.SubImages[i].AH || (atlasMeta.SubImages[i].PngModifyTimeUtc != allocNewMeta.SubImages[i].PngModifyTimeUtc))
                                     {
                                         create = true;
                                         break;
