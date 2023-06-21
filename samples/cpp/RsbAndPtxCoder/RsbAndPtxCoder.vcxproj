@@ -149,12 +149,14 @@ xcopy /y /d "..\ThridPart\PVRTexLib\PVRTexLib.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="PtxHandlerBestQuality.cpp" />
+    <ClCompile Include="PtxHandlerForPVZFree.cpp" />
     <ClCompile Include="RsbEncryptor.cpp" />
     <ClCompile Include="TestPtxHandlerPS3V1.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />
     <ClInclude Include="PtxHandlerBestQuality.h" />
+    <ClInclude Include="PtxHandlerForPVZFree.h" />
     <ClInclude Include="RsbEncryptor.h" />
     <ClInclude Include="TestPtxHandlerPS3V1.h" />
   </ItemGroup>

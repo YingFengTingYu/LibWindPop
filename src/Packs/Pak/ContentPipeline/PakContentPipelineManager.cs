@@ -11,7 +11,7 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
         private static readonly Dictionary<string, IContentPipeline?> m_ContentPipelineMap = new Dictionary<string, IContentPipeline?>
         {
             { nameof(PakRebuildFile), new PakRebuildFile() },
-            { nameof(PakPtxPS3AndDdsAutoEncoder), new PakPtxPS3AndDdsAutoEncoder() },
+            { nameof(PakPtxDdsAutoEncoder), new PakPtxDdsAutoEncoder() },
             { nameof(PakPtxXbox360AutoEncoder), new PakPtxXbox360AutoEncoder() },
         };
 

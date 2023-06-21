@@ -5,6 +5,6 @@
     /// </summary>
     public interface IXbox360D3D9Texture
     {
-        static virtual D3DFORMAT Xbox360D3D9Format { get => D3DFORMAT.D3DFMT_UNKNOWN; }
+        static abstract D3DFORMAT Xbox360D3D9Format { get; }
     }
 }

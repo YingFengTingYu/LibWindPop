@@ -139,7 +139,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                         string? path = groupInfo.GPUFileList[j].Path;
                                         if (path != null)
                                         {
-                                            inMemSize += CompiledMapEncodePair.PeekSize(path, (uint)sizeof(RsgImageExtraData)) + (uint)sizeof(CompiledMapEncodePair);
+                                            inMemSize += CompiledMapEncodePair.PeekSize(path, (uint)sizeof(ResStreamFileGPULocationInfo)) + (uint)sizeof(CompiledMapEncodePair);
                                             poolOffset += (uint)sizeof(CompiledMapEncodePair);
                                             pairCount++;
                                         }
@@ -197,15 +197,15 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                 *(byte*)currentPoolPtr = 0x0;
                                                 currentPoolPtr++;
                                                 currentPairPtr->ValueOffset = (uint)(currentPoolPtr - poolPtrNumber);
-                                                currentPairPtr->ValueSize = (uint)sizeof(RsgImageExtraData);
-                                                RsgImageExtraData* extra = (RsgImageExtraData*)currentPoolPtr;
+                                                currentPairPtr->ValueSize = (uint)sizeof(ResStreamFileGPULocationInfo);
+                                                ResStreamFileGPULocationInfo* extra = (ResStreamFileGPULocationInfo*)currentPoolPtr;
                                                 extra->Type = 1u;
                                                 extra->Offset = 0u;
                                                 extra->Size = 0u;
-                                                extra->Index = (uint)j;
+                                                extra->TextureId = (uint)j;
                                                 extra->Width = groupInfo.GPUFileList[j].Width;
                                                 extra->Height = groupInfo.GPUFileList[j].Height;
-                                                currentPoolPtr += (uint)sizeof(RsgImageExtraData);
+                                                currentPoolPtr += (uint)sizeof(ResStreamFileGPULocationInfo);
                                                 currentPairPtr++;
                                                 UnsafeStringHelper.StringToUpper(stringPtrNumber);
                                             }
@@ -357,7 +357,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                         uint imgSize = ptxHandler.GetPtxSize(rsbGroupImageInfo.Width, rsbGroupImageInfo.Height, rsbGroupImageInfo.Pitch, rsbGroupImageInfo.Format, rsbGroupImageInfo.Extend1);
                                                         using (Stream resStream = fileSystem.OpenRead(resPath))
                                                         {
-                                                            RsgImageExtraData* extra = (RsgImageExtraData*)map.Find(path);
+                                                            ResStreamFileGPULocationInfo* extra = (ResStreamFileGPULocationInfo*)map.Find(path);
                                                             if (extra != null)
                                                             {
                                                                 extra->Offset = (uint)imageStream.Position;

@@ -2,6 +2,6 @@
 {
     public interface IDirectXTexture
     {
-        static virtual DXGI_FORMAT DirectXFormat { get => DXGI_FORMAT.DXGI_FORMAT_UNKNOWN; }
+        static abstract DXGI_FORMAT DirectXFormat { get; }
     }
 }

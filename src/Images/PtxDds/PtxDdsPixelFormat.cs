@@ -1,6 +1,6 @@
-﻿namespace LibWindPop.Images.PtxPS3
+﻿namespace LibWindPop.Images.PtxDds
 {
-    public enum PtxPS3PixelFormat
+    public enum PtxDdsPixelFormat
     {
         None,
         RGB_BC1_UByte,

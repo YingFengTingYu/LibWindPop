@@ -1,15 +1,12 @@
 ﻿using LibWindPop.Utils.Graphics.Bitmap;
-using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.Gnm;
 using LibWindPop.Utils.Graphics.Texture.Shared;
 using System;
 using System.Buffers.Binary;
 
 namespace LibWindPop.Utils.Graphics.Texture.Coder
 {
-    public readonly unsafe struct A4_R4_G4_B4_PS4_UShort : ITextureCoder, IGnmTexture
+    public readonly unsafe struct A4_R4_G4_B4_PS4_UShort : ITextureCoder
     {
-        public static DataFormat GnmFormat => DataFormat.kDataFormatB4G4R4A4Unorm;
-
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
             ThrowHelper.ThrowWhen(width < 0 || height < 0);

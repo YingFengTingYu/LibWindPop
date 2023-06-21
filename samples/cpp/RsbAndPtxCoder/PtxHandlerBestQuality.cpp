@@ -400,7 +400,7 @@ extern "C" {
             }
             else if (codeType == 3) {
                 // texture by texture
-                Transcode(bitmapDataPtr, ptxDataPtr, bitmapWidth, bitmapHeight, PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTLCS_Linear, outFormat, PVRTLCS_Linear, PVRTLCQ_PVRTCFastest, false);
+                Transcode(bitmapDataPtr, ptxDataPtr, bitmapWidth, bitmapHeight, PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTLCS_Linear, outFormat, PVRTLCS_Linear, quality, false);
             }
         }
         if (ptxFormat >= 147 && ptxFormat <= 149) {
@@ -753,7 +753,7 @@ extern "C" {
             }
             else if (codeType == 3) {
                 // texture by texture
-                Transcode(bitmapDataPtr, ptxDataPtr, bitmapWidth, bitmapHeight, PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTLCS_Linear, outFormat, PVRTLCS_Linear, PVRTLCQ_PVRTCFastest, false);
+                Transcode(bitmapDataPtr, ptxDataPtr, bitmapWidth, bitmapHeight, PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTLCS_Linear, outFormat, PVRTLCS_Linear, quality, false);
             }
         }
         if (ptxFormat >= 147 && ptxFormat <= 149) {

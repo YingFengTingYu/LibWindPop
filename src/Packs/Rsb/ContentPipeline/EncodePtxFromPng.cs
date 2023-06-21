@@ -132,7 +132,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
                                         }
                                         logger.Log($"Encode ptx {nativePtxPath}...");
-                                        new Span<byte>(ptxPtr, (int)ptxSize).Fill(0);
+                                        new Span<byte>(ptxPtr, (int)ptxSize).Clear();
                                         ptxHandler.EncodePtx(refBitmap, new Span<byte>(ptxPtr, (int)ptxSize), newWidth, newHeight, newPitch, image.Format, newAlphaSize, logger);
                                         image.Width = newWidth;
                                         image.Height = newHeight;

@@ -396,7 +396,7 @@ namespace LibWindPop.Packs.Rsb
                                     }
                                     else if (type == 1u)
                                     {
-                                        RsgImageExtraData* extra = (RsgImageExtraData*)resourceInfo;
+                                        ResStreamFileGPULocationInfo* extra = (ResStreamFileGPULocationInfo*)resourceInfo;
                                         imageList.Add(new CompiledMapPair(resourceName, resourceInfo));
                                     }
                                     else
@@ -498,7 +498,7 @@ namespace LibWindPop.Packs.Rsb
                                             CompiledMapPair? pair = null;
                                             for (int k = 0; k < imageList.Count; k++)
                                             {
-                                                if (((RsgImageExtraData*)imageList[k].Value)->Index == j)
+                                                if (((ResStreamFileGPULocationInfo*)imageList[k].Value)->TextureId == j)
                                                 {
                                                     pair = imageList[k];
                                                     break;
@@ -650,13 +650,13 @@ namespace LibWindPop.Packs.Rsb
                             RsbManifestImageProperty image = new RsbManifestImageProperty();
                             imgPropPtr = (ManifestResourceImageProperty*)(resPtrNumber + resHeaderPtr->ImagePropertyOffset);
                             image.Atlas = imgPropPtr->Atlas;
-                            image.AtlasFlags = imgPropPtr->AtlasFlags;
-                            image.OffsetX = imgPropPtr->OffsetX;
-                            image.OffsetY = imgPropPtr->OffsetY;
-                            image.AtlasX = imgPropPtr->AtlasX;
-                            image.AtlasY = imgPropPtr->AtlasY;
-                            image.AtlasWidth = imgPropPtr->AtlasWidth;
-                            image.AtlasHeight = imgPropPtr->AtlasHeight;
+                            image.AFlags = imgPropPtr->AtlasFlags;
+                            image.X = imgPropPtr->OffsetX;
+                            image.Y = imgPropPtr->OffsetY;
+                            image.AX = imgPropPtr->AtlasX;
+                            image.AY = imgPropPtr->AtlasY;
+                            image.AW = imgPropPtr->AtlasWidth;
+                            image.AH = imgPropPtr->AtlasHeight;
                             image.Rows = imgPropPtr->Rows;
                             image.Cols = imgPropPtr->Cols;
                             image.Parent = UnsafeStringHelper.GetUtf16String(poolPtrNumber + imgPropPtr->ParentOffset, encoding);

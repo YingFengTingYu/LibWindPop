@@ -166,10 +166,10 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
         public uint NumInstances;
 
         /// <summary>
-        /// Unknow boolean (I have never seen this value was used)
+        /// pool flags
         /// </summary>
         [FieldOffset(0x8C)]
-        public uint UnknowBoolean;
+        public uint PoolFlags;
 
         /// <summary>
         /// count of texture for rsb v1
@@ -546,7 +546,7 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
     }
 
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 0x20)]
-    public unsafe struct RsgImageExtraData
+    public unsafe struct ResStreamFileGPULocationInfo
     {
         [FieldOffset(0x0)]
         public uint Type;
@@ -558,7 +558,7 @@ namespace LibWindPop.Packs.Rsb.RsbStructures
         public uint Size;
 
         [FieldOffset(0xC)]
-        public uint Index;
+        public uint TextureId;
 
         [FieldOffset(0x18)]
         public uint Width;

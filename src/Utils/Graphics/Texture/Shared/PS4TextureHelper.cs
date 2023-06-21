@@ -2,7 +2,7 @@
 
 namespace LibWindPop.Utils.Graphics.Texture.Shared
 {
-    internal class PS4TextureHelper
+    internal static class PS4TextureHelper
     {
         public static int GetMicroTexelIndexFromPosition(int xPos, int yPos)
         {

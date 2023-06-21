@@ -23,6 +23,7 @@ namespace LibWindPop.Utils.Json
     [JsonSerializable(typeof(WindJsonShell<XprPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<PakPackInfo>))]
     [JsonSerializable(typeof(WindJsonShell<PakRebuildFileSetting>))]
+    [JsonSerializable(typeof(WindJsonShell<AtlasMetadata>))]
     internal partial class WindJsonSerializerContext : JsonSerializerContext
     {
 

@@ -5,7 +5,7 @@ namespace LibWindPop.Packs.Rsb
 {
     public class RsbManifestInfo : IJsonVersionCheckable
     {
-        public static uint JsonVersion => 0u;
+        public static uint JsonVersion => 1u;
 
         public RsbManifestCompositeInfo[]? CompositeGroups { get; set; }
     }
@@ -45,19 +45,19 @@ namespace LibWindPop.Packs.Rsb
     {
         public uint Atlas { get; set; }
 
-        public uint AtlasFlags { get; set; }
+        public uint AFlags { get; set; }
 
-        public uint OffsetX { get; set; }
+        public uint X { get; set; }
 
-        public uint OffsetY { get; set; }
+        public uint Y { get; set; }
 
-        public uint AtlasX { get; set; }
+        public uint AX { get; set; }
 
-        public uint AtlasY { get; set; }
+        public uint AY { get; set; }
 
-        public uint AtlasWidth { get; set; }
+        public uint AW { get; set; }
 
-        public uint AtlasHeight { get; set; }
+        public uint AH { get; set; }
 
         public uint Rows { get; set; }
 
