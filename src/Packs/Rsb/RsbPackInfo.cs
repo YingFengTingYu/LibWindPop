@@ -38,6 +38,8 @@ namespace LibWindPop.Packs.Rsb
         public string? Name { get; set; }
 
         public uint NumInstances { get; set; }
+
+        public uint PoolFlags { get; set; }
     }
 
     public class RsbPackCompositeInfo
