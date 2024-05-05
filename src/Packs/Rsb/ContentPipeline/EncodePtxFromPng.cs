@@ -94,7 +94,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                 && meta.Pitch == image.Pitch
                                                 && meta.Format == image.Format
                                                 && ((!ptxHandler.UseExtend1AsAlphaSize) || meta.AlphaSize == image.Extend1)
-                                                && meta.PngModifyTimeUtc == fileSystem.GetModifyTimeUtc(nativePngPath)
+                                                && meta.Hash == fileSystem.GetFileHash(nativePngPath)
                                                 )
                                             {
                                                 needToUpdate = false;
@@ -155,7 +155,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             Pitch = image.Pitch,
                                             Format = image.Format,
                                             AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
-                                            PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
+                                            Hash = fileSystem.GetFileHash(nativePngPath)
                                         };
                                         WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                                     }
@@ -251,7 +251,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                     Pitch = image.Pitch,
                                     Format = image.Format,
                                     AlphaSize = ptxHandler.UseExtend1AsAlphaSize ? image.Extend1 : 0u,
-                                    PngModifyTimeUtc = fileSystem.GetModifyTimeUtc(nativePngPath)
+                                    Hash = fileSystem.GetFileHash(nativePngPath)
                                 };
                                 WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
                             }

@@ -1,5 +1,4 @@
 ﻿using LibWindPop.Utils.Json;
-using System;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
@@ -40,7 +39,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
     {
         public string? Path { get; set; }
 
-        public DateTime ModifyTimeUtc { get; set; }
+        public string? Hash { get; set; }
     }
 
     internal class RsgMetadataGPUFileInfo
@@ -53,6 +52,6 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
 
         public uint Height { get; set; }
 
-        public DateTime ModifyTimeUtc { get; set; }
+        public string? Hash { get; set; }
     }
 }

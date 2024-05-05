@@ -31,11 +31,11 @@ namespace LibWindPop.Utils.FileSystem
 
         string GetFakePath(string path);
 
-        string Combine(string? path1, string? path2);
+        string Combine(string path1, string path2);
 
-        string Combine(string? path1, string? path2, string? path3);
+        string Combine(string path1, string path2, string path3);
 
-        string Combine(string? path1, string? path2, string? path3, string? path4);
+        string Combine(string path1, string path2, string path3, string path4);
 
         ITempFile CreateTempFile();
 
@@ -62,5 +62,7 @@ namespace LibWindPop.Utils.FileSystem
         void SetModifyTimeUtc(string path, DateTime time);
 
         void SetAccessTimeUtc(string path, DateTime time);
+
+        string GetFileHash(string path);
     }
 }

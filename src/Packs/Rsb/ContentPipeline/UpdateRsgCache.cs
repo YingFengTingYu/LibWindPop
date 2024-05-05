@@ -298,7 +298,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                             rsgPackInfo.ResidentFileList[j] = new RsgMetadataResidentFileInfo
                                                             {
                                                                 Path = path,
-                                                                ModifyTimeUtc = fileSystem.GetModifyTimeUtc(resPath),
+                                                                Hash = fileSystem.GetFileHash(resPath),
                                                             };
                                                             resStream.CopyTo(residentFileStream);
                                                             long alignOffset = Align(residentFileStream.Length);
@@ -367,7 +367,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                                             {
                                                                 Path = path,
                                                                 InResMap = groupInfo.GPUFileList[j].InFileIndexDataMap,
-                                                                ModifyTimeUtc = fileSystem.GetModifyTimeUtc(resPath),
+                                                                Hash = fileSystem.GetFileHash(resPath),
                                                                 Width = groupInfo.GPUFileList[j].Width,
                                                                 Height = groupInfo.GPUFileList[j].Height,
                                                             };
@@ -472,7 +472,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
             {
                 if (rsgImageList[i] != null
                     && rsgImageList[i].Path != null
-                    && (!rsgImageList[i].InResMap && rsgImageList[i].ModifyTimeUtc != fileSystem.GetModifyTimeUtc(paths.GetUnusedResourcePathByGroupIdAndPath(groupId, rsgImageList[i].Path)) || rsgImageList[i].InResMap && rsgImageList[i].ModifyTimeUtc != fileSystem.GetModifyTimeUtc(paths.GetResourcePathByGroupIdAndPath(groupId, rsgImageList[i].Path))))
+                    && (!rsgImageList[i].InResMap && rsgImageList[i].Hash != fileSystem.GetFileHash(paths.GetUnusedResourcePathByGroupIdAndPath(groupId, rsgImageList[i].Path)) || rsgImageList[i].InResMap && rsgImageList[i].Hash != fileSystem.GetFileHash(paths.GetResourcePathByGroupIdAndPath(groupId, rsgImageList[i].Path))))
                 {
                     return true;
                 }
@@ -488,7 +488,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
             }
             for (int i = 0; i < rsgResidentFileList.Length; i++)
             {
-                if (rsgResidentFileList[i] != null && rsgResidentFileList[i].Path != null && rsgResidentFileList[i].ModifyTimeUtc != fileSystem.GetModifyTimeUtc(paths.GetResourcePathByGroupIdAndPath(groupId, rsgResidentFileList[i].Path)))
+                if (rsgResidentFileList[i] != null && rsgResidentFileList[i].Path != null && rsgResidentFileList[i].Hash != fileSystem.GetFileHash(paths.GetResourcePathByGroupIdAndPath(groupId, rsgResidentFileList[i].Path)))
                 {
                     return true;
                 }

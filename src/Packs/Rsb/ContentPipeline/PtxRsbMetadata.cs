@@ -1,5 +1,4 @@
 ﻿using LibWindPop.Utils.Json;
-using System;
 
 namespace LibWindPop.Packs.Rsb.ContentPipeline
 {
@@ -19,6 +18,6 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
 
         public uint AlphaSize { get; set; }
 
-        public DateTime PngModifyTimeUtc { get; set; }
+        public string? Hash { get; set; }
     }
 }

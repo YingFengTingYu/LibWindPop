@@ -343,8 +343,8 @@ namespace LibWindPop.Packs.Rsb
                             if (externalRsg)
                             {
                                 // find from file system
-                                string? externRsgPath = fileSystem.Combine(parentPath, group.Name + ".rsg");
-                                string? externRsgSmfPath = fileSystem.Combine(parentPath, group.Name + ".rsg.smf");
+                                string? externRsgPath = parentPath == null ? (group.Name + ".rsg") : fileSystem.Combine(parentPath, group.Name + ".rsg");
+                                string? externRsgSmfPath = parentPath == null ? (group.Name + ".rsg.smf") : fileSystem.Combine(parentPath, group.Name + ".rsg.smf");
                                 if (externRsgPath != null && fileSystem.FileExists(externRsgPath))
                                 {
                                     externPath = externRsgPath;
@@ -454,7 +454,7 @@ namespace LibWindPop.Packs.Rsb
                                             rsgResidentFiles[j] = new RsgMetadataResidentFileInfo
                                             {
                                                 Path = residentFileList[j].Key,
-                                                ModifyTimeUtc = fileSystem.GetModifyTimeUtc(path),
+                                                Hash = fileSystem.GetFileHash(path),
                                             };
                                         }
                                         catch (Exception ex) when (ex is not LoggerException)
@@ -539,7 +539,7 @@ namespace LibWindPop.Packs.Rsb
                                                 InResMap = pair != null,
                                                 Width = imgInfo->Width,
                                                 Height = imgInfo->Height,
-                                                ModifyTimeUtc = fileSystem.GetModifyTimeUtc(path),
+                                                Hash = fileSystem.GetFileHash(path),
                                             };
                                         }
                                         catch (Exception ex) when (ex is not LoggerException)

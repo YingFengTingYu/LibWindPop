@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LibWindPop.Utils.Security;
+using System;
+using System.Buffers;
 using System.IO;
 
 namespace LibWindPop.Utils.FileSystem
@@ -233,6 +235,23 @@ namespace LibWindPop.Utils.FileSystem
         public void SetAccessTimeUtc(string path, DateTime time)
         {
             File.SetLastAccessTimeUtc(path, time);
+        }
+
+        public string GetFileHash(string path)
+        {
+            using Stream stream = OpenRead(path);
+            const int bufferSize = 8192;
+            using var memOwner = MemoryPool<byte>.Shared.Rent(bufferSize);
+            Span<byte> span = memOwner.Memory.Span[..bufferSize];
+            int size;
+            MD5Digest digest = new MD5Digest();
+            while ((size = stream.Read(span)) != 0)
+            {
+                digest.BlockUpdate(span[..size]);
+            }
+            Span<byte> md5 = stackalloc byte[16];
+            digest.DoFinal(md5);
+            return Convert.ToHexString(md5);
         }
     }
 }
