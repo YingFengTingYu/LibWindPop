@@ -7,6 +7,22 @@ namespace LibWindPop.Utils.FileSystem
     {
         private readonly bool m_IsWindows;
 
+        private readonly void NormalizePath(ref string path)
+        {
+            if (m_IsWindows)
+            {
+                path = path.Replace('/', '\\').Replace(" \\", "\\");
+            }
+        }
+
+        private readonly void DenormalizePath(ref string path)
+        {
+            if (m_IsWindows)
+            {
+                path = path.Replace('\\', '/');
+            }
+        }
+
         public NativeFileSystem()
         {
             m_IsWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
@@ -14,25 +30,25 @@ namespace LibWindPop.Utils.FileSystem
 
         public Stream OpenReadWrite(string path)
         {
+            NormalizePath(ref path);
             return File.Open(path, FileMode.Open, FileAccess.ReadWrite);
         }
 
         public Stream OpenRead(string path)
         {
+            NormalizePath(ref path);
             return File.OpenRead(path);
         }
 
         public Stream OpenWrite(string path)
         {
+            NormalizePath(ref path);
             return File.OpenWrite(path);
         }
 
         public Stream Create(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('/', '\\').Replace(" \\", "\\");
-            }
+            NormalizePath(ref path);
             string? folder = Path.GetDirectoryName(path);
             if (folder != null)
             {
@@ -43,82 +59,88 @@ namespace LibWindPop.Utils.FileSystem
 
         public bool FileExists(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('/', '\\').Replace(" \\", "\\");
-            }
+            NormalizePath(ref path);
             return File.Exists(path);
         }
 
         public bool FolderExists(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('/', '\\').Replace(" \\", "\\");
-            }
+            NormalizePath(ref path);
             return Directory.Exists(path);
         }
 
         public void FileMove(string oldPath, string newPath)
         {
+            NormalizePath(ref oldPath);
+            NormalizePath(ref newPath);
             File.Move(oldPath, newPath);
         }
 
         public void FolderMove(string oldPath, string newPath)
         {
+            NormalizePath(ref oldPath);
+            NormalizePath(ref newPath);
             Directory.Move(oldPath, newPath);
         }
 
         public void FileDelete(string path)
         {
+            NormalizePath(ref path);
             File.Delete(path);
         }
 
         public void FolderDelete(string path)
         {
+            NormalizePath(ref path);
             Directory.Delete(path);
         }
 
         public void CreateFolder(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('/', '\\').Replace(" \\", "\\");
-            }
+            NormalizePath(ref path);
             Directory.CreateDirectory(path);
         }
 
         public string GetNativePath(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('/', '\\').Replace(" \\", "\\");
-            }
+            NormalizePath(ref path);
             return path;
         }
 
         public string GetFakePath(string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('\\', '/');
-            }
+            DenormalizePath(ref path);
             return path;
         }
 
-        public string Combine(string? path1, string? path2)
+        public string Combine(string path1, string path2)
         {
-            return Path.Combine(path1!, path2!);
+            NormalizePath(ref path1);
+            NormalizePath(ref path2);
+            string ans = Path.Combine(path1, path2);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
-        public string Combine(string? path1, string? path2, string? path3)
+        public string Combine(string path1, string path2, string path3)
         {
-            return Path.Combine(path1!, path2!, path3!);
+            NormalizePath(ref path1);
+            NormalizePath(ref path2);
+            NormalizePath(ref path3);
+            string ans = Path.Combine(path1, path2, path3);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
-        public string Combine(string? path1, string? path2, string? path3, string? path4)
+        public string Combine(string path1, string path2, string path3, string path4)
         {
-            return Path.Combine(path1!, path2!, path3!, path4!);
+            NormalizePath(ref path1);
+            NormalizePath(ref path2);
+            NormalizePath(ref path3);
+            NormalizePath(ref path4);
+            string ans = Path.Combine(path1, path2, path3, path4);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
         public ITempFile CreateTempFile()
@@ -128,32 +150,59 @@ namespace LibWindPop.Utils.FileSystem
 
         public string[] GetFiles(string path)
         {
-            return Directory.GetFiles(path);
+            NormalizePath(ref path);
+            string[] ans = Directory.GetFiles(path);
+            for (int i = 0; i < ans.Length; i++)
+            {
+                DenormalizePath(ref ans[i]);
+            }
+            return ans;
         }
 
         public string[] GetFolders(string path)
         {
-            return Directory.GetDirectories(path);
+            NormalizePath(ref path);
+            string[] ans = Directory.GetDirectories(path);
+            for (int i = 0; i < ans.Length; i++)
+            {
+                DenormalizePath(ref ans[i]);
+            }
+            return ans;
         }
 
         public string GetFileName(string path)
         {
-            return Path.GetFileName(path);
+            NormalizePath(ref path);
+            string ans = Path.GetFileName(path);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
         public string GetExtension(string path)
         {
-            return Path.GetExtension(path);
+            NormalizePath(ref path);
+            string ans = Path.GetExtension(path);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
         public string ChangeExtension(string path, string extension)
         {
-            return Path.ChangeExtension(path, extension);
+            NormalizePath(ref path);
+            string ans = Path.ChangeExtension(path, extension);
+            DenormalizePath(ref ans);
+            return ans;
         }
 
         public string? GetParentPath(string path)
         {
-            return Path.GetDirectoryName(path);
+            NormalizePath(ref path);
+            string? ans = Path.GetDirectoryName(path);
+            if (ans != null)
+            {
+                DenormalizePath(ref ans);
+            }
+            return ans;
         }
 
         public DateTime GetCreateTimeUtc(string path)
