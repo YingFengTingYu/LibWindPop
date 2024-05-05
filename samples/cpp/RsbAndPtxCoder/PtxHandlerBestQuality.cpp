@@ -128,19 +128,17 @@ extern "C" {
         case 23:
             return pitch * Align(height, 32);
         case 30:
-        case 32:
-        case 35:
-        case 147:
         case 148:
             return width * height / 2;
         case 31:
             return width * height / 4;
+        case 32:
+        case 35:
         case 36:
+        case 147:
+            return Align(width, 4) * Align(height, 4) / 2;
         case 37:
-        case 39:
-            return width * height;
-        case 38:
-            return width * height * 3 / 4;
+            return Align(width, 4) * Align(height, 4);
         case 149:
             return width * height * 4;
         default:
@@ -205,20 +203,16 @@ extern "C" {
             codeType = 3;
             break;
         case 35:
-            inFormat = PVRTLPF_DXT1;
+            inFormat = PVRTLPF_ETC2_RGB;
             codeType = 3;
             break;
         case 36:
-            inFormat = PVRTLPF_DXT3;
+            inFormat = PVRTLPF_ETC2_RGB_A1;
             codeType = 3;
             break;
         case 37:
-            inFormat = PVRTLPF_DXT5;
+            inFormat = PVRTLPF_ETC2_RGBA;
             codeType = 3;
-            break;
-        case 38:
-        case 39:
-            codeType = 0; // ATC unsupported!
             break;
         case 149:
             inFormat = PVRTGENPIXELID4('r', 'g', 'b', 'a', 8, 8, 8, 8);
@@ -339,23 +333,19 @@ extern "C" {
             codeType = 3;
             break;
         case 35:
-            outFormat = PVRTLPF_DXT1;
-            quality = PVRTLCQ_PVRTCFastest;
+            outFormat = PVRTLPF_ETC2_RGB;
+            quality = PVRTLCQ_ETCSlow;
             codeType = 3;
             break;
         case 36:
-            outFormat = PVRTLPF_DXT3;
-            quality = PVRTLCQ_PVRTCFastest;
+            outFormat = PVRTLPF_ETC2_RGB_A1;
+            quality = PVRTLCQ_ETCSlow;
             codeType = 3;
             break;
         case 37:
-            outFormat = PVRTLPF_DXT5;
-            quality = PVRTLCQ_PVRTCFastest;
+            outFormat = PVRTLPF_ETC2_RGBA;
+            quality = PVRTLCQ_ETCSlow;
             codeType = 3;
-            break;
-        case 38:
-        case 39:
-            codeType = 0; // ATC unsupported!
             break;
         case 149:
             outFormat = PVRTGENPIXELID4('r', 'g', 'b', 'a', 8, 8, 8, 8);
@@ -457,30 +447,26 @@ extern "C" {
         case 38:
         case 39:
         case 147:
-            if ((!(bitmapWidth % 4)) && (!(bitmapHeight & 4)))
+            *ptxWidth = bitmapWidth;
+            *ptxHeight = bitmapHeight;
+            switch (ptxFormat)
             {
-                *ptxWidth = bitmapWidth;
-                *ptxHeight = bitmapHeight;
-                switch (ptxFormat)
-                {
-                case 32:
-                case 35:
-                case 38:
-                    *ptxPitch = bitmapWidth / 2;
-                    break;
-                case 36:
-                case 37:
-                case 39:
-                    *ptxPitch = bitmapWidth;
-                    break;
-                default:
-                    *ptxPitch = bitmapWidth * 4;
-                    break;
-                }
-                *ptxAlphaSize = 0u;
-                return Result_OK;
+            case 32:
+            case 35:
+            case 38:
+                *ptxPitch = bitmapWidth / 2;
+                break;
+            case 36:
+            case 37:
+            case 39:
+                *ptxPitch = bitmapWidth;
+                break;
+            default:
+                *ptxPitch = bitmapWidth * 4;
+                break;
             }
-            break;
+            *ptxAlphaSize = 0u;
+            return Result_OK;
         default:
             *ptxWidth = bitmapWidth;
             *ptxHeight = bitmapHeight;
