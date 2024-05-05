@@ -8,6 +8,8 @@ namespace LibWindPop.Images.PtxRsb
 {
     public static class PtxRsbHandlerManager
     {
+        public static bool FIX_COMPRESSED_TEX_SIZE = true;
+
         private static readonly Dictionary<string, IPtxRsbHandler> m_ptxHandlerMap = new Dictionary<string, IPtxRsbHandler>
         {
             { nameof(PtxHandlerAndroidV1), new PtxHandlerAndroidV1() },

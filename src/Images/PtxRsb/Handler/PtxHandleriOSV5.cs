@@ -39,18 +39,59 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     }
                     return pitch * height;
                 case 30u:
-                case 32u:
-                case 35u:
-                case 147u:
                 case 148u:
                     return (width * height) >> 1;
                 case 31u:
                     return (width * height) >> 2;
+                case 32u:
+                case 35u:
+                case 147u:
+                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
+                    {
+                        if ((width & 0x3u) != 0u)
+                        {
+                            width |= 0x3u;
+                            width++;
+                        }
+                        if ((height & 0x3u) != 0u)
+                        {
+                            height |= 0x3u;
+                            height++;
+                        }
+                    }
+                    return (width * height) >> 1;
                 case 36u:
                 case 37u:
                 case 39u:
+                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
+                    {
+                        if ((width & 0x3u) != 0u)
+                        {
+                            width |= 0x3u;
+                            width++;
+                        }
+                        if ((height & 0x3u) != 0u)
+                        {
+                            height |= 0x3u;
+                            height++;
+                        }
+                    }
                     return width * height;
                 case 38u:
+                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
+                    {
+                        if ((width & 0x3u) != 0u)
+                        {
+                            width |= 0x3u;
+                            width++;
+                        }
+                        if ((height & 0x3u) != 0u)
+                        {
+                            height |= 0x3u;
+                            height++;
+                        }
+                        return (width * height) >> 1;
+                    }
                     return (3 * width * height) >> 2;
                 case 149u:
                     return (width * height) << 2;
