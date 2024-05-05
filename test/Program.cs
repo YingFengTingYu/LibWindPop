@@ -9,80 +9,80 @@ namespace LibWindPop.Test
 {
     internal class Program
     {
-        //static async Task<int> Main(string[] args)
-        //{
-        //    var unpackOption = new Option<DirectoryInfo?>(
-        //        name: "--unpackfolder",
-        //        description: "unpack folder");
-
-        //    unpackOption.AddAlias("-u");
-
-        //    var rsbOption = new Option<FileInfo?>(
-        //        name: "--rsbfile",
-        //        description: "rsb file");
-
-        //    rsbOption.AddAlias("-r");
-
-        //    var ptxOption = new Option<string?>(
-        //        name: "--ptxhandler",
-        //        description: "ptx handler");
-
-        //    ptxOption.AddAlias("-p");
-
-        //    var rootCommand = new RootCommand("rsbtool v1.0 author: YingFengTingTu");
-
-        //    var unpackCommand = new Command("unpack", "Unpack rsb");
-
-        //    rootCommand.Add(unpackCommand);
-
-        //    unpackCommand.AddOption(rsbOption);
-        //    unpackCommand.AddOption(unpackOption);
-        //    unpackCommand.AddOption(ptxOption);
-
-        //    unpackCommand.SetHandler((FileInfo? rsb, DirectoryInfo? unpack, string? ptxHandler) =>
-        //    {
-        //        if (rsb != null)
-        //        {
-        //            Unpack(rsb.FullName, unpack?.FullName, ptxHandler);
-        //        }
-        //    }, rsbOption, unpackOption, ptxOption);
-        //    var packCommand = new Command("pack", "Pack rsb");
-
-        //    rootCommand.Add(packCommand);
-
-        //    packCommand.AddOption(rsbOption);
-        //    packCommand.AddOption(unpackOption);
-
-        //    packCommand.SetHandler((DirectoryInfo? unpack, FileInfo? rsb) =>
-        //    {
-        //        if (unpack != null)
-        //        {
-        //            Pack(unpack.FullName, rsb?.FullName);
-        //        }
-        //    }, unpackOption, rsbOption);
-
-        //    return await rootCommand.InvokeAsync(args);
-        //}
-
-        static void Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
-            const string inPath = "D:\\main.176.com.ea.game.pvz2_row.obb";
-            const string outPath = "D:\\main.176.com.ea.game.pvz2_row_obb_unpack";
-            RsbUnpacker.Unpack(
-                inPath,
-                outPath,
-                new NativeFileSystem(),
-                new ConsoleLogger(0, true),
-                nameof(PtxHandlerAndroidV3),
-                false
-                );
-            RsbContentPipelineManager.AddContentPipeline(
-                outPath,
-                nameof(EncodePtxFromPng),
-                true,
-                new NativeFileSystem(),
-                new ConsoleLogger(0, true));
+            var unpackOption = new Option<DirectoryInfo?>(
+                name: "--unpackfolder",
+                description: "unpack folder");
+
+            unpackOption.AddAlias("-u");
+
+            var rsbOption = new Option<FileInfo?>(
+                name: "--rsbfile",
+                description: "rsb file");
+
+            rsbOption.AddAlias("-r");
+
+            var ptxOption = new Option<string?>(
+                name: "--ptxhandler",
+                description: "ptx handler");
+
+            ptxOption.AddAlias("-p");
+
+            var rootCommand = new RootCommand("rsbtool v1.1 author: YingFengTingTu");
+
+            var unpackCommand = new Command("unpack", "Unpack rsb");
+
+            rootCommand.Add(unpackCommand);
+
+            unpackCommand.AddOption(rsbOption);
+            unpackCommand.AddOption(unpackOption);
+            unpackCommand.AddOption(ptxOption);
+
+            unpackCommand.SetHandler((FileInfo? rsb, DirectoryInfo? unpack, string? ptxHandler) =>
+            {
+                if (rsb != null)
+                {
+                    Unpack(rsb.FullName, unpack?.FullName, ptxHandler);
+                }
+            }, rsbOption, unpackOption, ptxOption);
+            var packCommand = new Command("pack", "Pack rsb");
+
+            rootCommand.Add(packCommand);
+
+            packCommand.AddOption(rsbOption);
+            packCommand.AddOption(unpackOption);
+
+            packCommand.SetHandler((DirectoryInfo? unpack, FileInfo? rsb) =>
+            {
+                if (unpack != null)
+                {
+                    Pack(unpack.FullName, rsb?.FullName);
+                }
+            }, unpackOption, rsbOption);
+
+            return await rootCommand.InvokeAsync(args);
         }
+
+        //static void Main(string[] args)
+        //{
+        //    const string inPath = "D:\\main.176.com.ea.game.pvz2_row.obb";
+        //    const string outPath = "D:\\main.176.com.ea.game.pvz2_row_obb_unpack";
+        //    RsbUnpacker.Unpack(
+        //        inPath,
+        //        outPath,
+        //        new NativeFileSystem(),
+        //        new ConsoleLogger(0, true),
+        //        nameof(PtxHandlerAndroidV3),
+        //        false
+        //        );
+        //    RsbContentPipelineManager.AddContentPipeline(
+        //        outPath,
+        //        nameof(EncodePtxFromPng),
+        //        true,
+        //        new NativeFileSystem(),
+        //        new ConsoleLogger(0, true));
+        //}
 
         static void TimeTaskRun(Action action)
         {
