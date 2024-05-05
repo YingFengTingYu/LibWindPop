@@ -15,14 +15,15 @@ namespace LibWindPop.Utils.FileSystem
             {
                 path = path.Replace('/', '\\').Replace(" \\", "\\");
             }
+            else
+            {
+                path = path.Replace('\\', '/');
+            }
         }
 
         private readonly void DenormalizePath(ref string path)
         {
-            if (m_IsWindows)
-            {
-                path = path.Replace('\\', '/');
-            }
+            path = path.Replace('\\', '/');
         }
 
         public NativeFileSystem()
