@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="PVRTexLib.NET" Version="1.0.3" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
   </ItemGroup>
 

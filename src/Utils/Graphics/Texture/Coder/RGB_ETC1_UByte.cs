@@ -11,6 +11,10 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
+            if (PVRTexLibHelper.Decode(srcData, PVRTexLib.PVRTexLibPixelFormat.ETC1, dstBitmap))
+            {
+                return;
+            }
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;
             Span<YFColor> decodeBlockData = stackalloc YFColor[16];
@@ -41,6 +45,10 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
+            if (PVRTexLibHelper.Encode(srcBitmap, PVRTexLib.PVRTexLibPixelFormat.ETC1, dstData))
+            {
+                return;
+            }
             ThrowHelper.ThrowWhen(width < 0 || height < 0);
             int tempDataIndex = 0;
             Span<YFColor> encodeBlockData = stackalloc YFColor[16];

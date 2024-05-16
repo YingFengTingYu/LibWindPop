@@ -11,6 +11,10 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public readonly void Decode(ReadOnlySpan<byte> srcData, int width, int height, RefBitmap dstBitmap)
         {
+            if (PVRTexLibHelper.Decode(srcData, PVRTexLib.PVRTexLibPixelFormat.PVRTCI_2bpp_RGB, dstBitmap))
+            {
+                return;
+            }
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || !BitHelper.IsPowerOfTwo(width) || !BitHelper.IsPowerOfTwo(height));
             fixed (YFColor* color = dstBitmap.Data)
             {
@@ -23,6 +27,10 @@ namespace LibWindPop.Utils.Graphics.Texture.Coder
 
         public readonly void Encode(RefBitmap srcBitmap, Span<byte> dstData, int width, int height)
         {
+            if (PVRTexLibHelper.Encode(srcBitmap, PVRTexLib.PVRTexLibPixelFormat.PVRTCI_2bpp_RGB, dstData))
+            {
+                return;
+            }
             ThrowHelper.ThrowWhen(width < 0 || height < 0 || !BitHelper.IsPowerOfTwo(width) || !BitHelper.IsPowerOfTwo(height));
             fixed (YFColor* color = srcBitmap.Data)
             {
