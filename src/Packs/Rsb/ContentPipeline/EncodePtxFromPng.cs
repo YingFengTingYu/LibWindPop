@@ -107,14 +107,14 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                     }
                                     if (needToUpdate)
                                     {
-                                        uint bitmapSize = image.Width * image.Height * 4u;
+                                        uint bitmapSize = (uint)imageWidth * (uint)imageHeight * 4u;
                                         if (bitmapSize > owner.Size)
                                         {
                                             logger.LogWarning($"Memory overflow! Realloc memory with size {bitmapSize}...");
                                             owner.Realloc(bitmapSize);
                                         }
                                         void* bitmapPtr = owner.Pointer;
-                                        RefBitmap refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
+                                        RefBitmap refBitmap = new RefBitmap(imageWidth, imageHeight, new Span<YFColor>(bitmapPtr, imageWidth * imageHeight));
                                         ImageCoder.DecodeImage(pngStream, refBitmap, imageFormat);
                                         if (!ptxHandler.PeekEncodedPtxInfo(refBitmap, image.Format, out uint newWidth, out uint newHeight, out uint newPitch, out uint newAlphaSize))
                                         {
@@ -129,7 +129,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             owner.Realloc(ptxSize + bitmapSize);
                                             ptxPtr = (void*)((nuint)owner.Pointer + bitmapSize);
                                             bitmapPtr = owner.Pointer;
-                                            refBitmap = new RefBitmap((int)image.Width, (int)image.Height, new Span<YFColor>(bitmapPtr, (int)(image.Width * image.Height)));
+                                            refBitmap = new RefBitmap(imageWidth, imageHeight, new Span<YFColor>(bitmapPtr, imageWidth * imageHeight));
                                         }
                                         logger.Log($"Encode ptx {nativePtxPath}...");
                                         new Span<byte>(ptxPtr, (int)ptxSize).Clear();
@@ -158,13 +158,13 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
                                             Hash = fileSystem.GetFileHash(nativePngPath)
                                         };
                                         WindJsonSerializer.TrySerializeToFile(nativeMetaPath, meta, fileSystem, logger);
+                                        WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                WindJsonSerializer.TrySerializeToFile(paths.InfoPackInfoPath, packInfo, fileSystem, logger);
             }
         }
 

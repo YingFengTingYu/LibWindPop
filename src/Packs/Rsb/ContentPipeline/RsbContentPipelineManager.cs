@@ -13,6 +13,7 @@ namespace LibWindPop.Packs.Rsb.ContentPipeline
             { nameof(UpdateRsgCache), new UpdateRsgCache() },
             { nameof(EncodePtxFromPng), new EncodePtxFromPng() },
             { nameof(AtlasCreator), new AtlasCreator() },
+            { nameof(SquarePVRTCImages), new SquarePVRTCImages() },
         };
 
         public static IContentPipeline? GetContentPipeline(string? contentName)

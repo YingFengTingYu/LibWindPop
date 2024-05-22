@@ -1,7 +1,7 @@
 #include "main.h"
 
 int main() {
-	printf_s("风语的pvz2 rsb/ptx工具，输入1解包并解码ptx，输入2打包");
+	printf_s("风语的pvz2 rsb/ptx工具iOS专版，输入1解包并解码ptx，输入2打包");
 	int mode = 0;
 	scanf_s("%d", &mode);
 	char oldPath[256], newPath[256];
@@ -10,10 +10,10 @@ int main() {
 	printf_s("请输入新路径");
 	scanf_s("%s", newPath, 256);
 	if (mode == 1) {
-		sample5_regist_high_quality_ptx_handler_and_unpack_rsb_for_pvz2_android_row(oldPath, newPath);
+		sample7_regist_high_quality_ptx_handler_and_unpack_rsb_for_pvz2_ios_row(oldPath, newPath);
 	}
 	else if (mode == 2) {
-		sample6_regist_high_quality_ptx_handler_and_pack_rsb_for_pvz2_android_row(oldPath, newPath);
+		sample8_regist_high_quality_ptx_handler_and_pack_rsb_for_pvz2_ios_row(oldPath, newPath);
 	}
 	/*const char rawRsbPath[] = "D:\\main.rsb";
 	const char newRsbPath[] = "D:\\main_new.rsb";
