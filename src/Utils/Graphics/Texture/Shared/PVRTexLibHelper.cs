@@ -25,7 +25,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Shared
                             {
                                 if (tex.GetTextureDataSize() != 0)
                                 {
-                                    if (tex.Transcode((ulong)inFormat, PVRTexLibVariableType.UnsignedByteNorm, PVRTexLibColourSpace.sRGB, 0, GetDither()))
+                                    if (tex.Transcode((ulong)inFormat, PVRTexLibVariableType.UnsignedByteNorm, PVRTexLibColourSpace.sRGB, GetQuality(inFormat), GetDither()))
                                     {
                                         NativeMemory.Copy(tex.GetTextureDataPointer(0), dstTexDataPtr, (nuint)tex.GetTextureDataSize(0));
                                     }
@@ -56,7 +56,7 @@ namespace LibWindPop.Utils.Graphics.Texture.Shared
                             {
                                 if (tex.GetTextureDataSize() != 0)
                                 {
-                                    if (tex.Transcode(PVRDefine.PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTexLibVariableType.UnsignedByteNorm, PVRTexLibColourSpace.sRGB, GetQuality(inFormat), GetDither()))
+                                    if (tex.Transcode(PVRDefine.PVRTGENPIXELID4('b', 'g', 'r', 'a', 8, 8, 8, 8), PVRTexLibVariableType.UnsignedByteNorm, PVRTexLibColourSpace.sRGB, 0, GetDither()))
                                     {
                                         NativeMemory.Copy(tex.GetTextureDataPointer(0), bitmapDataPtr, (nuint)tex.GetTextureDataSize(0));
                                     }
