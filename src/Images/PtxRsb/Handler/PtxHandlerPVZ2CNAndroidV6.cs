@@ -10,28 +10,74 @@ using A8_UByte = LibWindPop.Images.PtxRsb.AlphaCoder.A8_UByte;
 namespace LibWindPop.Images.PtxRsb.Handler
 {
     /// <summary>
-    /// 植物大战僵尸2高清版 v6 （安卓v4.1.1版本后）
+    /// 植物大战僵尸2高清版 v4.1.1
     /// </summary>
     public sealed class PtxHandlerPVZ2CNAndroidV6 : IPtxRsbHandler
     {
-        private readonly PtxHandlerPVZ2CNAndroidV5 m_v5 = new PtxHandlerPVZ2CNAndroidV5();
-
-        public bool UseExtend1AsAlphaSize => m_v5.UseExtend1AsAlphaSize;
+        public bool UseExtend1AsAlphaSize => true;
 
         public uint GetPtxSize(uint width, uint height, uint pitch, uint format, uint alphaSize)
         {
-            if (format is >= 160u and <= 163u)
+            uint tex0Size = GetPtxSizeWithoutAlpha(width, height, pitch, format);
+            return format switch
             {
-                return GetPtxSizeWithoutAlpha(width, height, pitch, format);
-            }
-            return m_v5.GetPtxSize(width, height, pitch, format, alphaSize);
+                147u => tex0Size + alphaSize,
+                148u or 149u => tex0Size + width * height,
+                150u => 2 * tex0Size,
+                _ => tex0Size,
+            };
         }
 
         public uint GetPtxSizeWithoutAlpha(uint width, uint height, uint pitch, uint format)
         {
             switch (format)
             {
-                case 160u:
+                case 21u:
+                case 22u:
+                case 23u:
+                    if ((height & 0x1Fu) != 0u)
+                    {
+                        height |= 0x1Fu;
+                        height++;
+                    }
+                    return pitch * height;
+                case 30u:
+                case 148u:
+                    return (width * height) >> 1;
+                case 31u:
+                    return (width * height) >> 2;
+                case 32u:
+                case 147u:
+                case 150u:
+                    if ((width & 0x3u) != 0u)
+                    {
+                        width |= 0x3u;
+                        width++;
+                    }
+                    if ((height & 0x3u) != 0u)
+                    {
+                        height |= 0x3u;
+                        height++;
+                    }
+                    return (width * height) >> 1;
+                case 35u:
+                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
+                    {
+                        if ((width & 0x3u) != 0u)
+                        {
+                            width |= 0x3u;
+                            width++;
+                        }
+                        if ((height & 0x3u) != 0u)
+                        {
+                            height |= 0x3u;
+                            height++;
+                        }
+                    }
+                    return (width * height) >> 1;
+                case 36u:
+                case 37u:
+                case 39u:
                     if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
                     {
                         if ((width & 0x3u) != 0u)
@@ -46,49 +92,34 @@ namespace LibWindPop.Images.PtxRsb.Handler
                         }
                     }
                     return width * height;
-                case 161u:
+                case 38u:
                     if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
                     {
-                        if ((width % 5u) != 0u)
+                        if ((width & 0x3u) != 0u)
                         {
-                            width = ((width / 5u) + 1u) * 5u;
-                        }
-                        if ((height % 5u) != 0u)
-                        {
-                            height = ((height / 5u) + 1u) * 5u;
-                        }
-                    }
-                    return (width / 5u) * (height / 5u) * 16u;
-                case 162u:
-                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
-                    {
-                        if ((width % 6u) != 0u)
-                        {
-                            width = ((width / 6u) + 1u) * 6u;
-                        }
-                        if ((height % 6u) != 0u)
-                        {
-                            height = ((height / 6u) + 1u) * 6u;
-                        }
-                    }
-                    return (width / 6u) * (height / 6u) * 16u;
-                case 163u:
-                    if (PtxRsbHandlerManager.FIX_COMPRESSED_TEX_SIZE)
-                    {
-                        if ((width & 0x7u) != 0u)
-                        {
-                            width |= 0x7u;
+                            width |= 0x3u;
                             width++;
                         }
-                        if ((height & 0x7u) != 0u)
+                        if ((height & 0x3u) != 0u)
                         {
-                            height |= 0x7u;
+                            height |= 0x3u;
                             height++;
                         }
+                        return (width * height) >> 1;
                     }
-                    return (width * height) >> 2;
+                    return (3 * width * height) >> 2;
+                case 149u:
+                    return (width * height) << 2;
+                case 160u:
+                    return ((width + 3) / 4u) * ((height + 3) / 4u) * 16u;
+                case 161u:
+                    return ((width + 4) / 5u) * ((height + 4) / 5u) * 16u;
+                case 162u:
+                    return ((width + 5) / 6u) * ((height + 5) / 6u) * 16u;
+                case 163u:
+                    return ((width + 7) / 8u) * ((height + 7) / 8u) * 16u;
                 default:
-                    return m_v5.GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    return pitch * height;
             }
         }
 
@@ -96,6 +127,91 @@ namespace LibWindPop.Images.PtxRsb.Handler
         {
             switch (format)
             {
+                case 0u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
+                    TextureCoder.Decode<R8_G8_B8_A8_UByte>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    break;
+                case 1u:
+                default:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
+                    TextureCoder.Decode<R4_G4_B4_A4_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    break;
+                case 2u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_UShort)}");
+                    TextureCoder.Decode<R5_G6_B5_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    break;
+                case 3u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
+                    TextureCoder.Decode<R5_G5_B5_A1_UShort>(ptxData, (int)width, (int)height, (int)pitch, dstBitmap);
+                    break;
+                case 21u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
+                    TextureCoder.Decode<R4_G4_B4_A4_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 22u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
+                    TextureCoder.Decode<R5_G6_B5_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 23u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
+                    TextureCoder.Decode<R5_G5_B5_A1_Tile_UShort>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 30u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
+                    TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 31u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
+                    TextureCoder.Decode<RGBA_PVRTCI_2BPP_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 32u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)}");
+                    TextureCoder.Decode<RGB_ETC1_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 35u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGB_BC1_UByte)}");
+                    TextureCoder.Decode<RGB_BC1_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 36u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC2_UByte)}");
+                    TextureCoder.Decode<RGBA_BC2_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 37u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_BC3_UByte)}");
+                    TextureCoder.Decode<RGBA_BC3_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 38u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGB_ATC_UByte)}");
+                    TextureCoder.Decode<RGB_ATC_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 39u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}");
+                    TextureCoder.Decode<RGBA_ATC_Explicit_UByte>(ptxData, (int)width, (int)height, dstBitmap);
+                    break;
+                case 147u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_147 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Decode<RGB_ETC1_UByte>(ptxData[..tex0Size_147], (int)width, (int)height, dstBitmap);
+                    A4_Palette_A1_UByte.Decode(ptxData[tex0Size_147..], (int)width, (int)height, dstBitmap);
+                    break;
+                case 148u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Decode<RGBA_PVRTCI_4BPP_UByte>(ptxData[..tex0Size_148], (int)width, (int)height, dstBitmap);
+                    A4_Palette_A1_UByte.Decode(ptxData[tex0Size_148..], (int)width, (int)height, dstBitmap);
+                    break;
+                case 149u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Decode<R8_G8_B8_A8_UByte>(ptxData[..tex0Size_149], (int)width, (int)height, dstBitmap);
+                    A4_Palette_A1_UByte.Decode(ptxData[tex0Size_149..], (int)width, (int)height, dstBitmap);
+                    break;
+                case 150u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}");
+                    int tex0Size_150 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Decode<RGB_ETC1_UByte>(ptxData[..tex0Size_150], (int)width, (int)height, dstBitmap);
+                    A8_UByte.Decode(ptxData[tex0Size_150..], (int)width, (int)height, dstBitmap);
+                    break;
                 case 160u:
                     logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_ASTC_4x4_UByte)}");
                     TextureCoder.Decode<RGBA_ASTC_4x4_UByte>(ptxData, (int)width, (int)height, dstBitmap);
@@ -112,9 +228,6 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(DecodePtx)} use format {nameof(RGBA_ASTC_8x8_UByte)}");
                     TextureCoder.Decode<RGBA_ASTC_8x8_UByte>(ptxData, (int)width, (int)height, dstBitmap);
                     break;
-                default:
-                    m_v5.DecodePtx(ptxData, dstBitmap, width, height, pitch, format, alphaSize, logger);
-                    break;
             }
         }
 
@@ -122,6 +235,91 @@ namespace LibWindPop.Images.PtxRsb.Handler
         {
             switch (format)
             {
+                case 0u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)}");
+                    TextureCoder.Encode<R8_G8_B8_A8_UByte>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    break;
+                case 1u:
+                default:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_UShort)}");
+                    TextureCoder.Encode<R4_G4_B4_A4_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    break;
+                case 2u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_UShort)}");
+                    TextureCoder.Encode<R5_G6_B5_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    break;
+                case 3u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_UShort)}");
+                    TextureCoder.Encode<R5_G5_B5_A1_UShort>(srcBitmap, ptxData, (int)width, (int)height, (int)pitch);
+                    break;
+                case 21u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R4_G4_B4_A4_Tile_UShort)}");
+                    TextureCoder.Encode<R4_G4_B4_A4_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 22u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R5_G6_B5_Tile_UShort)}");
+                    TextureCoder.Encode<R5_G6_B5_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 23u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R5_G5_B5_A1_Tile_UShort)}");
+                    TextureCoder.Encode<R5_G5_B5_A1_Tile_UShort>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 30u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)}");
+                    TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 31u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_2BPP_UByte)}");
+                    TextureCoder.Encode<RGBA_PVRTCI_2BPP_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 32u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)}");
+                    TextureCoder.Encode<RGB_ETC1_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 35u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGB_BC1_UByte)}");
+                    TextureCoder.Encode<RGB_BC1_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 36u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC2_UByte)}");
+                    TextureCoder.Encode<RGBA_BC2_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 37u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_BC3_UByte)}");
+                    TextureCoder.Encode<RGBA_BC3_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 38u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGB_ATC_UByte)}");
+                    TextureCoder.Encode<RGB_ATC_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 39u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_ATC_Explicit_UByte)}");
+                    TextureCoder.Encode<RGBA_ATC_Explicit_UByte>(srcBitmap, ptxData, (int)width, (int)height);
+                    break;
+                case 147u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_147 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Encode<RGB_ETC1_UByte>(srcBitmap, ptxData[..tex0Size_147], (int)width, (int)height);
+                    A4_Palette_A1_UByte.Encode(srcBitmap, ptxData[tex0Size_147..], (int)width, (int)height);
+                    break;
+                case 148u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_PVRTCI_4BPP_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_148 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Encode<RGBA_PVRTCI_4BPP_UByte>(srcBitmap, ptxData[..tex0Size_148], (int)width, (int)height);
+                    A4_Palette_A1_UByte.Encode(srcBitmap, ptxData[tex0Size_148..], (int)width, (int)height);
+                    break;
+                case 149u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(R8_G8_B8_A8_UByte)} and {nameof(A4_Palette_A1_UByte)}");
+                    int tex0Size_149 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Encode<R8_G8_B8_A8_UByte>(srcBitmap, ptxData[..tex0Size_149], (int)width, (int)height);
+                    A4_Palette_A1_UByte.Encode(srcBitmap, ptxData[tex0Size_149..], (int)width, (int)height);
+                    break;
+                case 150u:
+                    logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGB_ETC1_UByte)} and {nameof(A8_UByte)}");
+                    int tex0Size_150 = (int)GetPtxSizeWithoutAlpha(width, height, pitch, format);
+                    TextureCoder.Encode<RGB_ETC1_UByte>(srcBitmap, ptxData[..tex0Size_150], (int)width, (int)height);
+                    A8_UByte.Encode(srcBitmap, ptxData[tex0Size_150..], (int)width, (int)height);
+                    break;
                 case 160u:
                     logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_ASTC_4x4_UByte)}");
                     TextureCoder.Encode<RGBA_ASTC_4x4_UByte>(srcBitmap, ptxData, (int)width, (int)height);
@@ -138,9 +336,6 @@ namespace LibWindPop.Images.PtxRsb.Handler
                     logger.Log($"{nameof(PtxHandlerPVZ2CNAndroidV6)}.{nameof(EncodePtx)} use format {nameof(RGBA_ASTC_8x8_UByte)}");
                     TextureCoder.Encode<RGBA_ASTC_8x8_UByte>(srcBitmap, ptxData, (int)width, (int)height);
                     break;
-                default:
-                    m_v5.EncodePtx(srcBitmap, ptxData, width, height, pitch, format, alphaSize, logger);
-                    break;
             }
         }
 
@@ -148,33 +343,99 @@ namespace LibWindPop.Images.PtxRsb.Handler
         {
             switch (format)
             {
+                case 21u:
+                case 22u:
+                case 23u:
+                    width = (uint)srcBitmap.Width;
+                    height = (uint)srcBitmap.Height;
+                    uint align32Width = width;
+                    if ((align32Width & 0x1Fu) != 0u)
+                    {
+                        align32Width |= 0x1Fu;
+                        align32Width++;
+                    }
+                    pitch = align32Width << 1;
+                    alphaSize = 0;
+                    return true;
+                case 30u:
+                case 31u:
+                case 148u:
+                    if (BitHelper.IsPowerOfTwo(srcBitmap.Width) && BitHelper.IsPowerOfTwo(srcBitmap.Height))
+                    {
+                        width = (uint)srcBitmap.Width;
+                        height = (uint)srcBitmap.Height;
+                        pitch = format switch
+                        {
+                            30u => width >> 1,
+                            31u => width >> 2,
+                            _ => width << 2
+                        };
+                        alphaSize = 0u;
+                        return true;
+                    }
+                    break;
+                case 32u:
+                case 147u:
+                case 150u:
+                    width = (uint)srcBitmap.Width;
+                    height = (uint)srcBitmap.Height;
+                    pitch = format == 32u ? (width >> 1) : (width << 2);
+                    alphaSize = format == 147u ? (uint)A4_Palette_A1_UByte.PeekAlphaSize(srcBitmap, (int)width, (int)height) : 0u;
+                    return true;
+                case 35u:
+                case 36u:
+                case 37u:
+                case 38u:
+                case 39u:
+                    if ((srcBitmap.Width & 3) == 0 && (srcBitmap.Height & 3) == 0)
+                    {
+                        width = (uint)srcBitmap.Width;
+                        height = (uint)srcBitmap.Height;
+                        pitch = format switch
+                        {
+                            35u or 38u => width >> 1,
+                            _ => width,
+                        };
+                        alphaSize = 0u;
+                        return true;
+                    }
+                    break;
                 case 160u:
                     width = (uint)srcBitmap.Width;
                     height = (uint)srcBitmap.Height;
-                    pitch = width; // bpp = 1.0
+                    pitch = width;
                     alphaSize = 0u;
                     return true;
                 case 161u:
                     width = (uint)srcBitmap.Width;
                     height = (uint)srcBitmap.Height;
-                    pitch = width * 16u / 25u; // bpp = 16/25 ≈ 0.64
+                    pitch = width * 16u / 25u;
                     alphaSize = 0u;
                     return true;
                 case 162u:
                     width = (uint)srcBitmap.Width;
                     height = (uint)srcBitmap.Height;
-                    pitch = width * 4u / 9u; // bpp = 4/9 ≈ 0.44
+                    pitch = width * 4u / 9u;
                     alphaSize = 0u;
                     return true;
                 case 163u:
                     width = (uint)srcBitmap.Width;
                     height = (uint)srcBitmap.Height;
-                    pitch = width >> 2; // bpp = 0.25
+                    pitch = width >> 2;
                     alphaSize = 0u;
                     return true;
                 default:
-                    return m_v5.PeekEncodedPtxInfo(srcBitmap, format, out width, out height, out pitch, out alphaSize);
+                    width = (uint)srcBitmap.Width;
+                    height = (uint)srcBitmap.Height;
+                    pitch = width << ((format == 0u || format == 149u) ? 2 : 1);
+                    alphaSize = 0u;
+                    return true;
             }
+            width = 0u;
+            height = 0u;
+            pitch = 0u;
+            alphaSize = 0u;
+            return false;
         }
     }
 }
