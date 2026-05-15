@@ -3,6 +3,7 @@ using LibWindPop.Utils.FileSystem;
 using LibWindPop.Utils.Graphics.Bitmap;
 using LibWindPop.Utils.Graphics.FormatProvider;
 using LibWindPop.Utils.Graphics.FormatProvider.Dds;
+using LibWindPop.Utils.Graphics.Texture.IGraphicsAPITexture.DirectX;
 using LibWindPop.Utils.Logger;
 using System;
 using System.IO;
@@ -43,13 +44,21 @@ namespace LibWindPop.Images.PtxDds
                 PtxDdsPixelFormat.R8_G8_B8_A8_UByte => DdsEncodingFormat.R8_G8_B8_A8_UByte,
                 PtxDdsPixelFormat.R8_G8_B8_X8_UByte => DdsEncodingFormat.R8_G8_B8_X8_UByte,
                 PtxDdsPixelFormat.R8_G8_B8_UByte => DdsEncodingFormat.R8_G8_B8_UByte,
+                PtxDdsPixelFormat.RGBA_ASTC_4x4_UByte => DdsEncodingFormat.RGBA_ASTC_4x4_UByte,
+                PtxDdsPixelFormat.RGBA_ASTC_5x5_UByte => DdsEncodingFormat.RGBA_ASTC_5x5_UByte,
+                PtxDdsPixelFormat.RGBA_ASTC_6x6_UByte => DdsEncodingFormat.RGBA_ASTC_6x6_UByte,
+                PtxDdsPixelFormat.RGBA_ASTC_8x8_UByte => DdsEncodingFormat.RGBA_ASTC_8x8_UByte,
                 _ => DdsEncodingFormat.RGBA_BC3_UByte
             };
+            bool useDx10Header = ddsFormat == DdsEncodingFormat.RGBA_ASTC_4x4_UByte
+                || ddsFormat == DdsEncodingFormat.RGBA_ASTC_5x5_UByte
+                || ddsFormat == DdsEncodingFormat.RGBA_ASTC_6x6_UByte
+                || ddsFormat == DdsEncodingFormat.RGBA_ASTC_8x8_UByte;
             using (NativeBitmap bitmap = new NativeBitmap(width, height))
             {
                 RefBitmap refBitmap = bitmap.AsRefBitmap();
                 ImageCoder.DecodeImage(pngStream, refBitmap, imageFormat);
-                DdsEncoder.EncodeDds(ptxStream, refBitmap, new DdsEncoderArgument { UseDX10Header = false, Format = ddsFormat });
+                DdsEncoder.EncodeDds(ptxStream, refBitmap, new DdsEncoderArgument { UseDX10Header = useDx10Header, Format = ddsFormat });
             }
         }
 
@@ -87,7 +96,40 @@ namespace LibWindPop.Images.PtxDds
             {
                 if ((header.ddspf.dwFlags & DDS_PIXELFORMAT.DDPF_FOURCC) != 0u)
                 {
-                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT1)
+                    if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DX10)
+                    {
+                        DDS_HEADER_DXT10 dx10Header;
+                        long headerDx10Pos = pos + 4 + sizeof(DDS_HEADER);
+                        long currentPos = ptxStream.Position;
+                        ptxStream.Seek(headerDx10Pos, SeekOrigin.Begin);
+                        ptxStream.Read(&dx10Header, (uint)sizeof(DDS_HEADER_DXT10));
+                        ptxStream.Seek(currentPos, SeekOrigin.Begin);
+                        if (dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_TYPELESS
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM_SRGB)
+                        {
+                            format = PtxDdsPixelFormat.RGBA_ASTC_4x4_UByte;
+                        }
+                        else if (dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_5X5_TYPELESS
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_5X5_UNORM
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_5X5_UNORM_SRGB)
+                        {
+                            format = PtxDdsPixelFormat.RGBA_ASTC_5x5_UByte;
+                        }
+                        else if (dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_6X6_TYPELESS
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_6X6_UNORM
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_6X6_UNORM_SRGB)
+                        {
+                            format = PtxDdsPixelFormat.RGBA_ASTC_6x6_UByte;
+                        }
+                        else if (dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_TYPELESS
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM
+                            || dx10Header.dxgiFormat == DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM_SRGB)
+                        {
+                            format = PtxDdsPixelFormat.RGBA_ASTC_8x8_UByte;
+                        }
+                    }
+                    else if (header.ddspf.dwFourCC == DDS_PIXELFORMAT.DXT1)
                     {
                         format = PtxDdsPixelFormat.RGBA_BC1_UByte;
                     }

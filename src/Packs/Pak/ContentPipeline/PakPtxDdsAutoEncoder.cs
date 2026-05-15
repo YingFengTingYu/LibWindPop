@@ -28,6 +28,10 @@ namespace LibWindPop.Packs.Pak.ContentPipeline
                 nameof(PtxDdsPixelFormat.B8_G8_R8_A8_UByte) => PtxDdsPixelFormat.B8_G8_R8_A8_UByte,
                 nameof(PtxDdsPixelFormat.B8_G8_R8_X8_UByte) => PtxDdsPixelFormat.B8_G8_R8_X8_UByte,
                 nameof(PtxDdsPixelFormat.B8_G8_R8_UByte) => PtxDdsPixelFormat.B8_G8_R8_UByte,
+                nameof(PtxDdsPixelFormat.RGBA_ASTC_4x4_UByte) => PtxDdsPixelFormat.RGBA_ASTC_4x4_UByte,
+                nameof(PtxDdsPixelFormat.RGBA_ASTC_5x5_UByte) => PtxDdsPixelFormat.RGBA_ASTC_5x5_UByte,
+                nameof(PtxDdsPixelFormat.RGBA_ASTC_6x6_UByte) => PtxDdsPixelFormat.RGBA_ASTC_6x6_UByte,
+                nameof(PtxDdsPixelFormat.RGBA_ASTC_8x8_UByte) => PtxDdsPixelFormat.RGBA_ASTC_8x8_UByte,
                 _ => PtxDdsPixelFormat.RGBA_BC3_UByte
             };
         }

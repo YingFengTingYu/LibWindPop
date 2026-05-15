@@ -29,6 +29,7 @@ namespace LibWindPop.Images.PtxRsb
             { nameof(PtxHandlerPVZ2CNAndroidV3), new PtxHandlerPVZ2CNAndroidV3() },
             { nameof(PtxHandlerPVZ2CNAndroidV4), new PtxHandlerPVZ2CNAndroidV4() },
             { nameof(PtxHandlerPVZ2CNAndroidV5), new PtxHandlerPVZ2CNAndroidV5() },
+            { nameof(PtxHandlerPVZ2CNAndroidV6), new PtxHandlerPVZ2CNAndroidV6() },
             { nameof(PtxHandlerPVZ2CNiOSV1), new PtxHandlerPVZ2CNiOSV1() },
             { nameof(PtxHandlerPVZ2CNiOSV2), new PtxHandlerPVZ2CNiOSV2() },
         };
