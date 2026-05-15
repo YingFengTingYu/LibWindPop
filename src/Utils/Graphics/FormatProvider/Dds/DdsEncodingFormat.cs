@@ -18,5 +18,9 @@
         RGB_ATC_UByte,
         RGBA_ATC_Explicit_UByte,
         RGBA_ATC_Interpolated_UByte,
+        RGBA_ASTC_4x4_UByte,
+        RGBA_ASTC_5x5_UByte,
+        RGBA_ASTC_6x6_UByte,
+        RGBA_ASTC_8x8_UByte,
     }
 }

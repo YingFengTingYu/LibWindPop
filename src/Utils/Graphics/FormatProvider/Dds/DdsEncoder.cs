@@ -176,6 +176,50 @@ namespace LibWindPop.Utils.Graphics.FormatProvider.Dds
                             headerDx10.miscFlags2 = DDS_HEADER_DXT10.DDS_ALPHA_MODE_STRAIGHT;
                             coder = new RGBA_BC3_UByte();
                         }
+                        else if (ddsArgs.Format == DdsEncodingFormat.RGBA_ASTC_4x4_UByte)
+                        {
+                            header.dwFlags |= DDS_HEADER.DDSD_LINEARSIZE;
+                            header.dwPitchOrLinearSize = GetAlignSize(bitmap);
+                            headerDx10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_4X4_UNORM;
+                            headerDx10.resourceDimension = D3D10_RESOURCE_DIMENSION.D3D10_RESOURCE_DIMENSION_TEXTURE2D;
+                            headerDx10.miscFlag = 0u;
+                            headerDx10.arraySize = 1u;
+                            headerDx10.miscFlags2 = DDS_HEADER_DXT10.DDS_ALPHA_MODE_STRAIGHT;
+                            coder = new RGBA_ASTC_4x4_UByte();
+                        }
+                        else if (ddsArgs.Format == DdsEncodingFormat.RGBA_ASTC_5x5_UByte)
+                        {
+                            header.dwFlags |= DDS_HEADER.DDSD_LINEARSIZE;
+                            header.dwPitchOrLinearSize = GetAlignSize(bitmap);
+                            headerDx10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_5X5_UNORM;
+                            headerDx10.resourceDimension = D3D10_RESOURCE_DIMENSION.D3D10_RESOURCE_DIMENSION_TEXTURE2D;
+                            headerDx10.miscFlag = 0u;
+                            headerDx10.arraySize = 1u;
+                            headerDx10.miscFlags2 = DDS_HEADER_DXT10.DDS_ALPHA_MODE_STRAIGHT;
+                            coder = new RGBA_ASTC_5x5_UByte();
+                        }
+                        else if (ddsArgs.Format == DdsEncodingFormat.RGBA_ASTC_6x6_UByte)
+                        {
+                            header.dwFlags |= DDS_HEADER.DDSD_LINEARSIZE;
+                            header.dwPitchOrLinearSize = GetAlignSize(bitmap);
+                            headerDx10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_6X6_UNORM;
+                            headerDx10.resourceDimension = D3D10_RESOURCE_DIMENSION.D3D10_RESOURCE_DIMENSION_TEXTURE2D;
+                            headerDx10.miscFlag = 0u;
+                            headerDx10.arraySize = 1u;
+                            headerDx10.miscFlags2 = DDS_HEADER_DXT10.DDS_ALPHA_MODE_STRAIGHT;
+                            coder = new RGBA_ASTC_6x6_UByte();
+                        }
+                        else if (ddsArgs.Format == DdsEncodingFormat.RGBA_ASTC_8x8_UByte)
+                        {
+                            header.dwFlags |= DDS_HEADER.DDSD_LINEARSIZE;
+                            header.dwPitchOrLinearSize = GetAlignSize(bitmap);
+                            headerDx10.dxgiFormat = DXGI_FORMAT.DXGI_FORMAT_ASTC_8X8_UNORM;
+                            headerDx10.resourceDimension = D3D10_RESOURCE_DIMENSION.D3D10_RESOURCE_DIMENSION_TEXTURE2D;
+                            headerDx10.miscFlag = 0u;
+                            headerDx10.arraySize = 1u;
+                            headerDx10.miscFlags2 = DDS_HEADER_DXT10.DDS_ALPHA_MODE_STRAIGHT;
+                            coder = new RGBA_ASTC_8x8_UByte();
+                        }
                         else
                         {
                             throw new NotImplementedException();
